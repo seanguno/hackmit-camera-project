@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentraOS Camera Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #6c757d; cursor: not-allowed; }
+        .photo-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 MentraOS Camera Test</h1>
+        
+        <div class="status info">
+            <strong>App Status:</strong> <span id="appStatus">Checking...</span>
+        </div>
+
+        <div style="text-align: center;">
+            <button onclick="testPhotoCapture()" id="testBtn">🧪 Test Photo Capture</button>
+            <button onclick="checkLatestPhoto()" id="checkBtn">📷 Check Latest Photo</button>
+            <button onclick="checkCameraStatus()" id="statusBtn">🔍 Check Camera Status</button>
+            <button onclick="viewWebview()" id="webviewBtn">👁️ Open Webview</button>
+        </div>
+
+        <div id="photoInfo" class="photo-info" style="display: none;">
+            <h3>📊 Photo Information</h3>
+            <div id="photoDetails"></div>
+        </div>
+
+        <div>
+            <h3>📝 Activity Log</h3>
+            <div id="log" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log');
+        let appStatusElement = document.getElementById('appStatus');
+        let photoInfoElement = document.getElementById('photoInfo');
+        let photoDetailsElement = document.getElementById('photoDetails');
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+
+        function updateStatus(message, type = 'info') {
+            appStatusElement.textContent = message;
+            appStatusElement.parentElement.className = `status ${type}`;
+        }
+
+        async function testPhotoCapture() {
+            const btn = document.getElementById('testBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Testing...';
+            
+            try {
+                log('🧪 Testing photo capture...');
+                
+                const response = await fetch('/api/test-photo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Test photo captured successfully!`);
+                    log(`📸 Photo ID: ${result.photoId}`);
+                    log(`👤 User ID: ${result.userId}`);
+                    updateStatus('Test photo captured successfully!', 'success');
+                } else {
+                    log(`❌ Test failed: ${result.error}`);
+                    updateStatus(`Test failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`);
+                updateStatus(`Network error: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🧪 Test Photo Capture';
+            }
+        }
+
+        async function checkLatestPhoto() {
+            const btn = document.getElementById('checkBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Checking...';
+            
+            try {
+                log('📷 Checking for latest photo...');
+                
+                const response = await fetch('/api/latest-photo');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Latest photo found!`);
+                    log(`📸 Photo ID: ${result.requestId}`);
+                    log(`📅 Timestamp: ${new Date(result.timestamp).toLocaleString()}`);
+                    log(`📁 File Path: ${result.filePath || 'In memory'}`);
+                    log(`📊 Size: ${result.size} bytes`);
+                    log(`🎨 MIME Type: ${result.mimeType}`);
+                    
+                    photoDetailsElement.innerHTML = `
+                        <strong>Photo ID:</strong> ${result.requestId}<br>
+                        <strong>Timestamp:</strong> ${new Date(result.timestamp).toLocaleString()}<br>
+                        <strong>File Path:</strong> ${result.filePath || 'In memory'}<br>
+                        <strong>Size:</strong> ${result.size} bytes<br>
+                        <strong>MIME Type:</strong> ${result.mimeType}
+                    `;
+                    photoInfoElement.style.display = 'block';
+                    
+                    updateStatus('Latest photo found!', 'success');
+                } else if (response.status === 404) {
+                    log('ℹ️ No photos found yet');
+                    updateStatus('No photos found yet', 'info');
+                    photoInfoElement.style.display = 'none';
+                } else {
+                    log(`❌ Error: ${result.error}`);
+                    updateStatus(`Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`);
+                updateStatus(`Network error: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📷 Check Latest Photo';
+            }
+        }
+
+        async function checkCameraStatus() {
+            const btn = document.getElementById('statusBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Checking...';
+            
+            try {
+                log('🔍 Checking camera status...');
+                
+                const response = await fetch('/api/camera-status');
+                const status = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Camera status retrieved:`);
+                    log(`👤 User ID: ${status.userId}`);
+                    log(`📸 Has Photos: ${status.hasPhotos}`);
+                    log(`📊 Total Photos: ${status.photoCount}`);
+                    log(`🔄 Is Streaming: ${status.isStreaming}`);
+                    log(`⏰ Next Photo Time: ${status.nextPhotoTime ? new Date(status.nextPhotoTime).toLocaleString() : 'N/A'}`);
+                    log(`📅 Latest Photo: ${status.latestPhotoTimestamp ? new Date(status.latestPhotoTimestamp).toLocaleString() : 'N/A'}`);
+                    log(`📁 Storage Dir: ${status.storageDir}`);
+                    
+                    updateStatus('Camera status retrieved', 'success');
+                } else {
+                    log(`❌ Failed to get camera status: ${status.error}`);
+                    updateStatus(`Failed to get camera status: ${status.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`);
+                updateStatus(`Network error: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔍 Check Camera Status';
+            }
+        }
+
+        function viewWebview() {
+            log('👁️ Opening webview...');
+            window.open('/webview', '_blank');
+        }
+
+        // Check app status on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/api/latest-photo');
+                if (response.status === 401) {
+                    updateStatus('App running - Authentication required', 'info');
+                    log('ℹ️ App is running but requires authentication');
+                } else {
+                    updateStatus('App running and accessible', 'success');
+                    log('✅ App is running and accessible');
+                }
+            } catch (error) {
+                updateStatus('App not responding', 'error');
+                log(`❌ App not responding: ${error.message}`);
+            }
+        });
+
+        // Auto-refresh status every 30 seconds
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/latest-photo');
+                if (response.status === 401) {
+                    updateStatus('App running - Authentication required', 'info');
+                } else {
+                    updateStatus('App running and accessible', 'success');
+                }
+            } catch (error) {
+                updateStatus('App not responding', 'error');
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "test-user": {
+    "requestId": "test-1757790294917",
+    "timestamp": "2025-09-13T19:04:54.917Z",
+    "userId": "test-user",
+    "mimeType": "image/jpeg",
+    "filename": "test-photo.jpg",
+    "size": 1024,
+    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/test-user/photo_2025-09-13T19-04-54-917Z.jpeg"
+  },
+  "gunosean@gmail.com": {
+    "requestId": "photo_req_1757792742806_xkadt8z",
+    "timestamp": "2025-09-13T19:45:46.444Z",
+    "userId": "gunosean@gmail.com",
+    "mimeType": "image/jpeg",
+    "filename": "photo_2025-09-13T19-45-46-444Z.jpeg",
+    "size": 334169,
+    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-13T19-45-46-444Z.jpeg"
+  }
+}

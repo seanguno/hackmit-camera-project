@@ -2,6 +2,8 @@ import { AppServer, AppSession, ViewType, AuthenticatedRequest, PhotoData } from
 import { Request, Response } from 'express';
 import * as ejs from 'ejs';
 import * as path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
 
 /**
  * Interface representing a stored photo with metadata
@@ -20,6 +22,10 @@ const PACKAGE_NAME = process.env.PACKAGE_NAME ?? (() => { throw new Error('PACKA
 const MENTRAOS_API_KEY = process.env.MENTRAOS_API_KEY ?? (() => { throw new Error('MENTRAOS_API_KEY is not set in .env file'); })();
 const PORT = parseInt(process.env.PORT || '3000');
 
+// Storage configuration
+const STORAGE_DIR = path.join(process.cwd(), 'storage', 'photos');
+const METADATA_FILE = path.join(STORAGE_DIR, 'metadata.json');
+
 /**
  * Photo Taker App with webview functionality for displaying photos
  * Extends AppServer to provide photo taking and webview display capabilities
@@ -29,6 +35,7 @@ class ExampleMentraOSApp extends AppServer {
   private latestPhotoTimestamp: Map<string, number> = new Map(); // Track latest photo timestamp per user
   private isStreamingPhotos: Map<string, boolean> = new Map(); // Track if we are streaming photos for a user
   private nextPhotoTime: Map<string, number> = new Map(); // Track next photo time for a user
+  private photoRequestToUser: Map<string, string> = new Map(); // Track which user made each photo request
 
   constructor() {
     super({
@@ -37,6 +44,199 @@ class ExampleMentraOSApp extends AppServer {
       port: PORT,
     });
     this.setupWebviewRoutes();
+    this.ensureStorageDirectories();
+    this.setupPhotoUploadHandler();
+  }
+
+  /**
+   * Ensure storage directories exist
+   */
+  private ensureStorageDirectories(): void {
+    try {
+      if (!fs.existsSync(STORAGE_DIR)) {
+        fs.mkdirSync(STORAGE_DIR, { recursive: true });
+        this.logger.info(`Created storage directory: ${STORAGE_DIR}`);
+      }
+      
+      // Initialize metadata file if it doesn't exist
+      if (!fs.existsSync(METADATA_FILE)) {
+        fs.writeFileSync(METADATA_FILE, JSON.stringify({}, null, 2));
+        this.logger.info(`Created metadata file: ${METADATA_FILE}`);
+      }
+    } catch (error) {
+      this.logger.error(`Error setting up storage directories: ${error}`);
+    }
+  }
+
+  /**
+   * Ensure user directory exists
+   */
+  private ensureUserDirectory(userId: string): string {
+    const userDir = path.join(STORAGE_DIR, userId);
+    try {
+      if (!fs.existsSync(userDir)) {
+        fs.mkdirSync(userDir, { recursive: true });
+        this.logger.info(`Created user directory: ${userDir}`);
+      }
+      return userDir;
+    } catch (error) {
+      this.logger.error(`Error creating user directory for ${userId}: ${error}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Save photo to local storage
+   */
+  private async savePhotoToStorage(photo: PhotoData, userId: string): Promise<string> {
+    try {
+      // Ensure user directory exists
+      const userDir = this.ensureUserDirectory(userId);
+      
+      // Generate filename with timestamp
+      const timestamp = photo.timestamp.toISOString().replace(/[:.]/g, '-');
+      const extension = photo.mimeType.split('/')[1] || 'jpg';
+      const filename = `photo_${timestamp}.${extension}`;
+      const filePath = path.join(userDir, filename);
+      
+      // Write photo buffer to file
+      fs.writeFileSync(filePath, photo.buffer);
+      
+      // Update metadata
+      await this.updateMetadata(userId, {
+        requestId: photo.requestId,
+        timestamp: photo.timestamp.toISOString(),
+        userId: userId,
+        mimeType: photo.mimeType,
+        filename: filename,
+        size: photo.size,
+        filePath: filePath
+      });
+      
+      this.logger.info(`Photo saved to: ${filePath}`);
+      return filePath;
+    } catch (error) {
+      this.logger.error(`Error saving photo to storage: ${error}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Update metadata.json with photo information
+   */
+  private async updateMetadata(userId: string, photoInfo: any): Promise<void> {
+    try {
+      let metadata: any = {};
+      
+      // Read existing metadata
+      if (fs.existsSync(METADATA_FILE)) {
+        const metadataContent = fs.readFileSync(METADATA_FILE, 'utf8');
+        metadata = JSON.parse(metadataContent);
+      }
+      
+      // Update metadata for user
+      metadata[userId] = photoInfo;
+      
+      // Write updated metadata
+      fs.writeFileSync(METADATA_FILE, JSON.stringify(metadata, null, 2));
+      
+      this.logger.info(`Metadata updated for user ${userId}`);
+    } catch (error) {
+      this.logger.error(`Error updating metadata: ${error}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Set up custom photo upload handler to ensure photos are processed even if session is not active
+   */
+  private setupPhotoUploadHandler(): void {
+    const app = this.getExpressApp();
+    
+    // Override the default photo upload handler
+    app.post('/photo-upload', async (req: any, res: any) => {
+      try {
+        const { requestId, type } = req.body;
+        const photoFile = req.file;
+        
+        this.logger.info({ requestId, type }, `📸 Received photo upload: ${requestId}`);
+        
+        if (!photoFile) {
+          this.logger.error({ requestId }, "No photo file in upload");
+          return res.status(400).json({
+            success: false,
+            error: "No photo file provided",
+          });
+        }
+        
+        if (!requestId) {
+          this.logger.error("No requestId in photo upload");
+          return res.status(400).json({
+            success: false,
+            error: "No requestId provided",
+          });
+        }
+
+        // Try to find the session first
+        let session = (this as any).findSessionByPhotoRequestId(requestId);
+        
+        if (session) {
+          // If session exists, handle normally
+          const photoData = {
+            buffer: photoFile.buffer,
+            mimeType: photoFile.mimetype,
+            filename: photoFile.originalname || "photo.jpg",
+            requestId,
+            size: photoFile.size,
+            timestamp: new Date(),
+          };
+          
+          session.camera.handlePhotoReceived(photoData);
+          this.logger.info(`Photo delivered to session for request ${requestId}`);
+        } else {
+          // If no session found, try to get userId from our tracking map
+          this.logger.warn({ requestId }, "No active session found, attempting to process photo directly");
+          
+          const userId = this.photoRequestToUser.get(requestId);
+          if (userId) {
+            const photoData = {
+              buffer: photoFile.buffer,
+              mimeType: photoFile.mimetype,
+              filename: photoFile.originalname || "photo.jpg",
+              requestId,
+              size: photoFile.size,
+              timestamp: new Date(),
+            };
+            
+            // Process the photo directly
+            await this.cachePhoto(photoData, userId);
+            this.logger.info(`Photo processed directly for user ${userId} with request ${requestId}`);
+            
+            // Clean up the tracking map
+            this.photoRequestToUser.delete(requestId);
+          } else {
+            this.logger.error({ requestId }, "No userId found for photo request");
+            return res.status(404).json({
+              success: false,
+              error: "No active session found for this photo request",
+            });
+          }
+        }
+
+        // Respond to ASG client
+        res.json({
+          success: true,
+          requestId,
+          message: "Photo received successfully",
+        });
+      } catch (error) {
+        this.logger.error(`Error handling photo upload: ${error}`);
+        res.status(500).json({
+          success: false,
+          error: "Internal server error",
+        });
+      }
+    });
   }
 
 
@@ -66,8 +266,10 @@ class ExampleMentraOSApp extends AppServer {
         try {
           // first, get the photo
           const photo = await session.camera.requestPhoto();
+          // Track the photo request with the user
+          this.photoRequestToUser.set(photo.requestId, userId);
           // if there was an error, log it
-          this.logger.info(`Photo taken for user ${userId}, timestamp: ${photo.timestamp}`);
+          this.logger.info(`Photo taken for user ${userId}, timestamp: ${photo.timestamp}, requestId: ${photo.requestId}`);
           this.cachePhoto(photo, userId);
         } catch (error) {
           this.logger.error(`Error taking photo: ${error}`);
@@ -84,6 +286,9 @@ class ExampleMentraOSApp extends AppServer {
 
           // actually take the photo
           const photo = await session.camera.requestPhoto();
+          
+          // Track the photo request with the user
+          this.photoRequestToUser.set(photo.requestId, userId);
 
           // set the next photo time to now, since we are ready to take another photo
           this.nextPhotoTime.set(userId, Date.now());
@@ -101,11 +306,19 @@ class ExampleMentraOSApp extends AppServer {
     // clean up the user's state
     this.isStreamingPhotos.set(userId, false);
     this.nextPhotoTime.delete(userId);
+    
+    // Clean up any pending photo requests for this user
+    for (const [requestId, trackedUserId] of this.photoRequestToUser.entries()) {
+      if (trackedUserId === userId) {
+        this.photoRequestToUser.delete(requestId);
+      }
+    }
+    
     this.logger.info(`Session stopped for user ${userId}, reason: ${reason}`);
   }
 
   /**
-   * Cache a photo for display
+   * Cache a photo for display and save it locally
    */
   private async cachePhoto(photo: PhotoData, userId: string) {
     // create a new stored photo object which includes the photo data and the user id
@@ -119,8 +332,18 @@ class ExampleMentraOSApp extends AppServer {
       size: photo.size
     };
 
-    // this example app simply stores the photo in memory for display in the webview, but you could also send the photo to an AI api,
-    // or store it in a database or cloud storage, send it to roboflow, or do other processing here
+    // Save photo to local storage
+    try {
+      await this.savePhotoToStorage(photo, userId);
+      this.logger.info(`Photo saved locally for user ${userId}`);
+    } catch (error) {
+      this.logger.error(`Failed to save photo locally for user ${userId}: ${error}`);
+      // Continue with caching even if local save fails
+    }
+
+    // this example app stores the photo in memory for display in the webview AND saves it locally,
+    // but you could also send the photo to an AI api, or store it in a database or cloud storage, 
+    // send it to roboflow, or do other processing here
 
     // cache the photo for display
     this.photos.set(userId, cachedPhoto);
@@ -179,6 +402,37 @@ class ExampleMentraOSApp extends AppServer {
         'Cache-Control': 'no-cache'
       });
       res.send(photo.buffer);
+    });
+
+    // API endpoint to get all saved photos for a user
+    app.get('/api/saved-photos', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        // Read metadata to get all saved photos
+        if (!fs.existsSync(METADATA_FILE)) {
+          res.json({ photos: [] });
+          return;
+        }
+
+        const metadataContent = fs.readFileSync(METADATA_FILE, 'utf8');
+        const metadata = JSON.parse(metadataContent);
+        
+        const userPhotos = metadata[userId] ? [metadata[userId]] : [];
+        
+        res.json({ 
+          photos: userPhotos,
+          count: userPhotos.length 
+        });
+      } catch (error) {
+        this.logger.error(`Error reading saved photos: ${error}`);
+        res.status(500).json({ error: 'Failed to read saved photos' });
+      }
     });
 
     // Main webview route - displays the photo viewer interface
