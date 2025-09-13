@@ -70,13 +70,25 @@ class EdenAIFaceRecognition:
         response = requests.post('https://api.imgur.com/3/image', 
                                     headers=headers, 
                                     data=data)
-        result = response.json()
-        logger.info(f"Upload response: {result}")
+        print(f"Imgur response status: {response.status_code}")
+        print(f"Imgur response text: {response.text[:200]}...")  # First 200 chars
         
-        if result['success']:
-            return result['data']['link']
-        else:
-            logger.error(f"Upload failed: {result}")
+        # Check if response is valid JSON
+        if response.status_code != 200:
+            logger.error(f"Imgur API error: {response.status_code} - {response.text[:100]}")
+            return None
+            
+        try:
+            result = response.json()
+            logger.info(f"Upload response: {result}")
+            
+            if result['success']:
+                return result['data']['link']
+            else:
+                logger.error(f"Upload failed: {result}")
+                return None
+        except requests.exceptions.JSONDecodeError:
+            logger.error(f"Imgur returned invalid JSON: {response.text[:200]}")
             return None
 
     def add_face(self, name, image_url):
@@ -210,8 +222,9 @@ def main():
     # face_system.delete_all_faces()
     
     # Upload and register sohum_1.jpeg
-    db_images = ["./images/db_images/sohum_gautam.jpeg", "./images/db_images/sean_guno.jpeg",
-              "./images/db_images/pari_latawa.jpeg", "./images/db_images/mudit_marhawa.jpeg"]
+    db_images = os.listdir("../images/db_images")
+    print(db_images)
+    db_images = ["../images/db_images/" + image for image in db_images]
 
     logger.info("\n1. Adding Images to DB")
     for image in db_images:
@@ -228,8 +241,10 @@ def main():
     logger.info(f"\nDatabase saved to: {face_system.db_file}")
 
     logger.info("\n3. Testing recognition")
-    filename = capture_photo()
+    # filename = capture_photo()
+    filename = "../images/db_images/Thomas_Tee_Headshot.jpeg"
     test_url = face_system.upload_to_imgur(filename)
+    
     if test_url:
         result = face_system.recognize_face(test_url)
         best_match = face_system.choose_best_match(result["amazon"]["items"])
@@ -241,6 +256,24 @@ def main():
                 name = data['name'].split(".")[0]
                 logger.info(f"This person in this image is: {name}")
                 print("--------------------------------")
+    else:
+        logger.warning("Could not upload test image to Imgur (API error). Using existing image from database instead.")
+        # Use an existing image URL from the database for testing
+        for face_id, data in face_system.face_database.items():
+            if "Thomas_Tee" in data['name']:
+                test_url = data['image_url']
+                logger.info(f"Using existing Thomas_Tee image: {test_url}")
+                result = face_system.recognize_face(test_url)
+                best_match = face_system.choose_best_match(result["amazon"]["items"])
+                logger.info(f"Best match: {best_match}")
+                matching_id = best_match.get("face_id")
+                for id, data in face_system.face_database.items():
+                    if matching_id == id:
+                        print("--------------------------------")
+                        name = data['name'].split(".")[0]
+                        logger.info(f"This person in this image is: {name}")
+                        print("--------------------------------")
+                break
         
 if __name__ == "__main__":
     main()
