@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1em;
+        }
+
+        .recognition-result {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .person-name {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4ade80;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .confidence {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .confidence-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .face-id {
+            font-size: 0.9em;
+            opacity: 0.7;
+            font-family: 'Courier New', monospace;
+            margin-top: 15px;
+        }
+
+        .no-recognition {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .no-recognition h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+
+        .no-recognition p {
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .loading {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #4ade80;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .photo-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success {
+            background: #4ade80;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+
+        .status-error {
+            background: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .status-loading {
+            background: #fbbf24;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Face Recognition</h1>
+            <p>AI-powered person identification</p>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <h3>Analyzing Photo...</h3>
+            <p>Please wait while we identify the person in your photo</p>
+        </div>
+
+        <div id="recognition-result" class="recognition-result" style="display: none;">
+            <div class="person-name" id="person-name">Loading...</div>
+            <div class="confidence" id="confidence-text">Confidence: <span id="confidence-value">0</span>%</div>
+            <div class="confidence-bar">
+                <div class="confidence-fill" id="confidence-bar"></div>
+            </div>
+            <div class="face-id" id="face-id">Face ID: <span id="face-id-value">-</span></div>
+            
+            <div class="photo-info">
+                <div><strong>Photo:</strong> <span id="photo-filename">-</span></div>
+                <div><strong>Recognized:</strong> <span id="recognized-time">-</span></div>
+            </div>
+        </div>
+
+        <div id="no-recognition" class="no-recognition" style="display: none;">
+            <h3>🤔 No Recognition Available</h3>
+            <p>No face recognition results found. This could mean:</p>
+            <ul style="text-align: left; margin-top: 15px; opacity: 0.8;">
+                <li>No photo has been taken yet</li>
+                <li>Face recognition is still processing</li>
+                <li>No faces were detected in the photo</li>
+                <li>The person is not in our database</li>
+            </ul>
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            <h3>❌ Error</h3>
+            <p id="error-message">An error occurred while fetching recognition results.</p>
+        </div>
+
+        <button class="refresh-btn" onclick="refreshRecognition()">
+            🔄 Refresh Results
+        </button>
+    </div>
+
+    <script>
+        let refreshInterval;
+
+        function showElement(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function hideElement(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function hideAllResults() {
+            hideElement('loading');
+            hideElement('recognition-result');
+            hideElement('no-recognition');
+            hideElement('error');
+        }
+
+        function showLoading() {
+            hideAllResults();
+            showElement('loading');
+        }
+
+        function showRecognitionResult(data) {
+            hideAllResults();
+            showElement('recognition-result');
+            
+            const { recognition, photo } = data;
+            
+            document.getElementById('person-name').textContent = recognition.name;
+            document.getElementById('confidence-value').textContent = Math.round(recognition.confidence * 100);
+            document.getElementById('face-id-value').textContent = recognition.face_id;
+            document.getElementById('photo-filename').textContent = photo.filename;
+            document.getElementById('recognized-time').textContent = new Date(recognition.recognized_at).toLocaleString();
+            
+            // Animate confidence bar
+            const confidenceBar = document.getElementById('confidence-bar');
+            const confidencePercent = Math.round(recognition.confidence * 100);
+            setTimeout(() => {
+                confidenceBar.style.width = confidencePercent + '%';
+            }, 100);
+        }
+
+        function showNoRecognition() {
+            hideAllResults();
+            showElement('no-recognition');
+        }
+
+        function showError(message) {
+            hideAllResults();
+            showElement('error');
+            document.getElementById('error-message').textContent = message;
+        }
+
+        async function fetchRecognitionResults() {
+            try {
+                showLoading();
+                
+                const response = await fetch('/api/latest-recognition');
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Not authenticated. Please open this page from the MentraOS app.');
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.recognition) {
+                    showRecognitionResult(data);
+                } else {
+                    showNoRecognition();
+                }
+                
+            } catch (error) {
+                console.error('Error fetching recognition results:', error);
+                showError(error.message);
+            }
+        }
+
+        function refreshRecognition() {
+            fetchRecognitionResults();
+        }
+
+        // Auto-refresh every 5 seconds
+        function startAutoRefresh() {
+            refreshInterval = setInterval(fetchRecognitionResults, 5000);
+        }
+
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        }
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchRecognitionResults();
+            startAutoRefresh();
+        });
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', function() {
+            stopAutoRefresh();
+        });
+    </script>
+</body>
+</html>

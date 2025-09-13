@@ -538,13 +538,34 @@ class ExampleMentraOSApp extends AppServer {
     });
 
     // Main webview route - displays the photo viewer interface
+    // app.get('/webview', async (req: any, res: any) => {
+    //   const userId = (req as AuthenticatedRequest).authUserId;
+
+    //   if (!userId) {
+    //     res.status(401).send(`
+    //       <html>
+    //         <head><title>Photo Viewer - Not Authenticated</title></head>
+    //         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+    //           <h1>Please open this page from the MentraOS app</h1>
+    //         </body>
+    //       </html>
+    //     `);
+    //     return;
+    //   }
+
+    //   const templatePath = path.join(process.cwd(), 'views', 'photo-viewer.ejs');
+    //   const html = await ejs.renderFile(templatePath, {});
+    //   res.send(html);
+    // });
+
+    // Face recognition results webview route
     app.get('/webview', async (req: any, res: any) => {
       const userId = (req as AuthenticatedRequest).authUserId;
 
       if (!userId) {
         res.status(401).send(`
           <html>
-            <head><title>Photo Viewer - Not Authenticated</title></head>
+            <head><title>Face Recognition - Not Authenticated</title></head>
             <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
               <h1>Please open this page from the MentraOS app</h1>
             </body>
@@ -553,7 +574,7 @@ class ExampleMentraOSApp extends AppServer {
         return;
       }
 
-      const templatePath = path.join(process.cwd(), 'views', 'photo-viewer.ejs');
+      const templatePath = path.join(process.cwd(), 'views', 'face-recognition-viewer.ejs');
       const html = await ejs.renderFile(templatePath, {});
       res.send(html);
     });
