@@ -4,6 +4,7 @@ import * as ejs from 'ejs';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
+import axios from 'axios';
 
 /**
  * Interface representing a stored photo with metadata
@@ -21,6 +22,7 @@ interface StoredPhoto {
 const PACKAGE_NAME = process.env.PACKAGE_NAME ?? (() => { throw new Error('PACKAGE_NAME is not set in .env file'); })();
 const MENTRAOS_API_KEY = process.env.MENTRAOS_API_KEY ?? (() => { throw new Error('MENTRAOS_API_KEY is not set in .env file'); })();
 const PORT = parseInt(process.env.PORT || '3000');
+const FACE_RECOGNITION_API_URL = process.env.FACE_RECOGNITION_API_URL || 'http://localhost:8000';
 
 // Storage configuration
 const STORAGE_DIR = path.join(process.cwd(), 'storage', 'photos');
@@ -144,6 +146,35 @@ class ExampleMentraOSApp extends AppServer {
     } catch (error) {
       this.logger.error(`Error updating metadata: ${error}`);
       throw error;
+    }
+  }
+
+  /**
+   * Call face recognition API to identify person in the photo
+   */
+  private async recognizeFace(filePath: string): Promise<any> {
+    try {
+      this.logger.info(`Calling face recognition API for: ${filePath}`);
+      
+      const response = await axios.post(`${FACE_RECOGNITION_API_URL}/recognize`, {
+        filename: filePath
+      }, {
+        timeout: 30000, // 30 second timeout
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        this.logger.info(`Face recognition successful: ${response.data.name} (confidence: ${response.data.confidence})`);
+        return response.data;
+      } else {
+        this.logger.warn(`Face recognition failed: ${response.data.error}`);
+        return { success: false, error: response.data.error };
+      }
+    } catch (error) {
+      this.logger.error(`Error calling face recognition API: ${error}`);
+      return { success: false, error: error.message };
     }
   }
 
@@ -333,12 +364,45 @@ class ExampleMentraOSApp extends AppServer {
     };
 
     // Save photo to local storage
+    let savedFilePath: string | null = null;
     try {
-      await this.savePhotoToStorage(photo, userId);
+      savedFilePath = await this.savePhotoToStorage(photo, userId);
       this.logger.info(`Photo saved locally for user ${userId}`);
     } catch (error) {
       this.logger.error(`Failed to save photo locally for user ${userId}: ${error}`);
       // Continue with caching even if local save fails
+    }
+
+    // Call face recognition API if photo was saved successfully
+    if (savedFilePath) {
+      try {
+        const recognitionResult = await this.recognizeFace(savedFilePath);
+        
+        // Update metadata with recognition results
+        if (recognitionResult.success) {
+          await this.updateMetadata(userId, {
+            requestId: photo.requestId,
+            timestamp: photo.timestamp.toISOString(),
+            userId: userId,
+            mimeType: photo.mimeType,
+            filename: photo.filename,
+            size: photo.size,
+            filePath: savedFilePath,
+            recognition: {
+              name: recognitionResult.name,
+              confidence: recognitionResult.confidence,
+              face_id: recognitionResult.face_id,
+              recognized_at: new Date().toISOString()
+            }
+          });
+          
+          this.logger.info(`Face recognition completed for user ${userId}: ${recognitionResult.name}`);
+        } else {
+          this.logger.warn(`Face recognition failed for user ${userId}: ${recognitionResult.error}`);
+        }
+      } catch (error) {
+        this.logger.error(`Error during face recognition for user ${userId}: ${error}`);
+      }
     }
 
     // this example app stores the photo in memory for display in the webview AND saves it locally,
@@ -432,6 +496,44 @@ class ExampleMentraOSApp extends AppServer {
       } catch (error) {
         this.logger.error(`Error reading saved photos: ${error}`);
         res.status(500).json({ error: 'Failed to read saved photos' });
+      }
+    });
+
+    // API endpoint to get latest photo recognition results
+    app.get('/api/latest-recognition', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        // Read metadata to get latest photo recognition
+        if (!fs.existsSync(METADATA_FILE)) {
+          res.json({ recognition: null });
+          return;
+        }
+
+        const metadataContent = fs.readFileSync(METADATA_FILE, 'utf8');
+        const metadata = JSON.parse(metadataContent);
+        
+        const userPhoto = metadata[userId];
+        if (userPhoto && userPhoto.recognition) {
+          res.json({ 
+            recognition: userPhoto.recognition,
+            photo: {
+              requestId: userPhoto.requestId,
+              timestamp: userPhoto.timestamp,
+              filename: userPhoto.filename
+            }
+          });
+        } else {
+          res.json({ recognition: null });
+        }
+      } catch (error) {
+        this.logger.error(`Error reading recognition results: ${error}`);
+        res.status(500).json({ error: 'Failed to read recognition results' });
       }
     });
 

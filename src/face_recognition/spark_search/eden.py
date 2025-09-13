@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 import os
 import logging
 from image_capture import capture_photo
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import uvicorn
 
 # Configure logging for both file and console
 logger = logging.getLogger(__name__)
@@ -202,45 +205,140 @@ class EdenAIFaceRecognition:
         
         logger.info(f"✅ Deleted {deleted_count} faces from Eden AI and local database")
 
-def main():
-    logger.info("=== Simple Face Recognition ===")
-    
-    # Initialize the face recognition system
-    face_system = EdenAIFaceRecognition()
-    # face_system.delete_all_faces()
-    
-    # Upload and register sohum_1.jpeg
-    db_images = ["./images/db_images/sohum_gautam.jpeg", "./images/db_images/sean_guno.jpeg",
-              "./images/db_images/pari_latawa.jpeg", "./images/db_images/mudit_marhawa.jpeg"]
+# FastAPI app instance
+app = FastAPI(title="Face Recognition API", version="1.0.0")
 
-    logger.info("\n1. Adding Images to DB")
-    for image in db_images:
-        image_name = image.split("/")[-1]
-        # Check if image name already exists in database
-        if not any(data["name"] == image_name for data in face_system.face_database.values()):
-            url = face_system.upload_to_imgur(image)
-            if url:
-                face_system.add_face(image_name, url)
-        else:
-            logger.info(f"Image {image_name} already exists, skipping...")
-            
-    face_system.list_faces()
-    logger.info(f"\nDatabase saved to: {face_system.db_file}")
+# Global face recognition system instance
+face_system = None
 
-    logger.info("\n3. Testing recognition")
-    filename = capture_photo()
-    test_url = face_system.upload_to_imgur(filename)
-    if test_url:
+def initialize_face_system():
+    """Initialize the face recognition system with database images"""
+    global face_system
+    if face_system is None:
+        logger.info("=== Initializing Face Recognition System ===")
+        face_system = EdenAIFaceRecognition()
+        
+        # Upload and register database images
+        db_images = ["./images/db_images/sohum_gautam.jpeg", "./images/db_images/sean_guno.jpeg",
+                    "./images/db_images/pari_latawa.jpeg", "./images/db_images/mudit_marhawa.jpeg"]
+
+        logger.info("\n1. Adding Images to DB")
+        for image in db_images:
+            image_name = image.split("/")[-1]
+            # Check if image name already exists in database
+            if not any(data["name"] == image_name for data in face_system.face_database.values()):
+                url = face_system.upload_to_imgur(image)
+                if url:
+                    face_system.add_face(image_name, url)
+            else:
+                logger.info(f"Image {image_name} already exists, skipping...")
+                
+        face_system.list_faces()
+        logger.info(f"\nDatabase saved to: {face_system.db_file}")
+
+class RecognitionRequest(BaseModel):
+    filename: str
+
+class RecognitionResponse(BaseModel):
+    success: bool
+    name: str = None
+    confidence: float = None
+    face_id: str = None
+    error: str = None
+
+@app.post("/recognize", response_model=RecognitionResponse)
+async def recognize_face(request: RecognitionRequest):
+    """Recognize a face from the provided image filename"""
+    global face_system
+    
+    # Initialize system if not already done
+    if face_system is None:
+        initialize_face_system()
+    
+    try:
+        logger.info(f"=== Processing image: {request.filename} ===")
+        
+        # Check if file exists
+        if not os.path.exists(request.filename):
+            raise HTTPException(status_code=404, detail=f"Image file not found: {request.filename}")
+        
+        # Upload image to Imgur
+        logger.info(f"Attempting to upload image to Imgur: {request.filename}")
+        test_url = face_system.upload_to_imgur(request.filename)
+        logger.info(f"Imgur upload result: {test_url}")
+        
+        if not test_url:
+            return RecognitionResponse(success=False, error="Failed to upload image to Imgur")
+        
+        # Recognize face
         result = face_system.recognize_face(test_url)
-        best_match = face_system.choose_best_match(result["amazon"]["items"])
-        logger.info(f"Best match: {best_match}")
-        matching_id = best_match.get("face_id")
-        for id, data in face_system.face_database.items():
-            if matching_id == id:
-                print("--------------------------------")
-                name = data['name'].split(".")[0]
-                logger.info(f"This person in this image is: {name}")
-                print("--------------------------------")
+        
+        if "amazon" in result and result["amazon"]["status"] == "success":
+            matches = result["amazon"].get("items", [])
+            if matches:
+                best_match = face_system.choose_best_match(matches)
+                matching_id = best_match.get("face_id")
+                confidence = best_match.get("confidence", 0)
+                
+                # Find person name in database
+                for face_id, data in face_system.face_database.items():
+                    if matching_id == face_id:
+                        name = data['name'].split(".")[0]
+                        logger.info(f"✅ Recognized: {name} (confidence: {confidence})")
+                        return RecognitionResponse(
+                            success=True,
+                            name=name,
+                            confidence=confidence,
+                            face_id=face_id
+                        )
+                
+                # Face detected but not in database
+                logger.info(f"Face detected but not in database (confidence: {confidence})")
+                return RecognitionResponse(
+                    success=True,
+                    name="Unknown",
+                    confidence=confidence,
+                    face_id=matching_id
+                )
+            else:
+                return RecognitionResponse(success=False, error="No faces detected in image")
+        else:
+            return RecognitionResponse(success=False, error="Face recognition failed")
+            
+    except Exception as e:
+        logger.error(f"Exception occurred: {str(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return RecognitionResponse(success=False, error=str(e))
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy", "service": "face-recognition-api"}
+
+@app.get("/faces")
+async def list_faces():
+    """List all faces in the database"""
+    global face_system
+    if face_system is None:
+        initialize_face_system()
+    
+    return {
+        "total_faces": len(face_system.face_database),
+        "faces": [
+            {
+                "face_id": face_id,
+                "name": data["name"],
+                "image_url": data["image_url"]
+            }
+            for face_id, data in face_system.face_database.items()
+        ]
+    }
+
+def main():
+    """Run the FastAPI server"""
+    logger.info("=== Starting Face Recognition API Server ===")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
         
 if __name__ == "__main__":
     main()
