@@ -9,12 +9,18 @@
     "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/test-user/photo_2025-09-13T19-04-54-917Z.jpeg"
   },
   "gunosean@gmail.com": {
-    "requestId": "photo_req_1757792742806_xkadt8z",
-    "timestamp": "2025-09-13T19:45:46.444Z",
+    "requestId": "photo_req_1757801965902_x0gtb48",
+    "timestamp": "2025-09-13T22:19:28.362Z",
     "userId": "gunosean@gmail.com",
     "mimeType": "image/jpeg",
-    "filename": "photo_2025-09-13T19-45-46-444Z.jpeg",
-    "size": 334169,
-    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-13T19-45-46-444Z.jpeg"
+    "filename": "IMG_20250913_221925.jpg",
+    "size": 258898,
+    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-13T22-19-28-362Z.jpeg",
+    "recognition": {
+      "name": "sohum_gautam",
+      "confidence": 0.9981230163574218,
+      "face_id": "9f36423a-7980-4cc8-a781-115d0d08a997",
+      "recognized_at": "2025-09-13T22:19:31.861Z"
+    }
   }
 }

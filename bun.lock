@@ -5,6 +5,7 @@
       "name": "augmentos-cloud-example-app",
       "dependencies": {
         "@mentra/sdk": "latest",
+        "axios": "^1.6.0",
         "ejs": "^3.1.10",
         "express": "^4.21.2",
         "ws": "^8.18.1",

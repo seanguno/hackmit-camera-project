@@ -76,3 +76,4 @@ console.log('- Metadata is stored in:', METADATA_FILE);
 console.log('- Each user gets their own subdirectory');
 console.log('- Photos are named with timestamps for easy identification');
 console.log('- The app will automatically create directories as needed');
+

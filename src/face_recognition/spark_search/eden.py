@@ -4,7 +4,6 @@ import base64
 from dotenv import load_dotenv
 import os
 import logging
-from image_capture import capture_photo
 
 # Configure logging for both file and console
 logger = logging.getLogger(__name__)
@@ -55,142 +54,118 @@ class EdenAIFaceRecognition:
         try:
             with open(self.db_file, 'w') as f:
                 json.dump(self.face_database, f, indent=2)
-            logger.info(f"Database saved with {len(self.face_database)} faces")
+            logger.info(f"Database saved to {self.db_file}")
         except Exception as e:
             logger.error(f"Error saving database: {e}")
 
     def upload_to_imgur(self, image_path):
         """Upload image to Imgur and return URL"""
-        with open(image_path, 'rb') as f:
-            image_data = base64.b64encode(f.read()).decode('utf-8')
-        
-        headers = {'Authorization': 'Client-ID 546c25a59c58ad7'}
-        data = {'image': image_data}
-        
-        response = requests.post('https://api.imgur.com/3/image', 
-                                    headers=headers, 
-                                    data=data)
-        print(f"Imgur response status: {response.status_code}")
-        print(f"Imgur response text: {response.text[:200]}...")  # First 200 chars
-        
-        # Check if response is valid JSON
-        if response.status_code != 200:
-            logger.error(f"Imgur API error: {response.status_code} - {response.text[:100]}")
-            return None
-            
         try:
-            result = response.json()
-            logger.info(f"Upload response: {result}")
+            with open(image_path, 'rb') as f:
+                image_data = base64.b64encode(f.read()).decode('utf-8')
+        
+            headers = {'Authorization': 'Client-ID 546c25a59c58ad7'}
+            data = {'image': image_data}
             
-            if result['success']:
-                return result['data']['link']
-            else:
-                logger.error(f"Upload failed: {result}")
+            response = requests.post('https://api.imgur.com/3/image', 
+                                        headers=headers, 
+                                        data=data)
+            print(f"Imgur response status: {response.status_code}")
+            print(f"Imgur response text: {response.text[:200]}...")  # First 200 chars
+            
+            # Check if response is valid JSON
+            if response.status_code != 200:
+                logger.error(f"Imgur API error: {response.status_code} - {response.text[:100]}")
                 return None
-        except requests.exceptions.JSONDecodeError:
-            logger.error(f"Imgur returned invalid JSON: {response.text[:200]}")
+                
+            try:
+                result = response.json()
+                logger.info(f"Upload response: {result}")
+                
+                if result['success']:
+                    return result['data']['link']
+                else:
+                    logger.error(f"Upload failed: {result}")
+                    return None
+            except requests.exceptions.JSONDecodeError:
+                logger.error(f"Imgur returned invalid JSON: {response.text[:200]}")
+                return None
+        except Exception as e:
+            logger.error(f"Error uploading to Imgur: {e}")
             return None
 
     def add_face(self, name, image_url):
         """Add face to Eden AI"""
         payload = {
             "providers": "amazon",
-            "file_url": image_url
+            "file_urls": [image_url]
         }
         
-        response = requests.post(
-            "https://api.edenai.run/v2/image/face_recognition/add_face",
-            json=payload,
-            headers=self.headers
-        )
-        
-        result = response.json()
-        logger.info(f"Add face response: {json.dumps(result, indent=2)}")
-        
-        if "amazon" in result and result["amazon"]["status"] == "success":
-            face_ids = result["amazon"].get("face_ids", [])
-            if face_ids:
-                face_id = face_ids[0]  # Take the first face ID
-                self.face_database[face_id] = {"name": name, "image_url": image_url}
-                self.save_database()  # Save to JSON
-                logger.info(f"✅ Added {name} with face_id: {face_id}")
-                return True
-        
-        logger.error(f"❌ Failed to add {name}")
-        return False
-
-    def delete_face(self, face_id):
-        """Delete face from Eden AI"""
-        payload = {
-            "face_id": face_id,
-            "providers": ["amazon"],
-            "settings": {},
-            "response_as_dict": True,
-            "attributes_as_list": False,
-            "show_base_64": True,
-            "show_original_response": False
-        }
-        
-        response = requests.post(
-            "https://api.edenai.run/v2/image/face_recognition/delete_face",
-            json=payload,
-            headers=self.headers
-        )
-        
-        result = response.json()
-        logger.info(f"Delete face response: {json.dumps(result, indent=2)}")
-        
-        if "amazon" in result and result["amazon"]["status"] == "success":
-            # Remove from local database too
-            if face_id in self.face_database:
-                del self.face_database[face_id]
-                self.save_database()
-                logger.info(f"✅ Deleted face {face_id} from both Eden AI and local database")
+        try:
+            response = requests.post(
+                "https://api.edenai.co/v2/face/add_face",
+                headers=self.headers,
+                json=payload
+            )
+            result = response.json()
+            logger.info(f"Add face response: {json.dumps(result, indent=2)}")
+            
+            if result["amazon"]["status"] == "success":
+                face_ids = result["amazon"].get("face_ids", [])
+                if face_ids:
+                    face_id = face_ids[0]
+                    self.face_database[face_id] = {
+                        "name": name,
+                        "image_url": image_url
+                    }
+                    self.save_database()
+                    logger.info(f"✅ Added face: {name} (ID: {face_id})")
+                    return face_id
             else:
-                logger.info(f"✅ Deleted face {face_id} from Eden AI (not in local database)")
-            return True
-        else:
-            logger.error(f"❌ Failed to delete face {face_id}")
-            return False
+                logger.error(f"Failed to add face: {result}")
+                return None
+        except Exception as e:
+            logger.error(f"Error adding face: {e}")
+            return None
 
     def recognize_face(self, image_url):
         """Recognize face using Eden AI"""
         payload = {
             "providers": "amazon",
-            "file_url": image_url
+            "file_urls": [image_url]
         }
         
-        response = requests.post(
-            "https://api.edenai.run/v2/image/face_recognition/recognize",
-            json=payload,
-            headers=self.headers
-        )        
-        result = response.json()
-        logger.info(f"Recognize response: {json.dumps(result, indent=2)}")
-        
-        if "amazon" in result and result["amazon"]["status"] == "success":
-            matches = result["amazon"].get("items", [])
-            for match in matches:
-                face_id = match.get("face_id")
-                confidence = match.get("confidence", 0)
-                
-                if face_id in self.face_database:
-                    logger.info(f"🎯 Found match: {self.face_database[face_id]['name']} (confidence: {confidence})")
-                else:
-                    logger.info(f"Face ID {face_id} not in our database (confidence: {confidence})")
-
-        return result
+        try:
+            response = requests.post(
+                "https://api.edenai.co/v2/face/recognize",
+                headers=self.headers,
+                json=payload
+            )
+            result = response.json()
+            logger.info(f"Recognize response: {json.dumps(result, indent=2)}")
+            return result
+        except Exception as e:
+            logger.error(f"Error recognizing face: {e}")
+            return None
 
     def choose_best_match(self, matches):
-        """Choose the best match from the list of matches"""
-        best_match = None
-        best_confidence = 0
-        for match in matches:
-            confidence = match.get("confidence", 0)
-            if confidence > best_confidence:
-                best_confidence = confidence
-                best_match = match
+        """Choose the best match from recognition results"""
+        if not matches:
+            return None
         
+        # Sort by confidence (highest first)
+        best_match = max(matches, key=lambda x: x.get('confidence', 0))
+        confidence = best_match.get('confidence', 0)
+        face_id = best_match.get('face_id')
+        
+        # Find name in database
+        name = "Unknown"
+        for fid, data in self.face_database.items():
+            if fid == face_id:
+                name = data['name']
+                break
+        
+        logger.info(f"🎯 Found match: {name} (confidence: {confidence})")
         return best_match
 
     def list_faces(self):
@@ -199,27 +174,76 @@ class EdenAIFaceRecognition:
         for face_id, data in self.face_database.items():
             logger.info(f"- {data['name']}: {face_id}")
 
-    def delete_all_faces(self):
-        """Delete all faces from both Eden AI and local database"""
-        logger.info("🗑️ Deleting all faces...")
-        deleted_count = 0
+    def delete_face(self, face_id):
+        """Delete face from Eden AI"""
+        payload = {
+            "providers": "amazon",
+            "face_ids": [face_id]
+        }
         
-        # Get all face IDs from local database
-        face_ids = list(self.face_database.keys())
-        print("Face IDs in DB: ", face_ids)
-        
-        for face_id in face_ids:
-            if self.delete_face(face_id):
-                deleted_count += 1
-        
-        logger.info(f"✅ Deleted {deleted_count} faces from Eden AI and local database")
+        try:
+            response = requests.post(
+                "https://api.edenai.co/v2/face/delete_face",
+                headers=self.headers,
+                json=payload
+            )
+            result = response.json()
+            
+            if result["amazon"]["status"] == "success":
+                # Remove from local database
+                if face_id in self.face_database:
+                    del self.face_database[face_id]
+                    self.save_database()
+                logger.info(f"✅ Deleted face: {face_id}")
+                return True
+            else:
+                logger.error(f"Failed to delete face: {result}")
+                return False
+        except Exception as e:
+            logger.error(f"Error deleting face: {e}")
+            return False
 
-def main():
+    def delete_residual_faces(self):
+        """Delete faces that are in Eden AI but not in local database"""
+        logger.info("🧹 Cleaning up residual faces from Eden AI...")
+        
+        # Get all faces from Eden AI
+        try:
+            response = requests.post(
+                "https://api.edenai.co/v2/face/recognize",
+                headers=self.headers,
+                json={
+                    "providers": "amazon",
+                    "file_urls": ["https://i.imgur.com/test.jpg"]  # Dummy URL to get all faces
+                }
+            )
+            result = response.json()
+            
+            if "amazon" in result and "items" in result["amazon"]:
+                eden_faces = result["amazon"]["items"]
+                local_face_ids = set(self.face_database.keys())
+                
+                deleted_count = 0
+                for face in eden_faces:
+                    face_id = face.get("face_id")
+                    if face_id and face_id not in local_face_ids:
+                        logger.info(f"🗑️ Deleting residual face: {face_id}")
+                        if self.delete_face(face_id):
+                            deleted_count += 1
+                
+                logger.info(f"✅ Cleaned up {deleted_count} residual faces")
+            else:
+                logger.info("No faces found in Eden AI to clean up")
+                
+        except Exception as e:
+            logger.error(f"Error cleaning up faces: {e}")
+
+async def main():
+    """Main function"""
     logger.info("=== Simple Face Recognition ===")
     
     # Initialize the face recognition system
     face_system = EdenAIFaceRecognition()
-    # face_system.delete_all_faces()
     
     # Upload and register sohum_1.jpeg
     db_images = os.listdir("../images/db_images")

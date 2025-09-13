@@ -114,3 +114,4 @@ With persistent storage implemented, you can now:
 4. **Create User Profiles**: Build comprehensive user profiles from photos
 
 The storage system is ready to support your face recognition and profile search features!
+
