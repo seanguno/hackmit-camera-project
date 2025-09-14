@@ -1083,6 +1083,7 @@ class ExampleMentraOSApp extends AppServer {
         country: this.extractLocationFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
         title_role: this.extractTitleFromAnalysis(userPhoto.analysis_result || {}),
         company_affiliation: this.extractCompanyFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
+        extraordinary_punchline: null,
         claim_to_fame: 'Analysis data parsing failed, but person was recognized',
         recognition: [],
         built_or_achieved: [],
@@ -1100,6 +1101,12 @@ class ExampleMentraOSApp extends AppServer {
       const celebrationMatch = jsonString.match(/"Celebration":\s*"([^"]*(?:\\.[^"]*)*)"/);
       if (celebrationMatch) {
         analysisData.claim_to_fame = celebrationMatch[1].replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+
+      // Extract extraordinary_punchline using regex (handle multiline)
+      const punchlineMatch = jsonString.match(/"extraordinary_punchline":\s*"([^"]*(?:\\.[^"]*)*)"/);
+      if (punchlineMatch) {
+        analysisData.extraordinary_punchline = punchlineMatch[1].replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
       }
 
       // Extract Evidence arrays from each criteria
@@ -1177,6 +1184,7 @@ class ExampleMentraOSApp extends AppServer {
         country: this.extractLocationFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
         title_role: this.extractTitleFromAnalysis(userPhoto.analysis_result || {}),
         company_affiliation: this.extractCompanyFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
+        extraordinary_punchline: null,
         claim_to_fame: 'Analysis data parsing failed, but person was recognized',
         recognition: [],
         built_or_achieved: [],
@@ -1742,6 +1750,7 @@ class ExampleMentraOSApp extends AppServer {
                 country: this.extractLocationFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
                 title_role: this.extractTitleFromAnalysis(analysisJson),
                 company_affiliation: this.extractCompanyFromAnalysis(analysisJson, userPhoto.search_result),
+                extraordinary_punchline: analysisJson.extraordinary_punchline || null,
                 claim_to_fame: analysisJson.Celebration || 'No claim to fame available',
                 recognition: this.extractRecognitionFromAnalysis(analysisJson),
                 built_or_achieved: this.extractBuiltFromAnalysis(analysisJson),

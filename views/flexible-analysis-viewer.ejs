@@ -77,6 +77,30 @@
             margin-top: 5px;
         }
         
+        .extraordinary-punchline {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .extraordinary-punchline h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .extraordinary-punchline p {
+            line-height: 1.6;
+            margin: 0;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        
         .claim-to-fame {
             background: #f8f9fa;
             border-radius: 15px;
@@ -334,6 +358,14 @@
                         <div class="person-location">📍 <%= data.country %></div>
                     <% } %>
                 </div>
+                
+                <!-- Extraordinary Punchline -->
+                <% if (data.extraordinary_punchline) { %>
+                    <div class="extraordinary-punchline">
+                        <h3>✨ Extraordinary Summary</h3>
+                        <p><%= data.extraordinary_punchline %></p>
+                    </div>
+                <% } %>
                 
                 <!-- Claim to Fame -->
                 <% if (data.claim_to_fame) { %>

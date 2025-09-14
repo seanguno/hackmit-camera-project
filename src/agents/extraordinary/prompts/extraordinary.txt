@@ -17,6 +17,7 @@ YOU MUST return a **single JSON object** with the following structure. Omit any 
   "title_role": "<current, most important and most prestigious and impressive role>",
   "company_affiliation": "<company/lab/institution>",
   "claim_to_fame": "<one compelling sentence on what makes them extraordinary>",
+  "extraordinary_punchline": "<one to two sentence punch line, summary of claim_to_fame, like Youngest Founder, etc.>",
   "recognition": ["<award/media/fellowship>", "..."],
   "built_or_achieved": ["<notable project/product/metric>", "..."],
   "quote": "<short direct quote, if present>",
