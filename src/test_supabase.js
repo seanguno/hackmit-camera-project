@@ -1,11 +1,12 @@
 const { spawn } = require('child_process')
 const fs = require('fs')
 const path = require('path')
+const EmailIntegration = require('./gmail/emailIntegration')
 require('dotenv').config()
 
 async function testClaudeAndSupabase() {
     try {
-        console.log('🚀 Testing full pipeline: Voice Record → Transcribe → Claude → Supabase')
+        console.log('🚀 Testing full pipeline: Voice Record → Transcribe → Claude → Supabase → Email')
         
         // Step 1: Record and transcribe voice
         console.log('\n🎤 Step 1: Recording and transcribing voice...')
@@ -35,6 +36,24 @@ async function testClaudeAndSupabase() {
         if (supabaseResult.success) {
             console.log('✅ Supabase response:', supabaseResult.data)
             console.log('🎉 Successfully saved to database!')
+            
+            // Step 4: Send follow-up email
+            console.log('\n📧 Step 4: Sending follow-up email...')
+            const emailIntegration = new EmailIntegration()
+            
+            if (emailIntegration.isReady()) {
+                const emailResult = await emailIntegration.sendFollowUpEmail(claudeResult)
+                
+                if (emailResult.success) {
+                    console.log('✅ Email sent successfully!')
+                    console.log('📧 Message ID:', emailResult.messageId)
+                } else {
+                    console.log('❌ Email failed:', emailResult.error)
+                }
+            } else {
+                console.log('⚠️  Email integration not ready')
+                console.log('💡 Run: node src/gmail/setupGmail.js setup')
+            }
         } else {
             console.log('❌ Supabase error:', supabaseResult.error)
         }
