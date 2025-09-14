@@ -156,3 +156,5 @@ adb logcat | grep -i camera
 
 The timeout issue is likely a permissions or hardware problem, not a code issue. Your app is working correctly - it's just waiting for camera access!
 
+
+

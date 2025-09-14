@@ -22,5 +22,29 @@
     "startTime": "2025-09-14T02:56:54.098Z",
     "segments": [],
     "endTime": "2025-09-14T02:57:41.650Z"
+  },
+  {
+    "sessionId": "photo_req_1757830409996_4nhz8y2",
+    "userId": "gunosean@gmail.com",
+    "recognizedPerson": {
+      "name": "sean_guno",
+      "confidence": 0.9998834228515625,
+      "face_id": "c8e80c6c-d7eb-4d32-a49d-52b1a3e5dd18"
+    },
+    "startTime": "2025-09-14T06:13:34.528Z",
+    "segments": [],
+    "endTime": "2025-09-14T06:14:09.536Z"
+  },
+  {
+    "sessionId": "photo_req_1757830898197_jlspmxh",
+    "userId": "gunosean@gmail.com",
+    "recognizedPerson": {
+      "name": "sean_guno",
+      "confidence": 0.9971415710449218,
+      "face_id": "c8e80c6c-d7eb-4d32-a49d-52b1a3e5dd18"
+    },
+    "startTime": "2025-09-14T06:21:42.887Z",
+    "segments": [],
+    "endTime": "2025-09-14T06:22:01.933Z"
   }
 ]

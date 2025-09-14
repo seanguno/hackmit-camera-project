@@ -379,13 +379,20 @@ def main():
     face_system = EdenAIFaceRecognition()
     
     # Upload and register database images
-    db_images = os.listdir("./images/db_images")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    db_images_dir = os.path.join(script_dir, "images", "db_images")
+    
+    if not os.path.exists(db_images_dir):
+        logger.info(f"Creating directory: {db_images_dir}")
+        os.makedirs(db_images_dir, exist_ok=True)
+    
+    db_images = os.listdir(db_images_dir)
     print(db_images)
-    db_images = ["./images/db_images/" + image for image in db_images]
+    db_images = [os.path.join(db_images_dir, image) for image in db_images]
 
     logger.info("\n1. Adding Images to DB")
     for image in db_images:
-        image_name = image.split("/")[-1]
+        image_name = os.path.basename(image)
         # Check if image name already exists in database
         if not any(data["name"] == image_name for data in face_system.face_database.values()):
             url = face_system.upload_to_imgur(image)

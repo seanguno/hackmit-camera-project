@@ -77,12 +77,20 @@ export class ConversationManager {
    * Process incoming transcription data
    */
   public handleTranscription(transcriptionData: any): void {
-    if (!this.isRecording || !this.currentSession) {
+    const text = transcriptionData.text?.trim();
+    if (!text) {
+      this.logger.debug(`Received empty transcription text`);
       return;
     }
 
-    const text = transcriptionData.text?.trim();
-    if (!text) {
+    this.logger.info(`🎤 ConversationManager received transcription: "${text}" (final: ${transcriptionData.isFinal}, recording: ${this.isRecording})`);
+
+    // Always process text through transcript processor for display purposes
+    this.transcriptProcessor.processString(text, transcriptionData.isFinal);
+
+    // If not recording, just log the transcription but don't store it
+    if (!this.isRecording || !this.currentSession) {
+      this.logger.info(`Not in active conversation - transcription logged but not stored: "${text}"`);
       return;
     }
 
@@ -92,9 +100,6 @@ export class ConversationManager {
       this.stopConversation();
       return;
     }
-
-    // Process the text through the transcript processor
-    this.transcriptProcessor.processString(text, transcriptionData.isFinal);
 
     // Create conversation segment
     const segment: ConversationSegment = {
@@ -111,7 +116,7 @@ export class ConversationManager {
     // Also add to transcript processor for display purposes
     this.transcriptProcessor.addConversationSegment(segment);
 
-    this.logger.debug(`Added conversation segment: "${text}" (final: ${transcriptionData.isFinal})`);
+    this.logger.info(`Added conversation segment: "${text}" (final: ${transcriptionData.isFinal})`);
   }
 
   /**
@@ -162,6 +167,13 @@ export class ConversationManager {
    * Get the current conversation display text
    */
   public getCurrentConversationDisplay(): string {
+    return this.transcriptProcessor.getCombinedTranscriptHistory();
+  }
+
+  /**
+   * Get the current transcription display (even when not recording)
+   */
+  public getCurrentTranscriptionDisplay(): string {
     return this.transcriptProcessor.getCombinedTranscriptHistory();
   }
 
