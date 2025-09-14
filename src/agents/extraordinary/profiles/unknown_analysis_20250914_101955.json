@@ -1,5 +1,0 @@
-{
-  "Name": "Unknown",
-  "Error": "JSON parsing failed: Invalid control character at: line 59 column 373 (char 4941)",
-  "RawContent": "{\n  \"Name\": \"Paridhi Latawa\",\n  \"Extraordinary Qualities\":\n  {\n    \"Impact\": {\n      \"Description\": \"As an undergraduate, Paridhi has already made impressive contributions through her research and work experience. She has held impactful roles at prestigious organizations like MIT, Eli Lilly, and MD Anderson Cancer Center, demonstrating her ability to drive meaningful results.\",\n      \"Evidence\": [\n        \"Worked as the only undergraduate on both the AI Engineering and AI Research-Biology Discovery teams at Eli Lilly, developing a fine-tuning pipeline for a novel application.\",\n        \"Conducted research on the Abraxas-BRCA1-A complex and DNA repair in the Wang Lab at MD Anderson Cancer Center, presenting her analysis at the division's research symposium.\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Paridhi's achievements have been recognized by numerous prestigious organizations, showcasing her exceptional talent and potential. She has been awarded highly compet..."
-}

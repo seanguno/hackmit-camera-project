@@ -1,0 +1,70 @@
+{
+  "name": "Pari Latawa",
+  "photo": "",
+  "country": "Unknown",
+  "title_role": "Pari Latawa",
+  "company_affiliation": "Independent",
+  "claim_to_fame": "Emerging talent in technology and software development",
+  "recognition": [],
+  "built_or_achieved": [
+    "Computer Science & Biology student @ MIT",
+    "AI Research & Engineering @ Eli Lilly",
+    "Coca-Cola Scholar",
+    "Apple Scholar",
+    "Regeneron Science Talent Search (STS) Scholar",
+    "Grace Hopper Celebration 2024 attendee",
+    "Founder of SparkED - STEM education nonprofit for underprivileged children",
+    "Research at Wang Lab on Abraxas-BRCA1-A complex and DNA repair at MD Anderson Cancer Center",
+    "Developed fine-tuning pipeline for AI models at Eli Lilly as undergraduate researcher",
+    "Bank of America Summer Scholar with Communities in Schools of Central Texas"
+  ],
+  "quote": "",
+  "criteria_hits": {
+    "impact": [
+      "Founder of SparkED - STEM education nonprofit for underprivileged children"
+    ],
+    "prestige_validation": [
+      "Computer Science & Biology student @ MIT",
+      "Apple Scholar"
+    ],
+    "pioneering_work": [
+      "AI Research & Engineering @ Eli Lilly",
+      "Research at Wang Lab on Abraxas-BRCA1-A complex and DNA repair at MD Anderson Cancer Center",
+      "Developed fine-tuning pipeline for AI models at Eli Lilly as undergraduate researcher"
+    ],
+    "recognition_by_institutions": [],
+    "exceptional_young": [
+      "Computer Science & Biology student @ MIT",
+      "Developed fine-tuning pipeline for AI models at Eli Lilly as undergraduate researcher"
+    ],
+    "technical_frontier": [],
+    "builder_startup_cred": [
+      "Founder of SparkED - STEM education nonprofit for underprivileged children"
+    ]
+  },
+  "sources": [],
+  "exa_search_results": {
+    "awards": {
+      "requestId": "c86f66945fee7725f2189a8f659a3390",
+      "autopromptString": "\"Pari Latawa\" award recognition honor",
+      "resolvedSearchType": "neural",
+      "results": [
+        {
+          "id": "https://www.instagram.com/p/DGcui7VR1kj/",
+          "title": "FICCI FLO INDORE on Instagram: \"*Trailblazer Awards 2025 \u2013 A Decade of Empowerment and Excellence* \n\nDear FLO Indore Members,\n\nIt is with immense pride and joy that I share the success of the Trailblazer Awards 2025, a landmark event marking FLO Indore\u2019s 10th anniversary. This grand celebration honored extraordinary women who have broken barriers and redefined success in their respective fields.\n\nWe were privileged to have  Shri Shankar Lalwani, Member of Parliament, Indore, as the Chief Guest who graced the event, adding to its prestige and Ms. Joyshree Das Verma, National President, FICCI FLO, as the Guest of Honor, reaffirming our commitment to empowering women.\n\nThe Trailblazer Awards were presented in three distinguished categories:\n1- *Social Impact:* Recognizing women making significant societal contributions. Winners \u2013 Ms. Aarti Bisaria, Ms. Garvisha Barjatya Jain, Ms. Surbhi Manocha Chaudhary.\n\n *2- Unconventional Work:* Honoring women excelling in non-traditional fields. Winners \u2013 Ms. Pallavi Keskar, Ms. Saumya Upadhyay, Ms. Barkha Agarwal.\n\n *3- Exemplary Work in their Fields:* Celebrating professional excellence. Winners \u2013 Dr. Jyoti Bindal, Ar. Shruti Purohit, Ms. Ronika Gagneja Valecha.\n\nIn addition, special recognitions were given to Ms. Vandana Laddha ( *Pioneer Woman* ), Ms. Jasmine Lulla ( *She Leads* ), Dr. Dipti Jain ( *Soulpreneur* ), and Ms. RJ Sharda ( *Youth Icon of Indore).* \n\nThe event also provided a platform for women entrepreneurs to showcase their businesses to an elite audience, including distinguished guests and city dignitaries. The evening was made even more vibrant with mesmerizing dance performances by FLO Indore members, embodying the spirit of joy, celebration, and empowerment.\n\nI extend my heartfelt gratitude to each FLO Indore member for their continuous support and contribution. As we celebrate a decade of success, let us continue to uplift, inspire, and empower each other to lead and transform society.\n\nWarm regards-\nAr. Vibha Jain Sethi\nChairperson\nFLO Indore, 2024-25\"",
+          "url": "https://www.instagram.com/p/DGcui7VR1kj/",
+          "publishedDate": "1970-01-01T00:00:00.000Z",
+          "author": null,
+          "score": 0.2533728778362274
+        }
+      ],
+      "searchTime": 382.4,
+      "costDollars": {
+        "total": 0.005,
+        "search": {
+          "neural": 0.005
+        }
+      }
+    }
+  }
+}
