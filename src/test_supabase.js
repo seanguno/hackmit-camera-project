@@ -275,17 +275,86 @@ async function saveToSupabase(data) {
         
         const supabase = createClient(supabaseUrl, supabaseKey)
         
-        const { data: result, error } = await supabase
+        // Convert history and summary to JSONB format
+        const historyJsonb = data.history ? {
+            conversations: [{
+                transcript: data.history,
+                timestamp: new Date().toISOString(),
+                source: "voice_capture"
+            }]
+        } : null
+
+        const summaryJsonb = data.summary ? {
+            summaries: [{
+                summary: data.summary,
+                timestamp: new Date().toISOString(),
+                generated_by: "claude"
+            }]
+        } : null
+
+        // Check if this person already exists in the database
+        const { data: existingRecord } = await supabase
             .from('convo')
-            .insert({
-                field: data.field,
-                email: data.email,
-                name: data.name,
-                history: data.history,
-                summary: data.summary
-            })
-            .select()
+            .select('*')
+            .eq('email', data.email || '')
+            .eq('name', data.name || '')
             .single()
+
+        let result, error
+
+        if (existingRecord) {
+            // Append to existing record
+            console.log('📝 Found existing record, appending conversation...')
+            
+            const existingHistory = existingRecord.history || { conversations: [] }
+            const existingSummary = existingRecord.summary || { summaries: [] }
+
+            // Add new conversation
+            existingHistory.conversations.push({
+                transcript: data.history,
+                timestamp: new Date().toISOString(),
+                source: "voice_capture"
+            })
+
+            // Add new summary
+            existingSummary.summaries.push({
+                summary: data.summary,
+                timestamp: new Date().toISOString(),
+                generated_by: "claude"
+            })
+
+            // Update the existing record
+            const updateResult = await supabase
+                .from('convo')
+                .update({
+                    history: existingHistory,
+                    summary: existingSummary
+                })
+                .eq('id', existingRecord.id)
+                .select()
+                .single()
+
+            result = updateResult.data
+            error = updateResult.error
+        } else {
+            // Create new record
+            console.log('🆕 Creating new record...')
+            
+            const insertResult = await supabase
+                .from('convo')
+                .insert({
+                    field: data.field,
+                    email: data.email,
+                    name: data.name,
+                    history: historyJsonb,
+                    summary: summaryJsonb
+                })
+                .select()
+                .single()
+
+            result = insertResult.data
+            error = insertResult.error
+        }
         
         if (error) {
             return {
