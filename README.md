@@ -4,10 +4,28 @@ Spark is an AI-powered tool built on the MentraOS glasses that lets people insta
 
 By surfacing the factors and accomplishments that make a person remarkable, beyond just their job title or LinkedIn headline, Spark breaks the cold-start barrier in human connection. It provides baseline knowledge to help cultivate introductions, conversations, and relationships. Through this, Spark accelerates authentic connection and collaboration in real-world environments like conferences, hackathons, research labs, and entrepreneurial communities.
 
+## Stack 
 
-This is a simple example app which demonstrates how to use the MentraOS Camera API to take photos and display them in a webview.
+## Project Structure 
 
-You could also send the photo to an AI api, store it in a database or cloud storage, send it to Roboflow, or do other processing.
+## Usage 
+
+
+## Contribution  
+
+## Inspiration and Impact 
+In today’s hyperconnected world, we constantly walk past extraordinary people without ever realizing it–founders, scientists, activists, creators–simply because their stories can be invisible in real life. We were inspired by this invisible “context gap” and wanted to make meaningful connections effortless and serendipitous, especially in environments like hackathons or conferences, where collaboration potential is high but often missed.
+
+But Spark doesn’t just surface context, it remembers people you’ve met, logs interactions, and builds an evolving map of your personal network. It helps you reconnect later and pick up past conversations. This transforms fleeting moments, which could have been foregone conversations, into lasting connections. 
+ 
+## Credit 
+Sohum Gautam, UPenn M&T '29
+Sean Guno, UIUC CS + Chemistry & Bioengineering '26
+Pari Latawa, MIT CS + Bio '26 
+Mudit Marwaha, CS '26
+
+## Acknowledgements
+
 
 ### Install MentraOS on your phone
 
