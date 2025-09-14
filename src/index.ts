@@ -821,7 +821,7 @@ class ExampleMentraOSApp extends AppServer {
         "Conclusion": "Sean Guno is an extraordinary individual with immense potential. His pursuit of a dual degree in Computer Science + Chemistry and Bioengineering at the prestigious University of Illinois Urbana-Champaign showcases his intellectual curiosity, academic excellence, and interdisciplinary approach. While he has not yet had the opportunity to achieve major awards or recognition, his willingness to take on the challenge of a rigorous, multidisciplinary academic program at a young age suggests he possesses the talent, drive, and technical expertise to make significant contributions in the future. Sean's diverse interests and ambitious academic path indicate he is well-positioned to push the boundaries of science, technology, and innovation, making him a truly extraordinary individual with boundless potential."
       };
 
-      const templatePath = path.join(process.cwd(), 'views', 'demo-analysis-viewer-with-profile-card.ejs');
+      const templatePath = path.join(process.cwd(), 'views', 'demo-analysis-viewer.ejs');
       const html = await ejs.renderFile(templatePath, { data: demoData });
       res.send(html);
     });
