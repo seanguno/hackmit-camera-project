@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
 import axios from 'axios';
+import { VoiceRecordingService, VoiceRecordingResult } from './voice/VoiceRecordingService';
 
 /**
  * Interface representing a stored photo with metadata
@@ -38,6 +39,11 @@ class ExampleMentraOSApp extends AppServer {
   private isStreamingPhotos: Map<string, boolean> = new Map(); // Track if we are streaming photos for a user
   private nextPhotoTime: Map<string, number> = new Map(); // Track next photo time for a user
   private photoRequestToUser: Map<string, string> = new Map(); // Track which user made each photo request
+  
+  // Voice recording state management
+  private voiceRecordingService: VoiceRecordingService;
+  private isRecordingVoice: Map<string, boolean> = new Map(); // Track if user is recording voice
+  private voiceRecordingResults: Map<string, VoiceRecordingResult> = new Map(); // Store voice results per user
 
   constructor() {
     super({
@@ -45,6 +51,7 @@ class ExampleMentraOSApp extends AppServer {
       apiKey: MENTRAOS_API_KEY,
       port: PORT,
     });
+    this.voiceRecordingService = new VoiceRecordingService();
     this.setupWebviewRoutes();
     this.ensureStorageDirectories();
     this.setupPhotoUploadHandler();
@@ -139,7 +146,7 @@ class ExampleMentraOSApp extends AppServer {
       // Update metadata for user
       metadata[userId] = photoInfo;
       
-      this.logger.info(`About to store metadata for ${userId}:`, JSON.stringify(photoInfo, null, 2));
+      this.logger.info(`About to store metadata for ${userId}: ${JSON.stringify(photoInfo, null, 2)}`);
       this.logger.info(`Metadata file path: ${METADATA_FILE}`);
       
       // Write updated metadata
@@ -156,6 +163,65 @@ class ExampleMentraOSApp extends AppServer {
       this.logger.error(`Error updating metadata: ${error}`);
       throw error;
     }
+  }
+
+  /**
+   * Start voice recording for a user after face recognition
+   */
+  private async startVoiceRecording(userId: string, recognitionResult: any): Promise<void> {
+    try {
+      if (this.isRecordingVoice.get(userId)) {
+        this.logger.info(`Voice recording already in progress for user ${userId}`);
+        return;
+      }
+
+      this.logger.info(`🎤 Starting voice recording for user ${userId} after face recognition`);
+      this.isRecordingVoice.set(userId, true);
+
+      // Show user feedback
+      // Note: We'll add UI feedback in Phase 5
+
+      // Start voice recording asynchronously
+      this.voiceRecordingService.startRecording(userId)
+        .then((result) => {
+          this.voiceRecordingResults.set(userId, result);
+          this.isRecordingVoice.set(userId, false);
+          
+          if (result.success) {
+            this.logger.info(`✅ Voice recording completed for user ${userId}`);
+            this.logger.info(`📝 Transcription: ${result.transcription}`);
+            this.logger.info(`🤖 Claude result: ${JSON.stringify(result.claudeResult, null, 2)}`);
+            this.logger.info(`🗄️ Supabase result: ${JSON.stringify(result.supabaseResult, null, 2)}`);
+          } else {
+            this.logger.error(`❌ Voice recording failed for user ${userId}: ${result.error}`);
+          }
+        })
+        .catch((error) => {
+          this.logger.error(`❌ Voice recording error for user ${userId}: ${error}`);
+          this.isRecordingVoice.set(userId, false);
+          this.voiceRecordingResults.set(userId, {
+            success: false,
+            error: error.message
+          });
+        });
+
+    } catch (error) {
+      this.logger.error(`Error starting voice recording for user ${userId}: ${error}`);
+      this.isRecordingVoice.set(userId, false);
+    }
+  }
+
+  /**
+   * Get voice recording status for a user
+   */
+  private getVoiceRecordingStatus(userId: string): {
+    isRecording: boolean;
+    result?: VoiceRecordingResult;
+  } {
+    return {
+      isRecording: this.isRecordingVoice.get(userId) || false,
+      result: this.voiceRecordingResults.get(userId)
+    };
   }
 
   /**
@@ -353,11 +419,15 @@ class ExampleMentraOSApp extends AppServer {
     this.nextPhotoTime.delete(userId);
     
     // Clean up any pending photo requests for this user
-    for (const [requestId, trackedUserId] of this.photoRequestToUser.entries()) {
+    for (const [requestId, trackedUserId] of Array.from(this.photoRequestToUser.entries())) {
       if (trackedUserId === userId) {
         this.photoRequestToUser.delete(requestId);
       }
     }
+    
+    // Clean up voice recording state
+    this.isRecordingVoice.set(userId, false);
+    this.voiceRecordingResults.delete(userId);
     
     this.logger.info(`Session stopped for user ${userId}, reason: ${reason}`);
   }
@@ -434,6 +504,9 @@ class ExampleMentraOSApp extends AppServer {
           await this.updateMetadata(userId, metadataToStore);
           
           this.logger.info(`Face recognition completed for user ${userId}: ${recognitionResult.name}`);
+          
+          // 🎤 Voice recording is now manual - user can start it via API endpoint
+          // await this.startVoiceRecording(userId, recognitionResult);
         } else {
           this.logger.warn(`Face recognition failed for user ${userId}: ${recognitionResult.error}`);
         }
@@ -698,8 +771,8 @@ class ExampleMentraOSApp extends AppServer {
         
         const userPhoto = metadata[userId];
         if (userPhoto && userPhoto.analysis_result) {
-          this.logger.info(`Found analysis data for user ${userId}:`, JSON.stringify(userPhoto.analysis_result, null, 2));
-          this.logger.info(`Found search data for user ${userId}:`, JSON.stringify(userPhoto.search_result, null, 2));
+          this.logger.info(`Found analysis data for user ${userId}: ${JSON.stringify(userPhoto.analysis_result, null, 2)}`);
+          this.logger.info(`Found search data for user ${userId}: ${JSON.stringify(userPhoto.search_result, null, 2)}`);
           
           res.json({ 
             analysis: userPhoto.analysis_result,
@@ -711,12 +784,86 @@ class ExampleMentraOSApp extends AppServer {
             }
           });
         } else {
-          this.logger.info(`No analysis data found for user ${userId}. Available keys:`, Object.keys(userPhoto || {}));
+          this.logger.info(`No analysis data found for user ${userId}. Available keys: ${Object.keys(userPhoto || {}).join(', ')}`);
           res.json({ analysis: null });
         }
       } catch (error) {
         this.logger.error(`Error reading analysis results: ${error}`);
         res.status(500).json({ error: 'Failed to read analysis results' });
+      }
+    });
+
+    // Voice recording API endpoints
+    app.get('/api/voice-status', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const status = this.getVoiceRecordingStatus(userId);
+        res.json(status);
+      } catch (error) {
+        this.logger.error(`Error getting voice status: ${error}`);
+        res.status(500).json({ error: 'Failed to get voice status' });
+      }
+    });
+
+    app.post('/api/start-voice-recording', async (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        if (this.isRecordingVoice.get(userId)) {
+          return res.json({ 
+            success: false, 
+            error: 'Voice recording already in progress' 
+          });
+        }
+
+        // Start voice recording
+        await this.startVoiceRecording(userId, {});
+        
+        res.json({ 
+          success: true, 
+          message: 'Voice recording started - speak now! Recording will stop after 5 seconds of silence.' 
+        });
+      } catch (error) {
+        this.logger.error(`Error starting voice recording: ${error}`);
+        res.status(500).json({ error: 'Failed to start voice recording' });
+      }
+    });
+
+    app.get('/api/voice-results', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const result = this.voiceRecordingResults.get(userId);
+        if (result) {
+          res.json({ 
+            success: true, 
+            result: result 
+          });
+        } else {
+          res.json({ 
+            success: false, 
+            message: 'No voice recording results available' 
+          });
+        }
+      } catch (error) {
+        this.logger.error(`Error getting voice results: ${error}`);
+        res.status(500).json({ error: 'Failed to get voice results' });
       }
     });
   }
