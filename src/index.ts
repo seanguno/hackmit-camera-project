@@ -482,6 +482,46 @@ class ExampleMentraOSApp extends AppServer {
       });
     });
 
+    // Supabase voice conversation endpoint
+    app.post('/api/voice', async (req: any, res: any) => {
+      try {
+        const { field, email, name, history, summary } = req.body;
+        
+        // Import Supabase client
+        const { createClient } = await import('@supabase/supabase-js');
+        
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        
+        if (!supabaseUrl || !supabaseKey) {
+          return res.status(500).json({ error: 'Supabase configuration missing' });
+        }
+        
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        
+        const { data, error } = await supabase
+          .from('convo')
+          .insert({
+            field,
+            email,
+            name,
+            history,
+            summary
+          })
+          .select()
+          .single();
+
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+
+        res.json({ success: true, data });
+      } catch (error) {
+        console.error('Voice API error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
     // API endpoint to get photo data
     app.get('/api/photo/:requestId', (req: any, res: any) => {
       const userId = (req as AuthenticatedRequest).authUserId;
