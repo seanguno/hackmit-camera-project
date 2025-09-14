@@ -276,8 +276,8 @@ def initialize_face_system():
         face_system = EdenAIFaceRecognition()
         
         # Upload and register database images
-        db_images = os.listdir("./images/db_images")
-        db_images = ["./images/db_images/" + image for image in db_images]
+        db_images = os.listdir("../images/db_images")
+        db_images = ["../images/db_images/" + image for image in db_images]
 
         logger.info("\n1. Adding Images to DB")
         for image in db_images:
@@ -435,9 +435,9 @@ def main():
     face_system = EdenAIFaceRecognition()
     
     # Upload and register database images
-    db_images = os.listdir("./images/db_images")
+    db_images = os.listdir("../images/db_images")
     print(db_images)
-    db_images = ["./images/db_images/" + image for image in db_images]
+    db_images = ["../images/db_images/" + image for image in db_images]
 
     logger.info("\n1. Adding Images to DB")
     for image in db_images:
@@ -455,7 +455,7 @@ def main():
 
     logger.info("\n3. Testing recognition")
     # filename = capture_photo()
-    filename = "./images/db_images/Thomas_Tee_Headshot.jpeg"
+    filename = "../images/db_images/Terry_Huhtala_Headshot.jpeg"
     test_url = face_system.upload_to_imgur(filename)
     
     if test_url:
