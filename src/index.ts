@@ -730,6 +730,26 @@ class ExampleMentraOSApp extends AppServer {
     // });
 
     // Analysis viewer webview route
+    // app.get('/webview', async (req: any, res: any) => {
+    //   const userId = (req as AuthenticatedRequest).authUserId;
+
+    //   if (!userId) {
+    //     res.status(401).send(`
+    //       <html>
+    //         <head><title>Analysis Viewer - Not Authenticated</title></head>
+    //         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+    //           <h1>Please open this page from the MentraOS app</h1>
+    //         </body>
+    //       </html>
+    //     `);
+    //     return;
+    //   }
+
+    //   const templatePath = path.join(process.cwd(), 'views', 'analysis-viewer.ejs');
+    //   const html = await ejs.renderFile(templatePath, {});
+    //   res.send(html);
+    // });
+
     app.get('/webview', async (req: any, res: any) => {
       const userId = (req as AuthenticatedRequest).authUserId;
 
@@ -745,8 +765,64 @@ class ExampleMentraOSApp extends AppServer {
         return;
       }
 
-      const templatePath = path.join(process.cwd(), 'views', 'analysis-viewer.ejs');
-      const html = await ejs.renderFile(templatePath, {});
+      // Demo data for the EJS template
+      const demoData = {
+        "Name": "Sean Guno",
+        "Extraordinary Qualities": {
+          "Impact": {
+            "Description": "Sean Guno is a driven and accomplished student pursuing dual degrees in Computer Science + Chemistry and Bioengineering at the University of Illinois Urbana-Champaign. His diverse academic interests and interdisciplinary approach demonstrate his intellectual curiosity and potential for significant impact.",
+            "Evidence": [
+              "Pursuing dual degrees in Computer Science + Chemistry and Bioengineering, showcasing his breadth of interests and talents",
+              "Actively involved in the University of Illinois community, indicating his drive and engagement"
+            ]
+          },
+          "Prestige/Validation": {
+            "Description": "Though still an undergraduate student, Sean has already gained recognition and validation through his academic pursuits at a top-tier university. His dual degree program at the prestigious University of Illinois Urbana-Champaign speaks to his exceptional abilities and potential.",
+            "Evidence": [
+              "Attending the highly ranked University of Illinois Urbana-Champaign, a renowned institution for engineering and science",
+              "Pursuing a dual degree, which is a challenging and prestigious academic path"
+            ]
+          },
+          "Pioneering Work": {
+            "Description": "While Sean's pioneering work is still in progress as an undergraduate, his diverse academic interests and interdisciplinary approach suggest he is well-positioned to make innovative contributions at the intersection of computer science, chemistry, and bioengineering. His willingness to tackle complex, multifaceted challenges is a hallmark of an extraordinary individual.",
+            "Evidence": [
+              "Pursuing dual degrees in Computer Science + Chemistry and Bioengineering, indicating a desire to integrate multiple fields",
+              "Exploring the frontiers of science and technology through his academic program"
+            ]
+          },
+          "Recognition by Experts/Institutions": {
+            "Description": "As an undergraduate student, Sean Guno has not yet had the opportunity to receive major awards or recognition from experts and institutions. However, his acceptance and enrollment at the prestigious University of Illinois Urbana-Champaign is a testament to his academic abilities and potential, as the university is highly selective and renowned for its excellence in science, technology, and engineering.",
+            "Evidence": [
+              "Attending the University of Illinois Urbana-Champaign, a top-tier institution that is highly selective and recognized for its strengths in science and technology"
+            ]
+          },
+          "Exceptional Talent Young": {
+            "Description": "Sean Guno's pursuit of a dual degree in Computer Science + Chemistry and Bioengineering at the undergraduate level demonstrates his exceptional intellectual abilities and drive at a young age. His willingness to take on the challenge of a rigorous, multidisciplinary academic program suggests he possesses the talent and determination to excel in his field.",
+            "Evidence": [
+              "Pursuing a dual degree program as an undergraduate student, which is a challenging and uncommon academic path",
+              "Demonstrating a strong foundation in both computer science and the natural sciences at a young age"
+            ]
+          },
+          "Technical Excellence/Frontier": {
+            "Description": "While Sean Guno's specific technical contributions are not yet fully known, his decision to pursue a dual degree in Computer Science + Chemistry and Bioengineering indicates a deep interest and aptitude in cutting-edge fields at the intersection of technology, science, and medicine. His academic program suggests he is well-positioned to make significant advancements in these frontier areas.",
+            "Evidence": [
+              "Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which combines multiple technical disciplines at the forefront of innovation",
+              "Demonstrating a strong foundation in both computer science and the natural sciences, which are critical for advancements in emerging technologies and scientific breakthroughs"
+            ]
+          },
+          "Builder/Startup Cred": {
+            "Description": "As an undergraduate student, Sean Guno has not yet had the opportunity to demonstrate his abilities as a builder or startup founder. However, his pursuit of a dual degree in Computer Science + Chemistry and Bioengineering suggests he possesses the analytical, problem-solving, and technical skills that are highly valued in entrepreneurial and innovative environments. His interdisciplinary approach and intellectual curiosity indicate he has the potential to make significant contributions as a builder or startup founder in the future.",
+            "Evidence": [
+              "Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which requires a diverse skillset and problem-solving abilities that are valuable in entrepreneurial and innovative settings",
+              "Demonstrating intellectual curiosity and a willingness to tackle complex, multifaceted challenges, which are hallmarks of successful builders and entrepreneurs"
+            ]
+          }
+        },
+        "Conclusion": "Sean Guno is an extraordinary individual with immense potential. His pursuit of a dual degree in Computer Science + Chemistry and Bioengineering at the prestigious University of Illinois Urbana-Champaign showcases his intellectual curiosity, academic excellence, and interdisciplinary approach. While he has not yet had the opportunity to achieve major awards or recognition, his willingness to take on the challenge of a rigorous, multidisciplinary academic program at a young age suggests he possesses the talent, drive, and technical expertise to make significant contributions in the future. Sean's diverse interests and ambitious academic path indicate he is well-positioned to push the boundaries of science, technology, and innovation, making him a truly extraordinary individual with boundless potential."
+      };
+
+      const templatePath = path.join(process.cwd(), 'views', 'demo-analysis-viewer-with-profile-card.ejs');
+      const html = await ejs.renderFile(templatePath, { data: demoData });
       res.send(html);
     });
 
@@ -790,6 +866,26 @@ class ExampleMentraOSApp extends AppServer {
       } catch (error) {
         this.logger.error(`Error reading analysis results: ${error}`);
         res.status(500).json({ error: 'Failed to read analysis results' });
+      }
+    });
+
+    // Demo image endpoint
+    app.get('/api/demo-image', (req: any, res: any) => {
+      try {
+        const imagePath = path.join(process.cwd(), 'src', 'face_recognition', 'images', 'db_images', 'demo_image.jpeg');
+        
+        if (!fs.existsSync(imagePath)) {
+          return res.status(404).json({ error: 'Demo image not found' });
+        }
+        
+        res.set({
+          'Content-Type': 'image/jpeg',
+          'Cache-Control': 'no-cache'
+        });
+        res.sendFile(imagePath);
+      } catch (error) {
+        this.logger.error(`Error serving demo image: ${error}`);
+        res.status(500).json({ error: 'Failed to serve demo image' });
       }
     });
 
