@@ -1,0 +1,5 @@
+{
+  "Name": "Unknown",
+  "Error": "JSON parsing failed: Invalid control character at: line 55 column 355 (char 5807)",
+  "RawContent": "{\n  \"Name\": \"Sean Guno\",\n  \"Extraordinary Qualities\":\n  {\n    \"Impact\": {\n      \"Description\": \"Sean Guno is a highly talented and ambitious student pursuing a dual degree in Computer Science + Chemistry and Bioengineering at the University of Illinois' Grainger College of Engineering. Though still early in his academic career, Sean has already demonstrated exceptional promise and drive, laying the groundwork for a potentially transformative impact in his future pursuits.\",\n      \"Evidence\": [\n        \"Pursuing a challenging dual degree program in both Computer Science + Chemistry and Bioengineering, showcasing his intellectual abilities and diverse interests\",\n        \"Actively involved in research and academic projects at a top engineering school, indicating his dedication to hands-on learning and problem-solving\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Sean's enrollment at the prestigious University of Illinois Urbana-Champaign, one of the top engineering s..."
+}

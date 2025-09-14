@@ -1,0 +1,5 @@
+{
+  "Name": "Unknown",
+  "Error": "JSON parsing failed: Expecting ',' delimiter: line 19 column 164 (char 1388)",
+  "RawContent": "{\n  \"Name\": \"Sigil Wen\",\n  \"Extraordinary Qualities\":\n  {\n    \"Impact\": {\n      \"Description\": \"Sigil Wen is making a significant impact through his work in the technology and startup ecosystem. As an AI engineer and entrepreneur, he is helping to bring the world's top talent to the United States through his role at Extraordinary.com.\",\n      \"Evidence\": [\n        \"Sigil's LinkedIn profile describes him as 'I help the world's extraordinary talent come to America fast' at Extraordinary.com.\",\n        \"He has shared LinkedIn posts about his own experience obtaining an O-1 Extraordinary Ability Visa, indicating he is an expert in navigating the US immigration system for top talent.\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Sigil's work has been recognized and validated by prestigious organizations and individuals. His LinkedIn profile shows he is part of the Jerome Fisher M&T program, an elite dual-degree program at the University of Pennsylvania.\",\n      \"Evidenc..."
+}

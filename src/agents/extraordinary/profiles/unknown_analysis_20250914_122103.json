@@ -1,0 +1,5 @@
+{
+  "Name": "Unknown",
+  "Error": "JSON parsing failed: Expecting value: line 2 column 9 (char 9)",
+  "RawContent": "\n        SCRAPED_DETAILS:\n        Name: sean guno\n        \n        GitHub Information:\n        - Username: seanguno\n        - Name: Sean Guno\n        - Bio: I am a student at University of Illinois' Grainger College of Illinois pursuing a dual degree in Computer Science + Chemistry and Bioengineering.\n        - Location: Urbana-Champaign\n        - Company: None\n        - Blog: \n        - URL: https://github.com/seanguno\n        - Repositories: 21\n        - Followers: 0\n        \n        LinkedIn Profiles Found:\n        - https://sa.linkedin.com/in/sean-guno-84586239\n- https://www.linkedin.com/pub/dir/+/Guno\n- https://www.linkedin.com/in/seanguno\n- https://www.linkedin.com/pub/dir/Sean/Guno\n- https://cn.linkedin.com/pub/dir/+/Guno\n- https://ph.linkedin.com/pub/dir/+/Guno\n- https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States\n        \n        LinkedIn Content & Posts:\n        LinkedIn: Sean Guno - B.S. Computer Science + Chemistry - Hi, my name is Sean Guno! I am pursuing a dual deg..."
+}
