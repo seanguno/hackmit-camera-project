@@ -6,6 +6,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import axios from 'axios';
 import { VoiceRecordingService, VoiceRecordingResult } from './voice/VoiceRecordingService';
+import { DatabaseService, PersonProfile } from './services/DatabaseService';
+import { TalkingPointsService, TalkingPointsResult } from './services/TalkingPointsService';
 
 /**
  * Interface representing a stored photo with metadata
@@ -44,6 +46,12 @@ class ExampleMentraOSApp extends AppServer {
   private voiceRecordingService: VoiceRecordingService;
   private isRecordingVoice: Map<string, boolean> = new Map(); // Track if user is recording voice
   private voiceRecordingResults: Map<string, VoiceRecordingResult> = new Map(); // Store voice results per user
+  
+  // Database and talking points services
+  private databaseService: DatabaseService;
+  private talkingPointsService: TalkingPointsService;
+  private personProfiles: Map<string, PersonProfile> = new Map(); // Store person profiles per user
+  private talkingPoints: Map<string, TalkingPointsResult> = new Map(); // Store talking points per user
 
   constructor() {
     super({
@@ -52,6 +60,8 @@ class ExampleMentraOSApp extends AppServer {
       port: PORT,
     });
     this.voiceRecordingService = new VoiceRecordingService();
+    this.databaseService = new DatabaseService();
+    this.talkingPointsService = new TalkingPointsService();
     this.setupWebviewRoutes();
     this.ensureStorageDirectories();
     this.setupPhotoUploadHandler();
@@ -182,7 +192,7 @@ class ExampleMentraOSApp extends AppServer {
       // Note: We'll add UI feedback in Phase 5
 
       // Start voice recording asynchronously
-      this.voiceRecordingService.startRecording(userId)
+      this.voiceRecordingService.startRecording(userId, recognitionResult?.name)
         .then((result) => {
           this.voiceRecordingResults.set(userId, result);
           this.isRecordingVoice.set(userId, false);
@@ -225,6 +235,187 @@ class ExampleMentraOSApp extends AppServer {
   }
 
   /**
+   * Look up person in database and load profile with talking points
+   */
+  private async lookupPersonProfile(userId: string, personName: string): Promise<{
+    isReturningPerson: boolean;
+    profile?: PersonProfile;
+    talkingPoints?: TalkingPointsResult;
+  }> {
+    try {
+      console.log(`🔍 Looking up person profile for: ${personName}`);
+      
+      // Check if person exists in database
+      const personCheck = await this.databaseService.checkPersonExists(personName);
+      
+      if (personCheck.exists && personCheck.profile) {
+        console.log(`✅ Found returning person: ${personName}`);
+        
+        // Store profile for this user
+        this.personProfiles.set(userId, personCheck.profile);
+        
+        // Generate talking points based on conversation history
+        const conversationSummaries = await this.databaseService.getConversationSummaries(personCheck.profile.id);
+        const talkingPointsResult = await this.talkingPointsService.generateTalkingPoints(
+          conversationSummaries,
+          personName,
+          personCheck.profile.field || undefined
+        );
+        
+        // Store talking points for this user
+        this.talkingPoints.set(userId, talkingPointsResult);
+        
+        return {
+          isReturningPerson: true,
+          profile: personCheck.profile,
+          talkingPoints: talkingPointsResult
+        };
+      } else {
+        console.log(`👤 New person: ${personName}`);
+        return {
+          isReturningPerson: false
+        };
+      }
+    } catch (error) {
+      console.error(`❌ Error looking up person profile for ${personName}:`, error);
+      return {
+        isReturningPerson: false
+      };
+    }
+  }
+
+  /**
+   * Get person profile for a user
+   */
+  private getPersonProfile(userId: string): PersonProfile | null {
+    return this.personProfiles.get(userId) || null;
+  }
+
+  /**
+   * Get the latest analysis/metadata for a user
+   */
+  private getLatestAnalysis(userId: string): any | null {
+    try {
+      if (!fs.existsSync(METADATA_FILE)) {
+        return null;
+      }
+      
+      const metadataContent = fs.readFileSync(METADATA_FILE, 'utf8');
+      const metadata = JSON.parse(metadataContent);
+      
+      return metadata[userId] || null;
+    } catch (error) {
+      this.logger.error(`Error getting latest analysis for user ${userId}: ${error}`);
+      return null;
+    }
+  }
+
+  /**
+   * Get talking points for a user
+   */
+  private getTalkingPoints(userId: string): TalkingPointsResult | null {
+    return this.talkingPoints.get(userId) || null;
+  }
+
+  /**
+   * Synthesize deep research analysis with database context
+   */
+  private async synthesizeAnalysisWithDatabase(
+    deepResearchAnalysis: any,
+    personLookup: {
+      isReturningPerson: boolean;
+      profile?: PersonProfile;
+      talkingPoints?: TalkingPointsResult;
+    },
+    personName: string
+  ): Promise<any> {
+    try {
+      console.log(`🔄 Synthesizing analysis for ${personName}...`);
+      
+      // If no database context, return original analysis
+      if (!personLookup.isReturningPerson || !personLookup.profile) {
+        console.log(`📊 No database context found, using original deep research analysis`);
+        return deepResearchAnalysis;
+      }
+
+      // Create enhanced analysis by combining deep research with database context
+      const enhancedAnalysis = {
+        ...deepResearchAnalysis,
+        // Add database context fields
+        database_context: {
+          isReturningPerson: true,
+          lastSeen: personLookup.profile.last_seen,
+          conversationCount: personLookup.profile.conversationCount || 0,
+          previousField: personLookup.profile.field,
+          previousEmail: personLookup.profile.email
+        },
+        // Enhanced summary that includes relationship context
+        enhanced_summary: this.createEnhancedSummary(
+          deepResearchAnalysis,
+          personLookup.profile,
+          personName
+        ),
+        // Add talking points if available
+        suggested_talking_points: personLookup.talkingPoints?.success ? 
+          personLookup.talkingPoints.talkingPoints : []
+      };
+
+      console.log(`✅ Successfully synthesized analysis with database context`);
+      return enhancedAnalysis;
+    } catch (error) {
+      console.error(`❌ Error synthesizing analysis:`, error);
+      // Return original analysis if synthesis fails
+      return deepResearchAnalysis;
+    }
+  }
+
+  /**
+   * Create enhanced summary that combines deep research with relationship context
+   */
+  private createEnhancedSummary(
+    deepResearchAnalysis: any,
+    profile: PersonProfile,
+    personName: string
+  ): string {
+    try {
+      const originalSummary = deepResearchAnalysis.summary || '';
+      const conversationCount = profile.conversationCount || 0;
+      const lastSeen = profile.last_seen ? new Date(profile.last_seen).toLocaleDateString() : 'Unknown';
+      
+      let enhancedSummary = originalSummary;
+      
+      // Add relationship context
+      if (conversationCount > 0) {
+        enhancedSummary += `\n\n**Relationship Context:** You've had ${conversationCount} previous conversation${conversationCount > 1 ? 's' : ''} with ${personName}. Last seen: ${lastSeen}.`;
+        
+        if (profile.field && profile.field !== 'Unknown') {
+          enhancedSummary += ` Their field of expertise is ${profile.field}.`;
+        }
+      } else {
+        enhancedSummary += `\n\n**Relationship Context:** This appears to be your first interaction with ${personName}.`;
+      }
+      
+      return enhancedSummary;
+    } catch (error) {
+      console.error(`❌ Error creating enhanced summary:`, error);
+      return deepResearchAnalysis.summary || '';
+    }
+  }
+
+  /**
+   * Normalize name for database lookup
+   */
+  private normalizeName(name: string): string {
+    if (!name) return '';
+    
+    return name
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .trim();
+  }
+
+  /**
    * Call face recognition API to identify person in the photo
    */
   private async recognizeFace(filePath: string): Promise<any> {
@@ -247,6 +438,36 @@ class ExampleMentraOSApp extends AppServer {
         this.logger.info(`Face recognition successful`);
         this.logger.info(`Search result: ${JSON.stringify(response.data.search_result, null, 2)}`);
         this.logger.info(`Analysis result: ${JSON.stringify(response.data.analysis_result, null, 2)}`);
+        
+        // Debug: Check what fields are available in the response
+        this.logger.info(`Response data keys: ${Object.keys(response.data).join(', ')}`);
+        this.logger.info(`Name field: ${response.data.name || 'NOT FOUND'}`);
+        this.logger.info(`Search result name: ${response.data.search_result?.name || 'NOT FOUND'}`);
+        
+        // Extract name from various possible locations
+        let extractedName = response.data.name || 
+                           response.data.search_result?.name || 
+                           response.data.search_result?.Name ||
+                           response.data.analysis_result?.Name ||
+                           response.data.analysis_result?.name ||
+                           response.data.search_result?.message?.split(' ')[0]; // Fallback from message
+        
+        if (extractedName) {
+          // Normalize the name for database lookup
+          const normalizedName = this.normalizeName(extractedName);
+          response.data.name = normalizedName;
+          this.logger.info(`✅ Extracted name: ${extractedName} -> Normalized: ${normalizedName}`);
+        } else {
+          this.logger.warn(`⚠️ Could not extract name from response`);
+          this.logger.info(`Available fields: ${Object.keys(response.data).join(', ')}`);
+          if (response.data.search_result) {
+            this.logger.info(`Search result fields: ${Object.keys(response.data.search_result).join(', ')}`);
+            this.logger.info(`Search result content: ${JSON.stringify(response.data.search_result, null, 2)}`);
+          }
+          // Set a default name if none found
+          response.data.name = 'Unknown Person';
+        }
+        
         return response.data;
       } else {
         this.logger.warn(`Face recognition failed: ${response.data.error}`);
@@ -254,7 +475,13 @@ class ExampleMentraOSApp extends AppServer {
       }
     } catch (error) {
       this.logger.error(`Error calling face recognition API: ${error}`);
-      return { success: false, error: error.message };
+      // Return a fallback response if API is not accessible
+      return { 
+        success: true, 
+        name: 'Unknown Person',
+        search_result: { name: 'Unknown Person', message: 'Face recognition API not accessible' },
+        analysis_result: { message: 'Face recognition API not accessible' }
+      };
     }
   }
 
@@ -429,6 +656,10 @@ class ExampleMentraOSApp extends AppServer {
     this.isRecordingVoice.set(userId, false);
     this.voiceRecordingResults.delete(userId);
     
+    // Clean up person profile and talking points
+    this.personProfiles.delete(userId);
+    this.talkingPoints.delete(userId);
+    
     this.logger.info(`Session stopped for user ${userId}, reason: ${reason}`);
   }
 
@@ -504,6 +735,39 @@ class ExampleMentraOSApp extends AppServer {
           await this.updateMetadata(userId, metadataToStore);
           
           this.logger.info(`Face recognition completed for user ${userId}: ${recognitionResult.name}`);
+          
+          // 🔍 Look up person in database for additional context
+          const personLookup = await this.lookupPersonProfile(userId, recognitionResult.name);
+          
+          // 📊 Synthesize deep research with database context
+          const synthesizedAnalysis = await this.synthesizeAnalysisWithDatabase(
+            recognitionResult.analysis_result,
+            personLookup,
+            recognitionResult.name
+          );
+          
+          // Update metadata with synthesized analysis
+          const enhancedMetadata = {
+            ...metadataToStore,
+            analysis_result: synthesizedAnalysis,
+            database_context: {
+              isReturningPerson: personLookup.isReturningPerson,
+              profile: personLookup.profile,
+              talkingPoints: personLookup.talkingPoints
+            }
+          };
+          
+          // Store the enhanced metadata
+          await this.updateMetadata(userId, enhancedMetadata);
+          
+          if (personLookup.isReturningPerson) {
+            this.logger.info(`👋 Welcome back, ${recognitionResult.name}! Found ${personLookup.profile?.conversationCount || 0} previous conversations.`);
+            if (personLookup.talkingPoints?.success && personLookup.talkingPoints.talkingPoints) {
+              this.logger.info(`💬 Generated ${personLookup.talkingPoints.talkingPoints.length} talking points`);
+            }
+          } else {
+            this.logger.info(`👤 New person detected: ${recognitionResult.name}`);
+          }
           
           // 🎤 Voice recording is now manual - user can start it via API endpoint
           // await this.startVoiceRecording(userId, recognitionResult);
@@ -827,8 +1091,12 @@ class ExampleMentraOSApp extends AppServer {
           });
         }
 
+        // Get the latest analysis to extract face recognition name
+        const latestAnalysis = this.getLatestAnalysis(userId);
+        const recognitionResult = latestAnalysis ? { name: latestAnalysis.recognition?.name } : {};
+        
         // Start voice recording
-        await this.startVoiceRecording(userId, {});
+        await this.startVoiceRecording(userId, recognitionResult);
         
         res.json({ 
           success: true, 
@@ -864,6 +1132,85 @@ class ExampleMentraOSApp extends AppServer {
       } catch (error) {
         this.logger.error(`Error getting voice results: ${error}`);
         res.status(500).json({ error: 'Failed to get voice results' });
+      }
+    });
+
+    // Person profile and talking points API endpoints
+    app.get('/api/person-profile', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const profile = this.getPersonProfile(userId);
+        if (profile) {
+          res.json({ 
+            success: true, 
+            profile: profile 
+          });
+        } else {
+          res.json({ 
+            success: false, 
+            message: 'No person profile available' 
+          });
+        }
+      } catch (error) {
+        this.logger.error(`Error getting person profile: ${error}`);
+        res.status(500).json({ error: 'Failed to get person profile' });
+      }
+    });
+
+    app.get('/api/talking-points', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const talkingPoints = this.getTalkingPoints(userId);
+        if (talkingPoints) {
+          res.json({ 
+            success: true, 
+            talkingPoints: talkingPoints 
+          });
+        } else {
+          res.json({ 
+            success: false, 
+            message: 'No talking points available' 
+          });
+        }
+      } catch (error) {
+        this.logger.error(`Error getting talking points: ${error}`);
+        res.status(500).json({ error: 'Failed to get talking points' });
+      }
+    });
+
+    app.get('/api/person-status', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const profile = this.getPersonProfile(userId);
+        const talkingPoints = this.getTalkingPoints(userId);
+        
+        res.json({ 
+          success: true,
+          isReturningPerson: !!profile,
+          profile: profile || null,
+          talkingPoints: talkingPoints || null
+        });
+      } catch (error) {
+        this.logger.error(`Error getting person status: ${error}`);
+        res.status(500).json({ error: 'Failed to get person status' });
       }
     });
   }

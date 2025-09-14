@@ -9,15 +9,16 @@
     "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/test-user/photo_2025-09-13T19-04-54-917Z.jpeg"
   },
   "gunosean@gmail.com": {
-    "requestId": "photo_req_1757841419830_upseu1i",
-    "timestamp": "2025-09-14T09:17:01.976Z",
+    "requestId": "photo_req_1757844544727_qjwi61x",
+    "timestamp": "2025-09-14T10:09:06.503Z",
     "userId": "gunosean@gmail.com",
     "mimeType": "image/jpeg",
-    "filename": "IMG_20250914_091656.jpg",
-    "size": 234774,
-    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T09-17-01-976Z.jpeg",
+    "filename": "IMG_20250914_100901.jpg",
+    "size": 229034,
+    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T10-09-06-503Z.jpeg",
     "recognition": {
-      "recognized_at": "2025-09-14T09:17:15.524Z"
+      "name": "sean guno",
+      "recognized_at": "2025-09-14T10:09:20.819Z"
     },
     "search_result": {
       "name": "sean guno",
@@ -35,12 +36,12 @@
       "web_info": {
         "linkedin_urls": [
           "https://www.linkedin.com/pub/dir/Sean/Guno",
-          "https://ph.linkedin.com/pub/dir/+/Guno",
+          "https://sa.linkedin.com/in/sean-guno-84586239",
+          "https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States",
           "https://www.linkedin.com/in/seanguno",
           "https://www.linkedin.com/pub/dir/+/Guno",
           "https://cn.linkedin.com/pub/dir/+/Guno",
-          "https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States",
-          "https://sa.linkedin.com/in/sean-guno-84586239"
+          "https://ph.linkedin.com/pub/dir/+/Guno"
         ],
         "twitter_urls": [],
         "other_profiles": {},
@@ -116,7 +117,7 @@
       },
       "exa_results": {
         "general": {
-          "requestId": "6d9d01ff96bcf07c801340f6a875db7d",
+          "requestId": "59cf50a56613b59460c30ebe3bb5f47a",
           "autopromptString": "\"sean guno\" Urbana-Champaign University College",
           "resolvedSearchType": "neural",
           "results": [
@@ -129,7 +130,7 @@
               "score": 0.30551034212112427
             }
           ],
-          "searchTime": 171.9,
+          "searchTime": 200.8,
           "costDollars": {
             "total": 0.005,
             "search": {
@@ -138,7 +139,7 @@
           }
         },
         "awards": {
-          "requestId": "8de1141cfd148379488f06700c7e0d73",
+          "requestId": "2ea6dd944231ea2d6bf4240e8f93df4c",
           "autopromptString": "\"sean guno\" award recognition honor",
           "resolvedSearchType": "neural",
           "results": [
@@ -151,7 +152,61 @@
               "score": 0.25005418062210083
             }
           ],
-          "searchTime": 189.2,
+          "searchTime": 192.3,
+          "costDollars": {
+            "total": 0.005,
+            "search": {
+              "neural": 0.005
+            }
+          }
+        },
+        "linkedin_content": {
+          "requestId": "71085f92ef10ef7ba0b3807ddc101b27",
+          "autopromptString": "\"sean guno\" linkedin profile achievements",
+          "resolvedSearchType": "neural",
+          "results": [
+            {
+              "id": "https://rocketreach.co/sean-chung-email_65387250",
+              "title": "Sean Chung Email & Phone Number | Chainlink Labs Go-To-Market (APAC) Contact Information",
+              "url": "https://rocketreach.co/sean-chung-email_65387250",
+              "publishedDate": "2025-01-01T00:00:00.000Z",
+              "author": null,
+              "score": 0.28999146819114685
+            },
+            {
+              "id": "https://seanfdunne.framer.ai/",
+              "title": "Sean Dunne Portfolio",
+              "url": "https://seanfdunne.framer.ai/",
+              "publishedDate": "2025-03-13T00:00:00.000Z",
+              "author": null,
+              "score": 0.2802458107471466
+            },
+            {
+              "id": "https://rocketreach.co/sean-gillies-email_65341131",
+              "title": "Sean Gillies Email & Phone Number | Caravan Supply Chain Director Of Business Development Contact Information",
+              "url": "https://rocketreach.co/sean-gillies-email_65341131",
+              "publishedDate": "2025-01-01T00:00:00.000Z",
+              "author": null,
+              "score": 0.27061617374420166
+            },
+            {
+              "id": "https://www.cience.com/profile/sean-mooney/1044990315",
+              "title": "Sean Mooney Phone Number & Email",
+              "url": "https://www.cience.com/profile/sean-mooney/1044990315",
+              "publishedDate": "2023-01-01T00:00:00.000Z",
+              "author": null,
+              "score": 0.2603725790977478
+            },
+            {
+              "id": "https://rocketreach.co/sean-hartnett-email_1923186",
+              "title": "Sean Hartnett Email & Phone Number | Source7 Vice President of Growth Contact Information",
+              "url": "https://rocketreach.co/sean-hartnett-email_1923186",
+              "publishedDate": "2025-01-01T00:00:00.000Z",
+              "author": null,
+              "score": 0.25987231731414795
+            }
+          ],
+          "searchTime": 203.7,
           "costDollars": {
             "total": 0.005,
             "search": {
@@ -162,7 +217,10 @@
       }
     },
     "analysis_result": {
-      "data": "{\n  \"Name\": \"Sean Guno\",\n  \"Extraordinary Analysis\": {\n    \"Impact\": {\n      \"Description\": \"While Sean Guno's GitHub profile currently has 0 followers, he is actively building a strong technical foundation through his dual degree program in Computer Science, Chemistry, and Bioengineering at the University of Illinois. His diverse academic pursuits demonstrate a breadth of interests and capabilities that could lead to significant future impact.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering at the University of Illinois\",\n        \"21 GitHub repositories showcasing his technical skills and projects\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Sean is currently a student at the prestigious University of Illinois' Grainger College of Engineering, which is ranked among the top engineering schools in the United States. His enrollment in this highly competitive program is a strong validation of his academic abilities and potential.\",\n      \"Evidence\": [\n        \"Attending the University of Illinois' Grainger College of Engineering\",\n        \"Pursuing dual degrees in Computer Science, Chemistry, and Bioengineering\"\n      ]\n    },\n    \"Pioneering Work\": {\n      \"Description\": \"While Sean's current projects and work are still in progress as a student, his pursuit of dual degrees in Computer Science, Chemistry, and Bioengineering suggests he is positioning himself to potentially make pioneering contributions at the intersection of these fields in the future. His diverse academic interests and interdisciplinary approach could lead to innovative breakthroughs.\",\n      \"Evidence\": [\n        \"Pursuing dual degrees in Computer Science, Chemistry, and Bioengineering\",\n        \"Exploring the connections between these fields as a student\"\n      ]\n    },\n    \"Recognition by Experts/Institutions\": {\n      \"Description\": \"Sean's acceptance and enrollment at the prestigious University of Illinois' Grainger College of Engineering is a strong recognition of his academic abilities and potential by this highly respected institution. As he continues his studies, he may have the opportunity to receive additional recognition through awards, fellowships, or other accolades.\",\n      \"Evidence\": [\n        \"Attending the University of Illinois' Grainger College of Engineering\"\n      ]\n    },\n    \"Exceptional Talent Young\": {\n      \"Description\": \"At a young age, Sean Guno has already demonstrated exceptional academic talent by pursuing a dual degree program in Computer Science, Chemistry, and Bioengineering at the University of Illinois. His ability to take on this challenging course of study at a top-tier institution suggests he possesses exceptional intellectual abilities and drive.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree program in Computer Science, Chemistry, and Bioengineering as a student\",\n        \"Attending the University of Illinois' Grainger College of Engineering\"\n      ]\n    },\n    \"Technical Excellence/Frontier\": {\n      \"Description\": \"Sean's pursuit of dual degrees in Computer Science, Chemistry, and Bioengineering indicates he is developing a strong technical foundation across multiple disciplines. As he continues his studies and research, he may have the opportunity to push the boundaries of these fields and make contributions at the forefront of science and technology.\",\n      \"Evidence\": [\n        \"Pursuing dual degrees in Computer Science, Chemistry, and Bioengineering\",\n        \"Exploring the intersection of these technical fields as a student\"\n      ]\n    },\n    \"Builder/Startup Cred\": {\n      \"Description\": \"While Sean Guno does not currently have any startup or entrepreneurial experience listed, his pursuit of dual degrees in Computer Science, Chemistry, and Bioengineering suggests he is positioning himself to potentially contribute to innovative solutions and startups in the future. His diverse academic interests and technical skills could make him a valuable asset to entrepreneurial endeavors.\",\n      \"Evidence\": [\n        \"Pursuing dual degrees in Computer Science, Chemistry, and Bioengineering\",\n        \"Exploring the intersection of these technical fields as a student\"\n      ]\n    }\n  },\n  \"Celebration\": \"Sean Guno is an exceptional young student who is demonstrating his potential through a challenging dual degree program at the prestigious University of Illinois' Grainger College of Engineering. By pursuing studies in Computer Science, Chemistry, and Bioengineering, Sean is positioning himself to make significant contributions at the intersection of these fields in the future. \n\nHis diverse academic interests and drive to excel across multiple technical disciplines are a testament to his exceptional talent and intellectual abilities. While he is still early in his academic journey, Sean's accomplishments thus far, including his acceptance into the highly competitive Grainger College of Engineering, suggest he has the potential to become a pioneering force in science and technology.\n\nAs Sean continues to develop his skills and knowledge, he may have the opportunity to push the boundaries of these fields, make groundbreaking discoveries, and potentially contribute to innovative solutions and startups. His exceptional talent and the breadth of his academic pursuits make him a truly extraordinary individual with a bright future ahead.\"\n}"
+      "data": "{\n  \"Name\": \"Sean Guno\",\n  \"Extraordinary Qualities and Achievements\":\n  {\n    \"Impact\": {\n      \"Description\": \"Sean Guno is a driven and accomplished student pursuing a dual degree in Computer Science + Chemistry and Bioengineering at the University of Illinois Urbana-Champaign. His diverse academic interests and interdisciplinary approach demonstrate his intellectual curiosity and ability to tackle complex challenges.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, showcasing his breadth of interests and capabilities\",\n        \"Enrolled at the prestigious University of Illinois Urbana-Champaign, a top-tier research institution\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"While Sean Guno is still an undergraduate student, his LinkedIn profile highlights his ambition and the high-caliber opportunities he has already secured. He has gained valuable experience as an AI/ML Engineering Intern at the renowned pharmaceutical company Eli Lilly.\",\n      \"Evidence\": [\n        \"Secured a competitive AI/ML Engineering Internship at Eli Lilly, a leading global pharmaceutical company\",\n        \"Pursuing a dual degree at the University of Illinois Urbana-Champaign, a prestigious institution\"\n      ]\n    },\n    \"Pioneering Work\": {\n      \"Description\": \"Sean Guno's academic pursuits in the fields of Computer Science, Chemistry, and Bioengineering demonstrate his desire to push the boundaries of scientific knowledge and innovation. His interdisciplinary approach positions him to potentially make groundbreaking contributions at the intersection of these disciplines.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, indicating a desire to integrate multiple fields of study\",\n        \"Potential to drive innovation and breakthroughs at the intersection of computer science, chemistry, and bioengineering\"\n      ]\n    },\n    \"Recognition by Experts/Institutions\": {\n      \"Description\": \"While Sean Guno has not yet received any major awards or recognition, his enrollment at the prestigious University of Illinois Urbana-Champaign and his internship at Eli Lilly suggest that he is already being recognized by leading institutions and experts in his field.\",\n      \"Evidence\": [\n        \"Enrolled at the University of Illinois Urbana-Champaign, a top-ranked research university\",\n        \"Secured a competitive internship at Eli Lilly, a renowned pharmaceutical company\"\n      ]\n    },\n    \"Exceptional Talent Young\": {\n      \"Description\": \"At just 21-22 years old, Sean Guno has already demonstrated his exceptional academic abilities by pursuing a dual degree in Computer Science + Chemistry and Bioengineering. His drive and ambition at a young age are indicative of his potential for future accomplishments.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree at the undergraduate level, which is an uncommon and challenging undertaking\",\n        \"Securing a competitive internship at Eli Lilly while still an undergraduate student\"\n      ]\n    },\n    \"Technical Excellence/Frontier\": {\n      \"Description\": \"Sean Guno's academic focus on Computer Science, Chemistry, and Bioengineering positions him at the forefront of several cutting-edge fields. His interdisciplinary approach and the potential for his research to drive innovation in these areas are truly extraordinary.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, indicating a strong technical foundation and interest in frontier fields\",\n        \"Potential to contribute to advancements in areas like computational chemistry, bioinformatics, and biomedical engineering\"\n      ]\n    },\n    \"Builder/Startup Cred\": {\n      \"Description\": \"While Sean Guno does not currently have any startup or entrepreneurial experience, his diverse academic background and ambitious pursuit of a dual degree suggest that he possesses the problem-solving skills, technical expertise, and innovative mindset to potentially excel in a startup or entrepreneurial environment in the future.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, demonstrating a versatile skill set\",\n        \"Potential to apply his interdisciplinary knowledge and problem-solving abilities to innovative projects or startups in the future\"\n      ]\n    }\n  }\n}"
+    },
+    "database_context": {
+      "isReturningPerson": false
     }
   }
 }

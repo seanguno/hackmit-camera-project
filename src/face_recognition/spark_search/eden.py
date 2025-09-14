@@ -305,6 +305,7 @@ class RecognitionResponse(BaseModel):
 
 class SearchResponse(BaseModel):
     success: bool
+    name: str = None
     search_result: dict
     analysis_result: dict
 
@@ -358,11 +359,12 @@ async def recognize_face(request: RecognitionRequest):
                             result = await analyzer.analyze_person(name)
                             # Extract data from CrewOutput object
                             analysis_data = result['analysis_result'].raw if hasattr(result['analysis_result'], 'raw') else str(result['analysis_result'])
-                            return SearchResponse(success=True, search_result=result['search_result'], analysis_result={"data": analysis_data})
+                            return SearchResponse(success=True, name=name, search_result=result['search_result'], analysis_result={"data": analysis_data})
                         else:
                             # Return basic response when analyzer is not available
                             return SearchResponse(
                                 success=True,
+                                name=name,
                                 search_result={"name": name, "message": "Extraordinary analysis not available"},
                                 analysis_result={"message": "Extraordinary analysis requires Python 3.10+ and CrewAI"}
                             )
@@ -377,18 +379,21 @@ async def recognize_face(request: RecognitionRequest):
                 logger.info(f"Face detected but not in database (confidence: {confidence})")
                 return SearchResponse(
                     success=True,
+                    name="Unknown",
                     search_result={"name": "Unknown", "confidence": confidence, "face_id": matching_id},
                     analysis_result={"message": "Face detected but not in database"}
                 )
             else:
                 return SearchResponse(
                     success=False,
+                    name="Unknown",
                     search_result={"error": "No faces detected in image"},
                     analysis_result={"error": "No faces detected"}
                 )
         else:
             return SearchResponse(
                 success=False,
+                name="Unknown",
                 search_result={"error": "Face recognition failed"},
                 analysis_result={"error": "Recognition service failed"}
             )
@@ -399,6 +404,7 @@ async def recognize_face(request: RecognitionRequest):
         logger.error(f"Traceback: {traceback.format_exc()}")
         return SearchResponse(
             success=False,
+            name="Unknown",
             search_result={"error": str(e)},
             analysis_result={"error": "Internal server error"}
         )

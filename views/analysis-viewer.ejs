@@ -267,6 +267,79 @@
                 });
             }
             
+            // Add database context section if available
+            if (data.database_context) {
+                const dbContext = data.database_context;
+                html += `
+                    <div class="section" style="background: #e3f2fd; border: 2px solid #bbdefb;">
+                        <h3 class="section-title" style="color: #1976d2;">👋 Relationship Context</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                            <div style="background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <strong style="color: #1976d2;">Status:</strong><br>
+                                ${dbContext.isReturningPerson ? '🔄 Returning Contact' : '👤 New Contact'}
+                            </div>
+                            ${dbContext.isReturningPerson ? `
+                                <div style="background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                    <strong style="color: #1976d2;">Previous Conversations:</strong><br>
+                                    ${dbContext.conversationCount || 0}
+                                </div>
+                                <div style="background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                    <strong style="color: #1976d2;">Last Seen:</strong><br>
+                                    ${new Date(dbContext.lastSeen).toLocaleDateString()}
+                                </div>
+                                ${dbContext.previousField ? `
+                                    <div style="background: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <strong style="color: #1976d2;">Field:</strong><br>
+                                        ${dbContext.previousField}
+                                    </div>
+                                ` : ''}
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Add suggested talking points if available
+            if (data.suggested_talking_points && data.suggested_talking_points.length > 0) {
+                html += `
+                    <div class="section" style="background: #f8f9fa; border: 2px solid #e9ecef;">
+                        <h3 class="section-title" style="color: #495057;">💬 Suggested Talking Points</h3>
+                        <div style="display: grid; gap: 10px; margin-top: 15px;">
+                `;
+                
+                data.suggested_talking_points.forEach((point, index) => {
+                    const priorityColor = point.priority === 'high' ? '#ff5722' : 
+                                        point.priority === 'medium' ? '#ff9800' : '#4caf50';
+                    const typeIcon = point.type === 'follow_up' ? '🔄' : 
+                                   point.type === 'question' ? '❓' : 
+                                   point.type === 'topic' ? '💭' : '🏆';
+                    
+                    html += `
+                        <div style="border-left: 4px solid ${priorityColor}; padding: 15px; background: white; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <div style="font-weight: 600; color: #333; margin-bottom: 8px;">
+                                ${typeIcon} ${point.content}
+                            </div>
+                            <div style="font-size: 14px; color: #666;">
+                                ${point.context}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Add person profile and talking points section
+            html += `
+                <div id="person-profile-section" style="margin-top: 30px; padding: 20px; background: #e3f2fd; border-radius: 12px; border: 2px solid #bbdefb; display: none;">
+                    <h3 style="margin-top: 0; color: #1976d2; margin-bottom: 15px;">👋 Welcome Back!</h3>
+                    <div id="person-profile-content"></div>
+                </div>
+            `;
+            
             // Add voice recording section
             html += `
                 <div class="voice-recording-section" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px solid #e9ecef;">
@@ -395,8 +468,80 @@
             }
         }
         
+        // Load person profile and talking points
+        async function loadPersonProfile() {
+            try {
+                const response = await fetch('/api/person-status');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.isReturningPerson) {
+                        displayPersonProfile(data.profile, data.talkingPoints);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading person profile:', error);
+            }
+        }
+        
+        function displayPersonProfile(profile, talkingPoints) {
+            const profileSection = document.getElementById('person-profile-section');
+            const profileContent = document.getElementById('person-profile-content');
+            
+            if (!profileSection || !profileContent) return;
+            
+            let html = `
+                <div style="background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                    <h4 style="margin-top: 0; color: #1976d2;">👤 ${profile.name}</h4>
+                    <p style="margin-bottom: 10px; color: #666;">
+                        <strong>Field:</strong> ${profile.field || 'Not specified'}<br>
+                        <strong>Email:</strong> ${profile.email || 'Not provided'}<br>
+                        <strong>Previous Conversations:</strong> ${profile.conversationCount || 0}<br>
+                        <strong>Last Seen:</strong> ${new Date(profile.last_seen).toLocaleDateString()}
+                    </p>
+                </div>
+            `;
+            
+            if (talkingPoints && talkingPoints.success && talkingPoints.talkingPoints) {
+                html += `
+                    <div style="background: white; border-radius: 8px; padding: 15px;">
+                        <h4 style="margin-top: 0; color: #1976d2;">💬 Suggested Talking Points</h4>
+                        <div style="display: grid; gap: 10px;">
+                `;
+                
+                talkingPoints.talkingPoints.forEach((point, index) => {
+                    const priorityColor = point.priority === 'high' ? '#ff5722' : 
+                                        point.priority === 'medium' ? '#ff9800' : '#4caf50';
+                    const typeIcon = point.type === 'follow_up' ? '🔄' : 
+                                   point.type === 'question' ? '❓' : 
+                                   point.type === 'topic' ? '💭' : '🏆';
+                    
+                    html += `
+                        <div style="border-left: 4px solid ${priorityColor}; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                            <div style="font-weight: 600; color: #333; margin-bottom: 5px;">
+                                ${typeIcon} ${point.content}
+                            </div>
+                            <div style="font-size: 14px; color: #666;">
+                                ${point.context}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            profileContent.innerHTML = html;
+            profileSection.style.display = 'block';
+        }
+        
         // Load data when page loads
-        document.addEventListener('DOMContentLoaded', loadAnalysisData);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAnalysisData();
+            loadPersonProfile();
+        });
         
         // Voice recording functions
         async function startVoiceRecording() {

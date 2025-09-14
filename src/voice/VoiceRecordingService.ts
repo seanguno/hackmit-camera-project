@@ -37,7 +37,7 @@ export class VoiceRecordingService {
   /**
    * Start voice recording and process the complete pipeline
    */
-  async startRecording(userId: string): Promise<VoiceRecordingResult> {
+  async startRecording(userId: string, faceRecognitionName?: string): Promise<VoiceRecordingResult> {
     try {
       console.log(`🎤 Starting voice recording for user ${userId}...`);
       
@@ -70,7 +70,11 @@ export class VoiceRecordingService {
       
       // Step 3: Save to Supabase
       console.log('🗄️ Saving to Supabase...');
-      const supabaseResult = await this.saveToSupabase(claudeResult);
+      // Use face recognition name if available, otherwise use Claude's extracted name
+      const nameToUse = faceRecognitionName || claudeResult.name;
+      console.log(`📝 Using name: ${nameToUse} (from ${faceRecognitionName ? 'face recognition' : 'Claude extraction'})`);
+      
+      const supabaseResult = await this.saveToSupabase(claudeResult, nameToUse);
       
       if (!supabaseResult.success) {
         return {
@@ -353,7 +357,7 @@ processTranscript('${transcript.replace(/'/g, "\\'")}')
     name: string | null;
     history: string | null;
     summary: string | null;
-  }): Promise<{ success: boolean; data?: any; error?: string }> {
+  }, faceRecognitionName?: string): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
       if (!this.supabaseUrl || !this.supabaseKey) {
         return {
@@ -381,12 +385,15 @@ processTranscript('${transcript.replace(/'/g, "\\'")}')
         }]
       } : null;
 
+      // Use face recognition name if available, otherwise use Claude's extracted name
+      const nameToUse = faceRecognitionName || data.name;
+      console.log(`📝 Using name for database: ${nameToUse} (from ${faceRecognitionName ? 'face recognition' : 'Claude extraction'})`);
+
       // Check if this person already exists in the database
       const { data: existingRecord } = await supabase
         .from('convo')
         .select('*')
-        .eq('email', data.email || '')
-        .eq('name', data.name || '')
+        .eq('name', nameToUse || '')
         .single();
 
       let result, error;
@@ -434,7 +441,7 @@ processTranscript('${transcript.replace(/'/g, "\\'")}')
           .insert({
             field: data.field,
             email: data.email,
-            name: data.name,
+            name: nameToUse, // Use the face recognition name or Claude's extracted name
             history: historyJsonb,
             summary: summaryJsonb
           })
