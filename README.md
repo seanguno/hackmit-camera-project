@@ -1,4 +1,4 @@
-# Spark: *See the extraordinary in everyone instantly* 
+# Spark: *See the extraordinary in everyone* 
 
 Spark is an AI-powered tool built on the MentraOS glasses that lets people instantly discover the extraordinary individuals around them. By surfacing the factors and accomplishments that make a person remarkable, beyond just their job title or LinkedIn headline, Spark breaks the cold-start barrier in human connection. It provides baseline knowledge to help cultivate introductions, conversations, and relationships. Through this, Spark accelerates authentic connection and collaboration in real-world environments like conferences, hackathons, research labs, and entrepreneurial communities.
 
@@ -75,6 +75,6 @@ Pari Latawa, MIT CS + Bio '26 <br>
 Mudit Marwaha, UPenn CS '27  
 
 ## Acknowledgements
-Thank you to the MIT 2025 HackMIT organizing team. Thank you to all sponsors for guidance and API credits, especially Mentra OS, Extraordinary, Anthropic, and Y Combinator.
+Thank you to the HackMIT 2025 organizing team. Thank you to all sponsors for guidance (and API credits!), especially Mentra OS, Extraordinary, Anthropic, and Y Combinator.
 
 ### Next Steps 
