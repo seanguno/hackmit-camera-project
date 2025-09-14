@@ -2,6 +2,21 @@
 
 A comprehensive facial recognition system using Eden AI's API with local database management for storing and managing face records.
 
+## How to Run 
+
+To run backend, run this command from the src/face_recognition directory
+```python spark_search/eden.py --server```
+
+To run ngrok, run this 
+```http --url=subeffectively-unmemorable-thomas.ngrok-free.app 6767```
+Change 6767 based on what port you have in the env file
+
+To run the app, run this
+```bun run dev```
+
+Open this link from your phone to download the app in the MentraOS app: https://apps.mentra.glass/package/com.seanguno.spark
+
+
 ## Features
 
 - **Face Registration**: Add faces to both Eden AI and local database
