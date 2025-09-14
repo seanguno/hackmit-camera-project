@@ -1,4 +1,9 @@
-# MentraOS-Camera-Example-App
+# Spark: *See the extraordinary in everyone instantly* 
+
+Spark is an AI-powered tool built on the MentraOS glasses that lets people instantly discover the extraordinary individuals around them. 
+
+By surfacing the factors and accomplishments that make a person remarkable, beyond just their job title or LinkedIn headline, Spark breaks the cold-start barrier in human connection. It provides baseline knowledge to help cultivate introductions, conversations, and relationships. Through this, Spark accelerates authentic connection and collaboration in real-world environments like conferences, hackathons, research labs, and entrepreneurial communities.
+
 
 This is a simple example app which demonstrates how to use the MentraOS Camera API to take photos and display them in a webview.
 
