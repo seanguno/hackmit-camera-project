@@ -7,6 +7,24 @@ import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
+import sys
+
+# Add the project root to the Python path to enable absolute imports
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+# Try to import ExtraordinaryAnalyzer, but make it optional
+def get_extraordinary_analyzer():
+    """Get ExtraordinaryAnalyzer if available, otherwise return None"""
+    try:
+        from agents.extraordinary.main import ExtraordinaryAnalyzer
+        return ExtraordinaryAnalyzer()
+    except ImportError as e:
+        logger.warning(f"ExtraordinaryAnalyzer not available: {e}")
+        logger.warning("Face recognition will work without extraordinary analysis features")
+        return None
+    except Exception as e:
+        logger.warning(f"Error initializing ExtraordinaryAnalyzer: {e}")
+        return None
 
 # Configure logging for both file and console
 logger = logging.getLogger(__name__)
@@ -244,6 +262,9 @@ class EdenAIFaceRecognition:
 # FastAPI app instance
 app = FastAPI(title="Face Recognition API", version="1.0.0")
 
+# Initialize analyzer only if available
+analyzer = get_extraordinary_analyzer()
+
 # Global face recognition system instance
 face_system = None
 
@@ -282,10 +303,16 @@ class RecognitionResponse(BaseModel):
     face_id: str = None
     error: str = None
 
-@app.post("/recognize", response_model=RecognitionResponse)
+class SearchResponse(BaseModel):
+    success: bool
+    search_result: dict
+    analysis_result: dict
+
+@app.post("/recognize", response_model=SearchResponse)
 async def recognize_face(request: RecognitionRequest):
     """Recognize a face from the provided image filename"""
     global face_system
+    global analyzer
     
     # Initialize system if not already done
     if face_system is None:
@@ -304,7 +331,11 @@ async def recognize_face(request: RecognitionRequest):
         logger.info(f"Imgur upload result: {test_url}")
         
         if not test_url:
-            return RecognitionResponse(success=False, error="Failed to upload image to Imgur")
+            return SearchResponse(
+                success=False,
+                search_result={"error": "Failed to upload image to Imgur"},
+                analysis_result={"error": "Image upload failed"}
+            )
         
         # Recognize face
         result = face_system.recognize_face(test_url)
@@ -321,31 +352,56 @@ async def recognize_face(request: RecognitionRequest):
                     if matching_id == face_id:
                         name = data['name'].split(".")[0]
                         logger.info(f"✅ Recognized: {name} (confidence: {confidence})")
-                        return RecognitionResponse(
-                            success=True,
-                            name=name,
-                            confidence=confidence,
-                            face_id=face_id
-                        )
+                        name = name.replace('_', ' ')
+                        
+                        if analyzer is not None:
+                            result = await analyzer.analyze_person(name)
+                            # Extract data from CrewOutput object
+                            analysis_data = result['analysis_result'].raw if hasattr(result['analysis_result'], 'raw') else str(result['analysis_result'])
+                            return SearchResponse(success=True, search_result=result['search_result'], analysis_result={"data": analysis_data})
+                        else:
+                            # Return basic response when analyzer is not available
+                            return SearchResponse(
+                                success=True,
+                                search_result={"name": name, "message": "Extraordinary analysis not available"},
+                                analysis_result={"message": "Extraordinary analysis requires Python 3.10+ and CrewAI"}
+                            )
+                        # return RecognitionResponse(
+                        #     success=True,
+                        #     name=name,
+                        #     confidence=confidence,
+                        #     face_id=face_id
+                        # )
                 
                 # Face detected but not in database
                 logger.info(f"Face detected but not in database (confidence: {confidence})")
-                return RecognitionResponse(
+                return SearchResponse(
                     success=True,
-                    name="Unknown",
-                    confidence=confidence,
-                    face_id=matching_id
+                    search_result={"name": "Unknown", "confidence": confidence, "face_id": matching_id},
+                    analysis_result={"message": "Face detected but not in database"}
                 )
             else:
-                return RecognitionResponse(success=False, error="No faces detected in image")
+                return SearchResponse(
+                    success=False,
+                    search_result={"error": "No faces detected in image"},
+                    analysis_result={"error": "No faces detected"}
+                )
         else:
-            return RecognitionResponse(success=False, error="Face recognition failed")
+            return SearchResponse(
+                success=False,
+                search_result={"error": "Face recognition failed"},
+                analysis_result={"error": "Recognition service failed"}
+            )
             
     except Exception as e:
         logger.error(f"Exception occurred: {str(e)}")
         import traceback
         logger.error(f"Traceback: {traceback.format_exc()}")
-        return RecognitionResponse(success=False, error=str(e))
+        return SearchResponse(
+            success=False,
+            search_result={"error": str(e)},
+            analysis_result={"error": "Internal server error"}
+        )
 
 @app.get("/health")
 async def health_check():

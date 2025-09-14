@@ -141,32 +141,25 @@ class SimplePersonSearch:
     async def _search_with_serper(self, query: str) -> Dict:
         """Search using Serper API"""
         try:
-            conn = http.client.HTTPSConnection("google.serper.dev")
-            payload = json.dumps({"q": query})
+            url = "https://google.serper.dev/search"
             headers = {
                 'X-API-KEY': self.serper_api_key,
                 'Content-Type': 'application/json'
             }
+            payload = {"q": query}
             
-            conn.request("POST", "/search", payload, headers)
-            res = conn.getresponse()
-            data = res.read()
+            response = await self.session.post(url, headers=headers, json=payload)
+            response.raise_for_status()
             
-            self.logger.info(f"Serper API response status: {res.status}")
+            result = response.json()
+            organic_results = result.get('organic', [])
+            if organic_results:
+                self.logger.info(f"✅ Found {len(organic_results)} search results for query: {query}")
+                self.logger.info("First few search results:")
+                for i, result_item in enumerate(organic_results[:3]):
+                    self.logger.info(f"  {i+1}. {result_item.get('title', 'No title')} - {result_item.get('link', 'No link')}")
+            return result
             
-            if res.status == 200:
-                result = json.loads(data.decode("utf-8"))
-                organic_results = result.get('organic', [])
-                if organic_results:
-                    self.logger.info(f"✅ Found {len(organic_results)} search results for query: {query}")
-                    self.logger.info("First few search results:")
-                    for i, result_item in enumerate(organic_results[:3]):
-                        self.logger.info(f"  {i+1}. {result_item.get('title', 'No title')} - {result_item.get('link', 'No link')}")
-                return result
-            else:
-                self.logger.error(f"❌ Serper API error: {res.status}")
-                return {}
-                
         except Exception as e:
             self.logger.error(f"❌ Serper API request failed: {e}")
             return {}

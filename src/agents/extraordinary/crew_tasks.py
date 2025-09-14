@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from crewai import Agent, Task, Crew, Process, LLM
 
-from crew_agents import CrewAgents
+from .crew_agents import CrewAgents
 
 # Load environment variables from a .env file
 load_dotenv()

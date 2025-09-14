@@ -205,20 +205,25 @@ class ExaSearch:
     def _filter_relevant_results(self, results: List[Dict], name: str, github_info: Dict) -> List[Dict]:
         """Filter Exa results to ensure they match the correct person"""
         filtered = []
-        bio = github_info.get('bio', '').lower()
-        location = github_info.get('location', '').lower()
-        company = github_info.get('company', '')
+        bio = github_info.get('bio', '') or ''
+        location = github_info.get('location', '') or ''
+        company = github_info.get('company', '') or ''
+        
+        # Safely convert to lowercase
+        bio = bio.lower() if bio else ''
+        location = location.lower() if location else ''
+        company = company.lower() if company else ''
         
         # Extract general relevant keywords from bio and profile
         relevant_keywords = []
         
         # Add location keywords
         if location:
-            relevant_keywords.append(location.lower())
+            relevant_keywords.append(location)
         
         # Add company keywords
         if company:
-            relevant_keywords.append(company.lower())
+            relevant_keywords.append(company)
         
         # Add general professional keywords from bio
         bio_words = bio.split()
@@ -238,9 +243,14 @@ class ExaSearch:
         relevant_keywords = list(set(relevant_keywords))[:5]
         
         for result in results:
-            title = result.get('title', '').lower()
-            text = result.get('text', '').lower()
-            url = result.get('url', '').lower()
+            title = result.get('title', '') or ''
+            text = result.get('text', '') or ''
+            url = result.get('url', '') or ''
+            
+            # Safely convert to lowercase
+            title = title.lower() if title else ''
+            text = text.lower() if text else ''
+            url = url.lower() if url else ''
             
             # Check if result contains relevant keywords
             result_text = f"{title} {text} {url}"

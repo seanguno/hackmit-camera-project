@@ -29,10 +29,6 @@ Return a single JSON object with ONLY the keys below and omit any key you cannot
   "sources": [
     {"fact": "<short fact>", "evidence": "<verbatim snippet or field from SCRAPED_DETAILS>", "source_hint": "<url/domain/name if present in SCRAPED_DETAILS>"}
   ],
-  "flags": {
-    "weak_evidence": ["<claims lacking metrics or third-party validation>"],
-    "conflicts": ["<contradictory items in SCRAPED_DETAILS>"]
-  }
 }
 
 CELEBRATION

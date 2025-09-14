@@ -9,18 +9,15 @@
     "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/test-user/photo_2025-09-13T19-04-54-917Z.jpeg"
   },
   "gunosean@gmail.com": {
-    "requestId": "photo_req_1757808998736_yajgrz0",
-    "timestamp": "2025-09-14T00:16:40.836Z",
+    "requestId": "photo_req_1757825084388_3y9lya6",
+    "timestamp": "2025-09-14T04:44:46.143Z",
     "userId": "gunosean@gmail.com",
     "mimeType": "image/jpeg",
-    "filename": "IMG_20250914_001637.jpg",
-    "size": 307829,
-    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T00-16-40-836Z.jpeg",
+    "filename": "IMG_20250914_044442.jpg",
+    "size": 242340,
+    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T04-44-46-143Z.jpeg",
     "recognition": {
-      "name": "pari_latawa",
-      "confidence": 0.9999958038330078,
-      "face_id": "6786497d-2d8f-4532-9d58-8b0e1a68f836",
-      "recognized_at": "2025-09-14T00:16:49.741Z"
+      "recognized_at": "2025-09-14T04:44:59.451Z"
     }
   }
 }

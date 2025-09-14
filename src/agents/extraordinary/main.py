@@ -5,10 +5,12 @@ import logging
 from datetime import datetime
 from crewai import Crew
 from dotenv import load_dotenv
-from crew_agents import CrewAgents
-from crew_tasks import CrewTasks
-from simple_search import SimplePersonSearch
-from exa_search import ExaSearch
+
+# Import local modules
+from .crew_agents import CrewAgents
+from .crew_tasks import CrewTasks
+from .simple_search import SimplePersonSearch
+from .exa_search import ExaSearch
 
 def setup_logging():
     """Setup logging for profiles"""
@@ -32,23 +34,23 @@ class ExtraordinaryAnalyzer:
         self.tasks = CrewTasks()
         self.logger = setup_logging()
 
-    def analyze_person(self, name: str):
+    async def analyze_person(self, name: str):
         """Main function to search and analyze a person"""
         print(f"🔍 Searching for: {name}")
         
         # Search for person
         searcher = SimplePersonSearch()
-        search_result = asyncio.run(searcher.search_person(name))
+        search_result = await searcher.search_person(name)
         try:
-            asyncio.run(searcher.close())
+            await searcher.close()
         except:
             pass  # Ignore closing errors
         
         # Enhance with Exa API
         exa_searcher = ExaSearch()
-        search_result = asyncio.run(exa_searcher.enhance_search(name, search_result))
+        search_result = await exa_searcher.enhance_search(name, search_result)
         try:
-            asyncio.run(exa_searcher.close())
+            await exa_searcher.close()
         except:
             pass  # Ignore closing errors
         
@@ -163,13 +165,30 @@ class ExtraordinaryAnalyzer:
             if isinstance(raw_content, str):
                 try:
                     actual_data = json.loads(raw_content)
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    print(f"🔍 Debug: JSON decode error: {e}")
+                    print(f"🔍 Debug: Raw content preview: {raw_content[:500]}...")
                     import re
+                    # Try to extract JSON from the text
                     json_match = re.search(r'\{.*\}', raw_content, re.DOTALL)
                     if json_match:
-                        actual_data = json.loads(json_match.group())
+                        try:
+                            actual_data = json.loads(json_match.group())
+                            print(f"🔍 Debug: Successfully extracted JSON with regex")
+                        except json.JSONDecodeError as e2:
+                            print(f"🔍 Debug: Regex extraction also failed: {e2}")
+                            # Create a fallback structure
+                            actual_data = {
+                                "Name": "Unknown",
+                                "Error": f"JSON parsing failed: {e}",
+                                "RawContent": raw_content[:1000] + "..." if len(raw_content) > 1000 else raw_content
+                            }
                     else:
-                        actual_data = raw_content
+                        actual_data = {
+                            "Name": "Unknown", 
+                            "Error": f"No JSON found in content: {e}",
+                            "RawContent": raw_content[:1000] + "..." if len(raw_content) > 1000 else raw_content
+                        }
             else:
                 actual_data = raw_content
             
@@ -178,10 +197,12 @@ class ExtraordinaryAnalyzer:
                 actual_data['exa_search_results'] = exa_results
             
             # Save as formatted JSON
-            if isinstance(actual_data, dict) and 'name' in actual_data:
-                name = actual_data['name'].replace(' ', '_').lower()
+            if isinstance(actual_data, dict) and 'Name' in actual_data:
+                name = actual_data['Name'].replace(' ', '_').lower()
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"profiles/{name}_analysis_{timestamp}.json"
+                # Get the directory where this script is located
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                filename = os.path.join(script_dir, "profiles", f"{name}_analysis_{timestamp}.json")
                 
                 with open(filename, 'w') as f:
                     json.dump(actual_data, f, indent=2)
@@ -190,7 +211,7 @@ class ExtraordinaryAnalyzer:
                 
                 # Log key details
                 self.logger.info(f"=== EXTRAORDINARY PROFILE ===")
-                self.logger.info(f"Name: {actual_data.get('name', 'Unknown')}")
+                self.logger.info(f"Name: {actual_data.get('Name', 'Unknown')}")
                 self.logger.info(f"Title: {actual_data.get('title_role', 'N/A')}")
                 self.logger.info(f"Claim to Fame: {actual_data.get('claim_to_fame', 'N/A')}")
                 
@@ -220,7 +241,7 @@ def main():
     
     print("--- Starting Extraordinary Analysis System ---")
     analyzer = ExtraordinaryAnalyzer()
-    result = analyzer.analyze_person("Sean Guno")
+    result = analyzer.analyze_person("elon musk")
 
 if __name__ == "__main__":
     main()

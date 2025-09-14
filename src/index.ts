@@ -164,9 +164,12 @@ class ExampleMentraOSApp extends AppServer {
           'Content-Type': 'application/json'
         }
       });
+      
 
       if (response.data.success) {
-        this.logger.info(`Face recognition successful: ${response.data.name} (confidence: ${response.data.confidence})`);
+        // this.logger.info(`Face recognition successful: ${response.data.name} (confidence: ${response.data.confidence})`);
+        this.logger.info(`Search result: ${JSON.stringify(response.data.search_result, null, 2)}`);
+        this.logger.info(`Analysis result: ${JSON.stringify(response.data.analysis_result, null, 2)}`);
         return response.data;
       } else {
         this.logger.warn(`Face recognition failed: ${response.data.error}`);
