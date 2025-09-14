@@ -72,7 +72,7 @@ src/
 Sohum Gautam, UPenn M&T '29 <br>
 Sean Guno, UIUC CS + Chemistry & Bioengineering '26 <br>
 Pari Latawa, MIT CS + Bio '26 <br>
-Mudit Marwaha, CS '26 
+Mudit Marwaha, UPenn CS '27  
 
 ## Acknowledgements
 Thank you to the MIT 2025 HackMIT organizing team. Thank you to all sponsors for guidance and API credits, especially Mentra OS, Extraordinary, Anthropic, and Y Combinator.
