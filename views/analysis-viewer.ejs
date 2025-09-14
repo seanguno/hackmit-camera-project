@@ -497,9 +497,25 @@
                             </div>
                         ` : ''}
                         
-                        <p style="margin-bottom: 0; color: #155724; font-size: 14px;">
+                        <p style="margin-bottom: 10px; color: #155724; font-size: 14px;">
                             ✅ Data has been saved to the database
                         </p>
+                        
+                        ${result.emailResult ? `
+                            <div style="background: ${result.emailResult.success ? '#d4edda' : '#f8d7da'}; border: 1px solid ${result.emailResult.success ? '#c3e6cb' : '#f5c6cb'}; border-radius: 6px; padding: 10px; margin-top: 10px;">
+                                <h4 style="margin-top: 0; color: ${result.emailResult.success ? '#155724' : '#721c24'};">📧 Email Status:</h4>
+                                ${result.emailResult.success ? `
+                                    <p style="margin-bottom: 0; color: #155724;">
+                                        ✅ Follow-up email sent successfully!<br>
+                                        <small>Message ID: ${result.emailResult.messageId || 'N/A'}</small>
+                                    </p>
+                                ` : `
+                                    <p style="margin-bottom: 0; color: #721c24;">
+                                        ❌ Email failed: ${result.emailResult.error || 'Unknown error'}
+                                    </p>
+                                `}
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             } else {

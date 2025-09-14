@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { createClient } from '@supabase/supabase-js';
+import { EmailIntegration, ContactData, EmailResult } from '../gmail/EmailIntegration';
 
 export interface VoiceRecordingResult {
   success: boolean;
@@ -14,6 +15,7 @@ export interface VoiceRecordingResult {
     summary: string | null;
   };
   supabaseResult?: any;
+  emailResult?: EmailResult;
   error?: string;
 }
 
@@ -22,12 +24,14 @@ export class VoiceRecordingService {
   private supabaseUrl: string;
   private supabaseKey: string;
   private anthropicApiKey: string;
+  private emailIntegration: EmailIntegration;
 
   constructor() {
     this.pythonPath = '/Users/seanguno/miniforge3/bin/python3';
     this.supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
     this.supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
     this.anthropicApiKey = process.env.ANTHROPIC_API_KEY || '';
+    this.emailIntegration = new EmailIntegration();
   }
 
   /**
@@ -79,13 +83,18 @@ export class VoiceRecordingService {
       
       console.log('✅ Supabase response:', supabaseResult.data);
       
+      // Step 4: Send follow-up email
+      console.log('📧 Sending follow-up email...');
+      const emailResult = await this.sendFollowUpEmail(claudeResult, voiceResult.transcription);
+      
       return {
         success: true,
         transcription: voiceResult.transcription,
         audioFile: voiceResult.audioFile,
         processingTime: voiceResult.processingTime,
         claudeResult: claudeResult,
-        supabaseResult: supabaseResult.data
+        supabaseResult: supabaseResult.data,
+        emailResult: emailResult
       };
       
     } catch (error) {
@@ -449,6 +458,35 @@ processTranscript('${transcript.replace(/'/g, "\\'")}')
       };
       
     } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Send follow-up email after voice conversation
+   */
+  private async sendFollowUpEmail(claudeResult: {
+    field: string | null;
+    email: string | null;
+    name: string | null;
+    history: string | null;
+    summary: string | null;
+  }, transcription: string): Promise<EmailResult> {
+    try {
+      const contactData: ContactData = {
+        name: claudeResult.name || undefined,
+        email: claudeResult.email || undefined,
+        field: claudeResult.field || undefined,
+        summary: claudeResult.summary || undefined,
+        transcription: transcription
+      };
+
+      return await this.emailIntegration.sendFollowUpEmail(contactData);
+    } catch (error) {
+      console.error('❌ Error sending follow-up email:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
