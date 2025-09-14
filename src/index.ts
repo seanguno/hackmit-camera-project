@@ -225,6 +225,282 @@ class ExampleMentraOSApp extends AppServer {
   }
 
   /**
+   * Extract title/role from analysis data
+   */
+  private extractTitleFromAnalysis(analysisJson: any): string {
+    // Look for role information in the analysis
+    if (analysisJson["Extraordinary Qualities and Achievements"]) {
+      const qualities = analysisJson["Extraordinary Qualities and Achievements"];
+      if (qualities["Technical Excellence/Frontier"]?.Description) {
+        const desc = qualities["Technical Excellence/Frontier"].Description;
+        if (desc.includes("Computer Science + Chemistry and Bioengineering")) {
+          return "Computer Science + Chemistry & Bioengineering Student";
+        }
+      }
+    }
+    return "Student";
+  }
+
+  /**
+   * Extract recognition from analysis data
+   */
+  private extractRecognitionFromAnalysis(analysisJson: any): string[] {
+    const recognition: string[] = [];
+    
+    if (analysisJson["Extraordinary Qualities and Achievements"]) {
+      const qualities = analysisJson["Extraordinary Qualities and Achievements"];
+      
+      if (qualities["Prestige/Validation"]?.Evidence) {
+        recognition.push(...qualities["Prestige/Validation"].Evidence);
+      }
+      
+      if (qualities["Recognition by Experts/Institutions"]?.Evidence) {
+        recognition.push(...qualities["Recognition by Experts/Institutions"].Evidence);
+      }
+    }
+    
+    return recognition;
+  }
+
+  /**
+   * Extract built/achieved from analysis data
+   */
+  private extractBuiltFromAnalysis(analysisJson: any): string[] {
+    const built: string[] = [];
+    
+    if (analysisJson["Extraordinary Qualities and Achievements"]) {
+      const qualities = analysisJson["Extraordinary Qualities and Achievements"];
+      
+      if (qualities["Impact"]?.Evidence) {
+        built.push(...qualities["Impact"].Evidence);
+      }
+      
+      if (qualities["Builder/Startup Cred"]?.Evidence) {
+        built.push(...qualities["Builder/Startup Cred"].Evidence);
+      }
+    }
+    
+    return built;
+  }
+
+  /**
+   * Transform criteria hits from analysis data
+   */
+  private transformCriteriaHits(analysisJson: any): any {
+    const criteriaHits: any = {};
+    
+    if (analysisJson["Extraordinary Qualities and Achievements"]) {
+      const qualities = analysisJson["Extraordinary Qualities and Achievements"];
+      
+      // Map the old format to new format
+      if (qualities["Impact"]) {
+        criteriaHits.impact = qualities["Impact"].Evidence || [];
+      }
+      if (qualities["Prestige/Validation"]) {
+        criteriaHits.prestige_validation = qualities["Prestige/Validation"].Evidence || [];
+      }
+      if (qualities["Pioneering Work"]) {
+        criteriaHits.pioneering_work = qualities["Pioneering Work"].Evidence || [];
+      }
+      if (qualities["Recognition by Experts/Institutions"]) {
+        criteriaHits.recognition_by_institutions = qualities["Recognition by Experts/Institutions"].Evidence || [];
+      }
+      if (qualities["Exceptional Talent Young"]) {
+        criteriaHits.exceptional_young = qualities["Exceptional Talent Young"].Evidence || [];
+      }
+      if (qualities["Technical Excellence/Frontier"]) {
+        criteriaHits.technical_frontier = qualities["Technical Excellence/Frontier"].Evidence || [];
+      }
+      if (qualities["Builder/Startup Cred"]) {
+        criteriaHits.builder_startup_cred = qualities["Builder/Startup Cred"].Evidence || [];
+      }
+    }
+    
+    return criteriaHits;
+  }
+
+  /**
+   * Extract sources from search result data
+   */
+  private extractSourcesFromSearch(searchResult: any): any[] {
+    const sources: any[] = [];
+    
+    if (searchResult?.github) {
+      sources.push({
+        fact: "GitHub Profile",
+        evidence: `${searchResult.github.name} - ${searchResult.github.bio}`,
+        source_hint: searchResult.github.url
+      });
+    }
+    
+    if (searchResult?.web_info?.search_results) {
+      const linkedinSearch = searchResult.web_info.search_results["\"sean guno\" linkedin profile"];
+      if (linkedinSearch?.organic?.[0]) {
+        const firstResult = linkedinSearch.organic[0];
+        sources.push({
+          fact: "LinkedIn Profile",
+          evidence: firstResult.snippet,
+          source_hint: firstResult.link
+        });
+      }
+    }
+    
+    return sources;
+  }
+
+  /**
+   * Fix common JSON malformation issues
+   */
+  private fixMalformedJson(jsonString: string): string {
+    try {
+      // Count braces to see if we're missing closing braces
+      const openBraces = (jsonString.match(/\{/g) || []).length;
+      const closeBraces = (jsonString.match(/\}/g) || []).length;
+      
+      // Count quotes to see if we have unterminated strings
+      const quotes = (jsonString.match(/"/g) || []).length;
+      
+      let fixedJson = jsonString;
+      
+      // If we have an odd number of quotes, we likely have an unterminated string
+      if (quotes % 2 !== 0) {
+        // Find the last quote and see if it's properly terminated
+        const lastQuoteIndex = jsonString.lastIndexOf('"');
+        const afterLastQuote = jsonString.substring(lastQuoteIndex + 1);
+        
+        // If there's no closing quote after the last quote, add it
+        if (!afterLastQuote.trim().startsWith('"') && !afterLastQuote.trim().startsWith(',')) {
+          fixedJson = jsonString + '"';
+        }
+      }
+      
+      // If we're missing closing braces, add them
+      if (openBraces > closeBraces) {
+        const missingBraces = openBraces - closeBraces;
+        fixedJson += '}'.repeat(missingBraces);
+      }
+      
+      return fixedJson;
+    } catch (error) {
+      this.logger.error(`Error fixing malformed JSON: ${error}`);
+      return jsonString; // Return original if fixing fails
+    }
+  }
+
+  /**
+   * Extract data manually from malformed JSON string using regex
+   */
+  private extractDataFromMalformedJson(jsonString: string, userPhoto: any): any {
+    try {
+      const analysisData: any = {
+        name: userPhoto.recognition?.name || 'Unknown Person',
+        country: userPhoto.search_result?.github?.location || 'Unknown',
+        title_role: 'Student',
+        company_affiliation: 'University of Illinois Urbana-Champaign',
+        claim_to_fame: 'Analysis data parsing failed, but person was recognized',
+        recognition: [],
+        built_or_achieved: [],
+        criteria_hits: {},
+        sources: this.extractSourcesFromSearch(userPhoto.search_result)
+      };
+
+      // Extract Name using regex
+      const nameMatch = jsonString.match(/"Name":\s*"([^"]+)"/);
+      if (nameMatch) {
+        analysisData.name = nameMatch[1];
+      }
+
+      // Extract Celebration text using regex (handle multiline)
+      const celebrationMatch = jsonString.match(/"Celebration":\s*"([^"]*(?:\\.[^"]*)*)"/);
+      if (celebrationMatch) {
+        analysisData.claim_to_fame = celebrationMatch[1].replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+
+      // Extract Evidence arrays from each criteria
+      const criteriaSections = [
+        'Impact', 'Prestige/Validation', 'Pioneering Work', 
+        'Recognition by Experts/Institutions', 'Exceptional Talent Young',
+        'Technical Excellence/Frontier', 'Builder/Startup Cred'
+      ];
+
+      const criteriaHits: any = {};
+      const allEvidence: string[] = [];
+      
+      criteriaSections.forEach(criteria => {
+        const escapedCriteria = criteria.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const evidenceRegex = new RegExp(`"${escapedCriteria}":\\s*{[^}]*"Evidence":\\s*\\[([^\\]]+)\\]`, 's');
+        const match = jsonString.match(evidenceRegex);
+        
+        if (match) {
+          const evidenceText = match[1];
+          // Better parsing of evidence items - handle the raw string format
+          let evidenceItems: string[] = [];
+          
+          // Try to parse as JSON array first
+          try {
+            const jsonArray = JSON.parse('[' + evidenceText + ']');
+            evidenceItems = jsonArray.filter((item: any) => typeof item === 'string' && item.trim().length > 0);
+          } catch {
+            // Fallback to string splitting
+            evidenceItems = evidenceText
+              .split('","')
+              .map(item => item.replace(/^"/, '').replace(/"$/, '').trim())
+              .filter(item => item.length > 0);
+          }
+          
+          const criteriaKey = criteria.toLowerCase().replace(/[^a-z0-9]/g, '_');
+          criteriaHits[criteriaKey] = evidenceItems;
+          
+          // Add to all evidence for recognition/built sections
+          allEvidence.push(...evidenceItems);
+        }
+      });
+
+      analysisData.criteria_hits = criteriaHits;
+
+      // Create unique recognition and built items (avoid duplicates)
+      const uniqueEvidence = [...new Set(allEvidence)]; // Remove duplicates
+      
+      // Split recognition and built items more intelligently
+      const recognitionItems = uniqueEvidence.filter(item => 
+        item.includes('University') || 
+        item.includes('academic') || 
+        item.includes('exceptional') ||
+        item.includes('prestigious')
+      );
+      
+      const builtItems = uniqueEvidence.filter(item => 
+        item.includes('GitHub') || 
+        item.includes('internship') || 
+        item.includes('technical') ||
+        item.includes('projects')
+      );
+
+      analysisData.recognition = recognitionItems.slice(0, 4); // Take up to 4 recognition items
+      analysisData.built_or_achieved = builtItems.slice(0, 4); // Take up to 4 built items
+
+      this.logger.info(`Successfully extracted data from malformed JSON: ${JSON.stringify(analysisData, null, 2)}`);
+      
+      return analysisData;
+    } catch (error) {
+      this.logger.error(`Error extracting data from malformed JSON: ${error}`);
+      
+      // Return basic fallback data
+      return {
+        name: userPhoto.recognition?.name || 'Unknown Person',
+        country: userPhoto.search_result?.github?.location || 'Unknown',
+        title_role: 'Student',
+        company_affiliation: 'University of Illinois Urbana-Champaign',
+        claim_to_fame: 'Analysis data parsing failed, but person was recognized',
+        recognition: [],
+        built_or_achieved: [],
+        criteria_hits: {},
+        sources: this.extractSourcesFromSearch(userPhoto.search_result)
+      };
+    }
+  }
+
+  /**
    * Call face recognition API to identify person in the photo
    */
   private async recognizeFace(filePath: string): Promise<any> {
@@ -745,10 +1021,135 @@ class ExampleMentraOSApp extends AppServer {
         return;
       }
 
-      const templatePath = path.join(process.cwd(), 'views', 'analysis-viewer.ejs');
-      const html = await ejs.renderFile(templatePath, {});
+      // Try to get the latest analysis data for this user
+      let analysisData = null;
+      try {
+        if (fs.existsSync(METADATA_FILE)) {
+          const metadataContent = fs.readFileSync(METADATA_FILE, 'utf8');
+          const metadata = JSON.parse(metadataContent);
+          const userPhoto = metadata[userId];
+          
+          if (userPhoto && userPhoto.analysis_result) {
+            this.logger.info(`Raw analysis_result for user ${userId}: ${JSON.stringify(userPhoto.analysis_result, null, 2)}`);
+            
+            try {
+              // Parse the analysis_result.data which contains the JSON string
+              let analysisJson;
+              if (typeof userPhoto.analysis_result.data === 'string') {
+                // Try to fix common JSON issues before parsing
+                let jsonString = userPhoto.analysis_result.data;
+                
+                // Fix unterminated strings by adding missing quotes and braces
+                jsonString = this.fixMalformedJson(jsonString);
+                
+                analysisJson = JSON.parse(jsonString);
+              } else {
+                // If it's already an object, use it directly
+                analysisJson = userPhoto.analysis_result.data;
+              }
+              
+              this.logger.info(`Parsed analysis JSON for user ${userId}: ${JSON.stringify(analysisJson, null, 2)}`);
+              
+              // Transform the data to match the flexible format
+              analysisData = {
+                name: analysisJson.Name || userPhoto.recognition?.name || 'Unknown Person',
+                country: userPhoto.search_result?.github?.location || 'Unknown',
+                title_role: this.extractTitleFromAnalysis(analysisJson),
+                company_affiliation: 'University of Illinois Urbana-Champaign',
+                claim_to_fame: analysisJson.Celebration || 'No claim to fame available',
+                recognition: this.extractRecognitionFromAnalysis(analysisJson),
+                built_or_achieved: this.extractBuiltFromAnalysis(analysisJson),
+                criteria_hits: this.transformCriteriaHits(analysisJson),
+                sources: this.extractSourcesFromSearch(userPhoto.search_result)
+              };
+              
+              this.logger.info(`Transformed analysis data for user ${userId}: ${JSON.stringify(analysisData, null, 2)}`);
+            } catch (parseError) {
+              this.logger.error(`Error parsing analysis JSON for user ${userId}: ${parseError}`);
+              this.logger.error(`Raw data that failed to parse: ${userPhoto.analysis_result.data}`);
+              
+              // Try to extract data manually from the malformed JSON string
+              analysisData = this.extractDataFromMalformedJson(userPhoto.analysis_result.data, userPhoto);
+            }
+          } else {
+            this.logger.info(`No analysis data found for user ${userId}`);
+          }
+        }
+      } catch (error) {
+        this.logger.error(`Error reading analysis data for user ${userId}: ${error}`);
+      }
+
+      const templatePath = path.join(process.cwd(), 'views', 'flexible-analysis-viewer.ejs');
+      const html = await ejs.renderFile(templatePath, { data: analysisData });
       res.send(html);
     });
+
+    // // Demo route for testing the flexible analysis viewer
+    // app.get('/demo-flexible', async (req: any, res: any) => {
+    //   // Demo data matching the new JSON format
+    //   const demoData = {
+    //     "name": "Sean Guno",
+    //     "photo": "",
+    //     "country": "United States",
+    //     "title_role": "Computer Science + Chemistry & Bioengineering Student",
+    //     "company_affiliation": "University of Illinois Urbana-Champaign",
+    //     "claim_to_fame": "Pursuing an ambitious dual degree program combining computer science with chemistry and bioengineering, demonstrating exceptional intellectual curiosity and interdisciplinary potential.",
+    //     "recognition": [
+    //       "Accepted to University of Illinois Urbana-Champaign",
+    //       "Pursuing challenging dual degree program"
+    //     ],
+    //     "built_or_achieved": [
+    //       "Dual degree program in Computer Science + Chemistry and Bioengineering",
+    //       "Active involvement in University of Illinois community"
+    //     ],
+    //     "quote": "The intersection of computer science and bioengineering represents the future of scientific innovation.",
+    //     "criteria_hits": {
+    //       "impact": [
+    //         "Pursuing dual degrees in Computer Science + Chemistry and Bioengineering, showcasing breadth of interests and talents",
+    //         "Actively involved in the University of Illinois community, indicating drive and engagement"
+    //       ],
+    //       "prestige_validation": [
+    //         "Attending the highly ranked University of Illinois Urbana-Champaign, a renowned institution for engineering and science",
+    //         "Pursuing a dual degree, which is a challenging and prestigious academic path"
+    //       ],
+    //       "pioneering_work": [
+    //         "Pursuing dual degrees in Computer Science + Chemistry and Bioengineering, indicating a desire to integrate multiple fields",
+    //         "Exploring the frontiers of science and technology through his academic program"
+    //       ],
+    //       "recognition_by_institutions": [
+    //         "Attending the University of Illinois Urbana-Champaign, a top-tier institution that is highly selective and recognized for its strengths in science and technology"
+    //       ],
+    //       "exceptional_young": [
+    //         "Pursuing a dual degree program as an undergraduate student, which is a challenging and uncommon academic path",
+    //         "Demonstrating a strong foundation in both computer science and the natural sciences at a young age"
+    //       ],
+    //       "technical_frontier": [
+    //         "Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which combines multiple technical disciplines at the forefront of innovation",
+    //         "Demonstrating a strong foundation in both computer science and the natural sciences, which are critical for advancements in emerging technologies and scientific breakthroughs"
+    //       ],
+    //       "builder_startup_cred": [
+    //         "Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which requires a diverse skillset and problem-solving abilities that are valuable in entrepreneurial and innovative settings",
+    //         "Demonstrating intellectual curiosity and a willingness to tackle complex, multifaceted challenges, which are hallmarks of successful builders and entrepreneurs"
+    //       ]
+    //     },
+    //     "sources": [
+    //       {
+    //         "fact": "Dual degree program",
+    //         "evidence": "Pursuing dual degrees in Computer Science + Chemistry and Bioengineering",
+    //         "source_hint": "University records"
+    //       },
+    //       {
+    //         "fact": "University affiliation",
+    //         "evidence": "Student at University of Illinois Urbana-Champaign",
+    //         "source_hint": "Academic records"
+    //       }
+    //     ]
+    //   };
+
+    //   const templatePath = path.join(process.cwd(), 'views', 'flexible-analysis-viewer.ejs');
+    //   const html = await ejs.renderFile(templatePath, { data: demoData });
+    //   res.send(html);
+    // });
 
     // API endpoint to get latest analysis data for a user
     app.get('/api/latest-analysis', (req: any, res: any) => {
@@ -790,6 +1191,27 @@ class ExampleMentraOSApp extends AppServer {
       } catch (error) {
         this.logger.error(`Error reading analysis results: ${error}`);
         res.status(500).json({ error: 'Failed to read analysis results' });
+      }
+    });
+
+    // Person image endpoint
+    app.get('/api/person-image/:imageName', (req: any, res: any) => {
+      try {
+        const imageName = req.params.imageName;
+        const imagePath = path.join(process.cwd(), 'src', 'face_recognition', 'images', 'db_images', imageName);
+        
+        if (!fs.existsSync(imagePath)) {
+          return res.status(404).json({ error: 'Image not found' });
+        }
+        
+        res.set({
+          'Content-Type': 'image/jpeg',
+          'Cache-Control': 'no-cache'
+        });
+        res.sendFile(imagePath);
+      } catch (error) {
+        this.logger.error(`Error serving person image: ${error}`);
+        res.status(500).json({ error: 'Failed to serve person image' });
       }
     });
 

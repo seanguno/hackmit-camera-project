@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Viewer - Flexible</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .person-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .person-name {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .person-title {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .person-company {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+        
+        .person-location {
+            font-size: 1em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        .claim-to-fame {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #28a745;
+        }
+        
+        .claim-to-fame h3 {
+            color: #28a745;
+            margin-top: 0;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .claim-to-fame p {
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .section-title {
+            color: #495057;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .section-description {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .evidence-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .evidence-list li {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            color: #495057;
+            line-height: 1.5;
+        }
+        
+        .evidence-list li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .quote-section {
+            background: #e3f2fd;
+            border: 2px solid #bbdefb;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .quote-section h3 {
+            color: #1976d2;
+            margin-top: 0;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #1976d2;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .sources-section {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .sources-section h3 {
+            color: #495057;
+            margin-top: 0;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+        }
+        
+        .source-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+        
+        .source-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .source-fact {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .source-evidence {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .source-hint {
+            color: #999;
+            font-size: 12px;
+            font-style: italic;
+        }
+        
+        .person-image {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .person-image img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            object-fit: cover;
+        }
+        
+        .no-image {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Voice Recording Styles */
+        .voice-recording-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .voice-recording-section h3 {
+            margin-top: 0;
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .voice-recording-section p {
+            margin-bottom: 15px;
+            color: #6c757d;
+        }
+        
+        .voice-recording-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .voice-recording-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        .voice-recording-btn:disabled {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #recording-status {
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        #recording-results {
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Extraordinary Analysis</h1>
+            <p>AI-Powered Person Recognition & Analysis</p>
+        </div>
+        
+        <div class="content">
+            <% if (typeof data !== 'undefined' && data) { %>
+                <!-- Person Image -->
+                <% if (data.name) { %>
+                    <% 
+                    const nameParts = data.name.toLowerCase().split(' ');
+                    const firstName = nameParts[0];
+                    const lastName = nameParts[nameParts.length - 1];
+                    const imageName = `${firstName}_${lastName}.jpeg`;
+                    %>
+                    <div class="person-image">
+                        <img src="/api/person-image/<%= encodeURIComponent(imageName) %>" 
+                             alt="<%= data.name %>" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="no-image" style="display: none;">
+                            📷 Image not available for <%= data.name %>
+                        </div>
+                    </div>
+                <% } %>
+                
+                <!-- Person Card -->
+                <div class="person-card">
+                    <% if (data.name) { %>
+                        <div class="person-name"><%= data.name %></div>
+                    <% } %>
+                    <% if (data.title_role) { %>
+                        <div class="person-title"><%= data.title_role %></div>
+                    <% } %>
+                    <% if (data.company_affiliation) { %>
+                        <div class="person-company"><%= data.company_affiliation %></div>
+                    <% } %>
+                    <% if (data.country) { %>
+                        <div class="person-location">📍 <%= data.country %></div>
+                    <% } %>
+                </div>
+                
+                <!-- Claim to Fame -->
+                <% if (data.claim_to_fame) { %>
+                    <div class="claim-to-fame">
+                        <h3>🌟 Claim to Fame</h3>
+                        <p><%= data.claim_to_fame %></p>
+                    </div>
+                <% } %>
+                
+                <!-- Quote Section -->
+                <% if (data.quote) { %>
+                    <div class="quote-section">
+                        <h3>💬 Notable Quote</h3>
+                        <p class="quote-text">"<%= data.quote %>"</p>
+                    </div>
+                <% } %>
+                
+                <!-- Recognition -->
+                <% if (data.recognition && data.recognition.length > 0) { %>
+                    <div class="section">
+                        <h3 class="section-title">🏆 Recognition & Awards</h3>
+                        <ul class="evidence-list">
+                            <% data.recognition.forEach(item => { %>
+                                <li><%= item %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+                
+                <!-- Built or Achieved -->
+                <% if (data.built_or_achieved && data.built_or_achieved.length > 0) { %>
+                    <div class="section">
+                        <h3 class="section-title">🚀 Built & Achieved</h3>
+                        <ul class="evidence-list">
+                            <% data.built_or_achieved.forEach(item => { %>
+                                <li><%= item %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <% } %>
+                
+                <!-- Criteria Hits Sections -->
+                <% if (data.criteria_hits) { %>
+                    <% Object.keys(data.criteria_hits).forEach(criteriaKey => { %>
+                        <% const criteria = data.criteria_hits[criteriaKey]; %>
+                        <% if (criteria && criteria.length > 0) { %>
+                            <div class="section">
+                                <h3 class="section-title">
+                                    <% if (criteriaKey === 'impact') { %>🚀<% } %>
+                                    <% if (criteriaKey === 'prestige_validation') { %>🏆<% } %>
+                                    <% if (criteriaKey === 'pioneering_work') { %>🔬<% } %>
+                                    <% if (criteriaKey === 'recognition_by_institutions') { %>🎓<% } %>
+                                    <% if (criteriaKey === 'exceptional_young') { %>⭐<% } %>
+                                    <% if (criteriaKey === 'technical_frontier') { %>💻<% } %>
+                                    <% if (criteriaKey === 'builder_startup_cred') { %>🚀<% } %>
+                                    <%= criteriaKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+                                </h3>
+                                <ul class="evidence-list">
+                                    <% criteria.forEach(item => { %>
+                                        <li><%= item %></li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                        <% } %>
+                    <% }); %>
+                <% } %>
+                
+                <!-- Sources -->
+                <% if (data.sources && data.sources.length > 0) { %>
+                    <div class="sources-section">
+                        <h3>📚 Sources & Evidence</h3>
+                        <% data.sources.forEach(source => { %>
+                            <div class="source-item">
+                                <% if (source.fact) { %>
+                                    <div class="source-fact"><%= source.fact %></div>
+                                <% } %>
+                                <% if (source.evidence) { %>
+                                    <div class="source-evidence"><%= source.evidence %></div>
+                                <% } %>
+                                <% if (source.source_hint) { %>
+                                    <div class="source-hint">Source: <%= source.source_hint %></div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+                
+                <!-- Voice Recording Section -->
+                <div class="voice-recording-section">
+                    <h3>🎤 Voice Recording</h3>
+                    <p>Ready to record a conversation? Click the button below to start recording. The recording will automatically stop after 5 seconds of silence.</p>
+                    <button id="start-recording-btn" onclick="startVoiceRecording()" class="voice-recording-btn">
+                        🎤 Start Recording
+                    </button>
+                    <div id="recording-status"></div>
+                    <div id="recording-results"></div>
+                </div>
+            <% } else { %>
+                <!-- No data available -->
+                <div class="person-card">
+                    <div class="person-name">No Analysis Data Available</div>
+                    <div class="person-title">Please take a photo to generate analysis</div>
+                </div>
+                
+                <div class="claim-to-fame">
+                    <h3>📸 How to Get Started</h3>
+                    <p>Take a photo using the MentraOS app to generate an extraordinary analysis of the person in the image.</p>
+                </div>
+                
+                <!-- Voice Recording Section -->
+                <div class="voice-recording-section">
+                    <h3>🎤 Voice Recording</h3>
+                    <p>Ready to record a conversation? Click the button below to start recording. The recording will automatically stop after 5 seconds of silence.</p>
+                    <button id="start-recording-btn" onclick="startVoiceRecording()" class="voice-recording-btn">
+                        🎤 Start Recording
+                    </button>
+                    <div id="recording-status"></div>
+                    <div id="recording-results"></div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        // Voice recording functions
+        async function startVoiceRecording() {
+            const button = document.getElementById('start-recording-btn');
+            const statusDiv = document.getElementById('recording-status');
+            const resultsDiv = document.getElementById('recording-results');
+            
+            try {
+                // Disable button and show status
+                button.disabled = true;
+                button.textContent = '🎤 Recording...';
+                statusDiv.style.display = 'block';
+                statusDiv.textContent = '🎤 Recording started! Speak now...';
+                statusDiv.style.color = '#dc3545';
+                
+                // Start recording
+                const response = await fetch('/api/start-voice-recording', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusDiv.textContent = '✅ ' + result.message;
+                    statusDiv.style.color = '#28a745';
+                    
+                    // Poll for results
+                    pollForResults();
+                } else {
+                    statusDiv.textContent = '❌ ' + result.error;
+                    statusDiv.style.color = '#dc3545';
+                    resetButton();
+                }
+                
+            } catch (error) {
+                statusDiv.textContent = '❌ Error: ' + error.message;
+                statusDiv.style.color = '#dc3545';
+                resetButton();
+            }
+        }
+        
+        async function pollForResults() {
+            const statusDiv = document.getElementById('recording-status');
+            const resultsDiv = document.getElementById('recording-results');
+            
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/voice-status');
+                    const status = await response.json();
+                    
+                    if (!status.isRecording && status.result) {
+                        // Recording finished, show results
+                        clearInterval(pollInterval);
+                        displayVoiceResults(status.result);
+                        resetButton();
+                    }
+                } catch (error) {
+                    console.error('Error polling voice status:', error);
+                }
+            }, 1000);
+            
+            // Stop polling after 60 seconds
+            setTimeout(() => {
+                clearInterval(pollInterval);
+                if (statusDiv.textContent.includes('Recording started')) {
+                    statusDiv.textContent = '⏰ Recording timeout - please try again';
+                    statusDiv.style.color = '#ffc107';
+                    resetButton();
+                }
+            }, 60000);
+        }
+        
+        function displayVoiceResults(result) {
+            const statusDiv = document.getElementById('recording-status');
+            const resultsDiv = document.getElementById('recording-results');
+            
+            if (result.success) {
+                statusDiv.textContent = '✅ Voice recording completed successfully!';
+                statusDiv.style.color = '#28a745';
+                
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px;">
+                        <h4 style="margin-top: 0; color: #155724;">📝 Transcription:</h4>
+                        <p style="margin-bottom: 15px; color: #155724;">${result.transcription || 'No transcription available'}</p>
+                        
+                        ${result.claudeResult ? `
+                            <h4 style="color: #155724;">🤖 Extracted Information:</h4>
+                            <div style="background: white; border-radius: 6px; padding: 10px; margin-bottom: 10px;">
+                                <strong>Name:</strong> ${result.claudeResult.name || 'Not found'}<br>
+                                <strong>Email:</strong> ${result.claudeResult.email || 'Not found'}<br>
+                                <strong>Field:</strong> ${result.claudeResult.field || 'Not found'}<br>
+                                <strong>Summary:</strong> ${result.claudeResult.summary || 'Not found'}
+                            </div>
+                        ` : ''}
+                        
+                        <p style="margin-bottom: 10px; color: #155724; font-size: 14px;">
+                            ✅ Data has been saved to the database
+                        </p>
+                        
+                        ${result.emailResult ? `
+                            <div style="background: ${result.emailResult.success ? '#d4edda' : '#f8d7da'}; border: 1px solid ${result.emailResult.success ? '#c3e6cb' : '#f5c6cb'}; border-radius: 6px; padding: 10px; margin-top: 10px;">
+                                <h4 style="margin-top: 0; color: ${result.emailResult.success ? '#155724' : '#721c24'};">📧 Email Status:</h4>
+                                ${result.emailResult.success ? `
+                                    <p style="margin-bottom: 0; color: #155724;">
+                                        ✅ Follow-up email sent successfully!<br>
+                                        <small>Message ID: ${result.emailResult.messageId || 'N/A'}</small>
+                                    </p>
+                                ` : `
+                                    <p style="margin-bottom: 0; color: #721c24;">
+                                        ❌ Email failed: ${result.emailResult.error || 'Unknown error'}
+                                    </p>
+                                `}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            } else {
+                statusDiv.textContent = '❌ Voice recording failed: ' + (result.error || 'Unknown error');
+                statusDiv.style.color = '#dc3545';
+            }
+        }
+        
+        function resetButton() {
+            const button = document.getElementById('start-recording-btn');
+            button.disabled = false;
+            button.textContent = '🎤 Start Recording';
+        }
+    </script>
+</body>
+</html>
