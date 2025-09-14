@@ -224,7 +224,7 @@ class ExaSearch:
                 name_mentioned = True
                 break
         
-        # STRICT FILTERING: Only include results that mention the exact name
+        # RELAXED FILTERING: Include results with partial name matches or professional relevance
         for result in results:
             title = result.get('title', '') or ''
             text = result.get('text', '') or ''
@@ -235,13 +235,29 @@ class ExaSearch:
             text = text.lower() if text else ''
             url = url.lower() if url else ''
             
-            # Check if the name appears in the result
+            # Check for name variations
             result_text = f"{title} {text} {url}"
-            name_in_result = name.lower() in result_text
+            name_lower = name.lower()
+            first_name = name_lower.split()[0] if ' ' in name_lower else name_lower
+            last_name = name_lower.split()[-1] if ' ' in name_lower else name_lower
             
-            # ONLY include if the exact name appears in the result
-            should_include = name_in_result
-            reason = "exact name match" if name_in_result else "no exact name match"
+            # Check for exact name match
+            exact_match = name_lower in result_text
+            # Check for partial name match (first or last name)
+            partial_match = first_name in result_text or last_name in result_text
+            # Check for professional relevance
+            professional_keywords = ['ceo', 'founder', 'researcher', 'engineer', 'developer', 'ai', 'ml', 'startup', 'company', 'university', 'penn', 'upenn', 'wharton', 'cmu', 'nasa', 'ibm']
+            professional_relevance = any(keyword in result_text for keyword in professional_keywords)
+            
+            # Include if: exact match OR (partial match AND professional relevance)
+            should_include = exact_match or (partial_match and professional_relevance)
+            
+            if exact_match:
+                reason = "exact name match"
+            elif partial_match and professional_relevance:
+                reason = "partial name + professional relevance"
+            else:
+                reason = "no relevant match"
             
             if should_include:
                 filtered.append(result)

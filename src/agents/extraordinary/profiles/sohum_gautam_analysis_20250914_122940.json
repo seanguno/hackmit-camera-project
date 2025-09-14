@@ -1,0 +1,67 @@
+{
+  "name": "Sohum Gautam",
+  "photo": "",
+  "country": "Philadelphia",
+  "title_role": "Sohum Gautam - Researcher",
+  "company_affiliation": "Independent",
+  "claim_to_fame": "CS + Finance @ UPenn M&T; AI Dev. and Researcher @FII-Research; ML Intern @nexterarobotics; SWE Resident @ Headstarter",
+  "recognition": [
+    "University of Pennsylvania Management & Technology Program",
+    "Future Investment Initiative Research",
+    "Nextera Robotics",
+    "Headstarter"
+  ],
+  "built_or_achieved": [
+    "CS + Finance @ UPenn M&T Class of 2029",
+    "AI Developer and Researcher @ FII-Research",
+    "ML Intern @ Nextera Robotics",
+    "SWE Resident @ Headstarter",
+    "CEO @ FII",
+    "Scout @ Afore Capital",
+    "Fellow @ Pear VC",
+    "VP @ V11",
+    "AI Researcher @ CMU Safe AI Lab",
+    "AI Researcher @ Penn xLab"
+  ],
+  "quote": "",
+  "criteria_hits": {
+    "impact": [
+      "CEO @ FII"
+    ],
+    "prestige_validation": [],
+    "pioneering_work": [
+      "AI Developer and Researcher @ FII-Research",
+      "AI Researcher @ CMU Safe AI Lab",
+      "AI Researcher @ Penn xLab"
+    ],
+    "recognition_by_institutions": [],
+    "exceptional_young": [],
+    "technical_frontier": [],
+    "builder_startup_cred": []
+  },
+  "sources": [],
+  "exa_search_results": {
+    "general": {
+      "requestId": "0c6cc8663e5afc3514870e4d69706687",
+      "autopromptString": "\"Sohum Gautam\" Philadelphia Researcher",
+      "resolvedSearchType": "neural",
+      "results": [
+        {
+          "id": "https://independent.academia.edu/GuhaSomes",
+          "title": "Somes Guha - Independent Researcher",
+          "url": "https://independent.academia.edu/GuhaSomes",
+          "publishedDate": "2025-04-06T00:00:00.000Z",
+          "author": "somes guha",
+          "score": 0.2441241294145584
+        }
+      ],
+      "searchTime": 168.1,
+      "costDollars": {
+        "total": 0.005,
+        "search": {
+          "neural": 0.005
+        }
+      }
+    }
+  }
+}

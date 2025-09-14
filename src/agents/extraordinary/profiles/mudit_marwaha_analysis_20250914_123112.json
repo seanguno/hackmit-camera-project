@@ -1,0 +1,83 @@
+{
+  "name": "Mudit Marwaha",
+  "photo": "",
+  "country": "United States",
+  "title_role": "Mudit Marwaha",
+  "company_affiliation": "Independent",
+  "claim_to_fame": "University of Pennsylvania\r\nBSE in CIS\r\nClass of 2027\r\nInterested in Machine Learning, Web Development, and Databases",
+  "recognition": [
+    "University of Pennsylvania",
+    "Bachelor of Science in Engineering in Computer and Information Science",
+    "University of Pennsylvania Class of 2027"
+  ],
+  "built_or_achieved": [
+    "BSE in Computer and Information Science at University of Pennsylvania, Class of 2027",
+    "Presidential Scholar Candidate in Florida",
+    "Intern at Bank of America Student Leaders Program with YMCA",
+    "Technology Development Program (TDP) participant at AT&T",
+    "Green startup involvement in Vietnam as featured by Penn Engineering",
+    "Active GitHub developer with 26 repositories",
+    "Software developer specializing in Python, Java, HTML, JavaScript, CSS, and OpenCV",
+    "Student at University of Pennsylvania pursuing Computer Science career"
+  ],
+  "quote": "",
+  "criteria_hits": {
+    "impact": [
+      "Green startup involvement in Vietnam as featured by Penn Engineering"
+    ],
+    "prestige_validation": [],
+    "pioneering_work": [],
+    "recognition_by_institutions": [],
+    "exceptional_young": [
+      "Intern at Bank of America Student Leaders Program with YMCA",
+      "Student at University of Pennsylvania pursuing Computer Science career"
+    ],
+    "technical_frontier": [
+      "Software developer specializing in Python, Java, HTML, JavaScript, CSS, and OpenCV"
+    ],
+    "builder_startup_cred": [
+      "Green startup involvement in Vietnam as featured by Penn Engineering"
+    ]
+  },
+  "sources": [],
+  "exa_search_results": {
+    "general": {
+      "requestId": "9d17ed1823b690727b8d538a918f4193",
+      "autopromptString": "\"Mudit Marwaha\" United States University",
+      "resolvedSearchType": "neural",
+      "results": [
+        {
+          "id": "https://www.wayup.com/profile/Sahir-Mody-794a86aa37/",
+          "title": "Sahir Mody - University of Maryland-College Park | WayUp",
+          "url": "https://www.wayup.com/profile/Sahir-Mody-794a86aa37/",
+          "publishedDate": "2018-08-01T00:00:00.000Z",
+          "author": null,
+          "score": 0.25171759724617004
+        },
+        {
+          "id": "https://www.wayup.com/profile/Dhruv-Vaghani-79b00a6d87/",
+          "title": "Dhruv Vaghani - University of Maryland-College Park | WayUp",
+          "url": "https://www.wayup.com/profile/Dhruv-Vaghani-79b00a6d87/",
+          "publishedDate": "2024-08-01T00:00:00.000Z",
+          "author": null,
+          "score": 0.23405785858631134
+        },
+        {
+          "id": "https://fl.muituniversity.in/",
+          "title": "Login",
+          "url": "https://fl.muituniversity.in/",
+          "publishedDate": "1970-01-01T00:00:00.000Z",
+          "author": null,
+          "score": 0.23210659623146057
+        }
+      ],
+      "searchTime": 164.3,
+      "costDollars": {
+        "total": 0.005,
+        "search": {
+          "neural": 0.005
+        }
+      }
+    }
+  }
+}
