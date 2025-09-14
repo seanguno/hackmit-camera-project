@@ -1,0 +1,128 @@
+{
+  "name": "Sean Guno",
+  "photo": "",
+  "country": "United States",
+  "title_role": "Dual Degree Student in Computer Science, Chemistry, and Bioengineering",
+  "company_affiliation": "University of Illinois Urbana-Champaign",
+  "claim_to_fame": "Ambitious and talented student pursuing a unique interdisciplinary education to drive innovation at the intersection of computer science, chemistry, and bioengineering",
+  "recognition": [],
+  "built_or_achieved": [
+    "Pursuing dual degrees in Computer Science + Chemistry and Bioengineering at the University of Illinois Urbana-Champaign"
+  ],
+  "quote": "Hi, my name is Sean Guno! I am pursuing a dual degree in Bioengineering and Computer Science + Chemistry with the intent to pursue further education in the ...",
+  "criteria_hits": {
+    "impact": [],
+    "prestige_validation": [],
+    "pioneering_work": [
+      "Pursuing an ambitious dual degree program that combines computer science, chemistry, and bioengineering"
+    ],
+    "recognition_by_institutions": [],
+    "exceptional_young": [
+      "Pursuing an advanced dual degree program as an undergraduate student"
+    ],
+    "technical_frontier": [
+      "Combining expertise in computer science, chemistry, and bioengineering to drive innovation at the intersection of these fields"
+    ],
+    "builder_startup_cred": []
+  },
+  "sources": [
+    {
+      "fact": "Sean Guno is pursuing a dual degree in Computer Science + Chemistry and Bioengineering at the University of Illinois Urbana-Champaign",
+      "evidence": "I am a student at University of Illinois' Grainger College of Illinois pursuing a dual degree in Computer Science + Chemistry and Bioengineering.",
+      "source_hint": "GitHub bio"
+    },
+    {
+      "fact": "Sean Guno has 21 repositories on GitHub",
+      "evidence": "Repositories: 21",
+      "source_hint": "GitHub info"
+    },
+    {
+      "fact": "Sean Guno has 0 followers on GitHub",
+      "evidence": "Followers: 0",
+      "source_hint": "GitHub info"
+    },
+    {
+      "fact": "Sean Guno has multiple LinkedIn profiles",
+      "evidence": "LinkedIn Profiles Found:\n- https://sa.linkedin.com/in/sean-guno-84586239\n- https://www.linkedin.com/in/seanguno\n- https://ph.linkedin.com/pub/dir/+/Guno\n- https://www.linkedin.com/pub/dir/Sean/Guno\n- https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States\n- https://cn.linkedin.com/pub/dir/+/Guno\n- https://www.linkedin.com/pub/dir/+/Guno",
+      "source_hint": "LinkedIn profiles"
+    },
+    {
+      "fact": "Sean Guno's LinkedIn profile describes him as a B.S. Computer Science + Chemistry student and B.S. Bioengineering student at the University of Illinois Urbana-Champaign",
+      "evidence": "Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign.",
+      "source_hint": "LinkedIn profiles"
+    }
+  ],
+  "flags": {
+    "weak_evidence": [],
+    "conflicts": []
+  },
+  "exa_search_results": {
+    "general": {
+      "requestId": "dc078d8b069efd0f57b8311a42503c26",
+      "autopromptString": "\"Sean Guno\" Urbana-Champaign University College",
+      "resolvedSearchType": "neural",
+      "results": [
+        {
+          "id": "https://ahs.illinois.edu/mullen",
+          "title": "College of Applied Health Sciences",
+          "url": "https://ahs.illinois.edu/mullen",
+          "publishedDate": "2019-09-08T00:00:00.000Z",
+          "author": null,
+          "score": 0.30836522579193115
+        }
+      ],
+      "searchTime": 161.1,
+      "costDollars": {
+        "total": 0.005,
+        "search": {
+          "neural": 0.005
+        }
+      }
+    },
+    "academic": {
+      "requestId": "547ece2c4d0d97643c6ebe4adee66b5f",
+      "autopromptString": "\"Sean Guno\" Urbana-Champaign University College research papers publications",
+      "resolvedSearchType": "neural",
+      "results": [
+        {
+          "id": "https://eblackcu.net/portal/items/show/818",
+          "title": "Urbana | Affirmative Action at University of Illinois: The 1968 Special Educational Opportunities Program",
+          "url": "https://eblackcu.net/portal/items/show/818",
+          "publishedDate": "2024-06-14T00:00:00.000Z",
+          "author": null,
+          "score": 0.2568005323410034
+        }
+      ],
+      "searchTime": 167.5,
+      "costDollars": {
+        "total": 0.005,
+        "search": {
+          "neural": 0.005
+        }
+      }
+    },
+    "news": {
+      "requestId": "a5e10ac0ba007408611bd4fd75b8975d",
+      "autopromptString": "\"Sean Guno\" news interview article",
+      "autoDate": "2025-08-14T00:00:00.000Z",
+      "resolvedSearchType": "neural",
+      "results": [
+        {
+          "id": "https://www.endicott.edu/news-events/news/news-articles/2025/02/actor-sean-astin-to-headline-endicotts-presidential-speaker-series",
+          "title": "Actor Sean Astin to Headline Endicott\u2019s Presidential Speaker Series | Endicott College",
+          "url": "https://www.endicott.edu/news-events/news/news-articles/2025/02/actor-sean-astin-to-headline-endicotts-presidential-speaker-series",
+          "publishedDate": "2025-12-02T00:00:00.000Z",
+          "author": null,
+          "score": 0.1500285565853119
+        }
+      ],
+      "searchTime": 130.1,
+      "costDollars": {
+        "total": 0.005,
+        "search": {
+          "neural": 0.005
+        }
+      }
+    }
+  }
+}

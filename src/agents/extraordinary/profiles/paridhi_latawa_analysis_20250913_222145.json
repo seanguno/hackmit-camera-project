@@ -1,0 +1,77 @@
+{
+  "name": "Paridhi Latawa",
+  "photo": "",
+  "country": "United States",
+  "title_role": "CS & Biology Student | AI Researcher",
+  "company_affiliation": "Massachusetts Institute of Technology, Eli Lilly and Company",
+  "claim_to_fame": "Pioneering undergraduate researcher working at the intersection of AI, biology, and cancer therapeutics",
+  "recognition": [
+    "Coca-Cola Scholar",
+    "Apple Scholar",
+    "Regeneron Science Talent Search Scholar",
+    "Grace Hopper Celebration Scholar (GHC'24)"
+  ],
+  "built_or_achieved": [
+    "Developed a fine-tuning pipeline for AI models in the AI Engineering and AI Research-Biology Discovery teams at Eli Lilly",
+    "Conducted cancer research on the Abraxas-BRCA1-A complex and DNA repair, presenting at the MD Anderson Cancer Center"
+  ],
+  "quote": "As the only undergraduate working with both the AI Engineering & AI Research-Biology Discovery teams, I developed a fine-tuning pipeline for a ...",
+  "criteria_hits": {
+    "impact": [
+      "Worked as the only undergraduate on AI teams at Eli Lilly, developing novel pipelines"
+    ],
+    "prestige_validation": [
+      "Scholarships from prestigious organizations like Coca-Cola, Apple, and Regeneron",
+      "Selected as a Grace Hopper Celebration (GHC'24) scholar"
+    ],
+    "pioneering_work": [
+      "Conducting cutting-edge research at the intersection of AI, biology, and cancer therapeutics as an undergraduate"
+    ],
+    "recognition_by_institutions": [
+      "Presented cancer research at the prestigious MD Anderson Cancer Center"
+    ],
+    "exceptional_young": [
+      "Achieving multiple prestigious scholarships and research opportunities as an undergraduate student"
+    ],
+    "technical_frontier": [
+      "Developing AI models and pipelines for biological and medical applications"
+    ],
+    "builder_startup_cred": []
+  },
+  "sources": [
+    {
+      "fact": "Paridhi Latawa is a CS & Biology student at MIT",
+      "evidence": "LinkedIn: Paridhi Latawa - CS & Biology @ MIT | AI @ Eli Lilly",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Paridhi Latawa worked as an AI researcher at Eli Lilly",
+      "evidence": "LinkedIn: Paridhi Latawa - CS & Biology @ MIT | AI @ Eli Lilly",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Paridhi Latawa is a Coca-Cola Scholar, Apple Scholar, and Regeneron STS Scholar",
+      "evidence": "LinkedIn: Paridhi Latawa - CS & Biology @ MIT | AI @ Eli Lilly | Coca-Cola Scholar | Apple Scholar | Regeneron STS Scholar | GHC'24",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Paridhi Latawa is a Grace Hopper Celebration (GHC'24) scholar",
+      "evidence": "LinkedIn: Paridhi Latawa - CS & Biology @ MIT | AI @ Eli Lilly | Coca-Cola Scholar | Apple Scholar | Regeneron STS Scholar | GHC'24",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Paridhi Latawa developed a fine-tuning pipeline for AI models at Eli Lilly",
+      "evidence": "LinkedIn: Paridhi Latawa's Post - As the only undergraduate working with both the AI Engineering & AI Research-Biology Discovery teams, I developed a fine-tuning pipeline for a ...",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Paridhi Latawa conducted cancer research on the Abraxas-BRCA1-A complex and DNA repair, presenting at the MD Anderson Cancer Center",
+      "evidence": "LinkedIn: Paridhi Latawa's Post - I worked in the Wang Lab on the Abraxas-BRCA1-A complex and DNA repair presenting my research analysis at the MD Anderson Cancer Center Division ...",
+      "source_hint": "LinkedIn"
+    }
+  ],
+  "flags": {
+    "weak_evidence": [],
+    "conflicts": []
+  }
+}

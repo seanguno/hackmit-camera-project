@@ -1,0 +1,95 @@
+{
+  "name": "Sohum Gautam",
+  "photo": "",
+  "country": "United States",
+  "title_role": "Co-founder & AI Head at FII, AI Governance at UN",
+  "company_affiliation": "FII, CMU Safe AI Lab, Penn xLab",
+  "claim_to_fame": "A precocious AI researcher and entrepreneur making waves in the tech and policy worlds at just 20 years old",
+  "recognition": [
+    "Coke Scholar",
+    "PA FBLA Executive Board Member"
+  ],
+  "built_or_achieved": [
+    "Co-founded FII, an AI research and development company",
+    "Worked on AI governance initiatives at the United Nations"
+  ],
+  "quote": "\"Congratulations Sohum! You are a very impressive young person.\"",
+  "criteria_hits": {
+    "impact": [
+      "Co-founded an AI research company at a young age",
+      "Involved in AI governance work at the UN"
+    ],
+    "prestige_validation": [
+      "Coke Scholar, prestigious award",
+      "Executive board member of PA FBLA, a leading student organization"
+    ],
+    "pioneering_work": [
+      "Co-founding an AI research company as a young entrepreneur"
+    ],
+    "recognition_by_institutions": [
+      "Coke Scholar award",
+      "PA FBLA Executive Board position"
+    ],
+    "exceptional_young": [
+      "Achieving significant accomplishments at just 20 years old"
+    ],
+    "technical_frontier": [
+      "Conducting AI research at the CMU Safe AI Lab and Penn xLab"
+    ],
+    "builder_startup_cred": [
+      "Co-founder and AI Head at FII, an AI research company",
+      "Scout at Afore Capital, Fellow at Pear VC, VP at V11"
+    ]
+  },
+  "sources": [
+    {
+      "fact": "Sohum Gautam's age and education",
+      "evidence": "ai + wharton @ upenn m&t '29",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Co-founder and AI Head at FII",
+      "evidence": "Co-founder & AI Head @ FII",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "AI Governance work at the UN",
+      "evidence": "AI Governance @ UN",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "PA FBLA Executive Board Member",
+      "evidence": "PA FBLA Exec. Board",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Previous experience at NASA and IBM",
+      "evidence": "Prev @ NASA, IBM",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Coke Scholar award",
+      "evidence": "Coke Scholar",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "AI research at CMU Safe AI Lab and Penn xLab",
+      "evidence": "AI @ CMU Safe AI Lab, Penn xLab",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Scout at Afore Capital, Fellow at Pear VC, VP at V11",
+      "evidence": "scout @ afore capital \u2022 fellow @ pear vc \u2022 vp @ v11",
+      "source_hint": "LinkedIn"
+    },
+    {
+      "fact": "Positive sentiment towards Sohum's achievements",
+      "evidence": "\"Congratulations Sohum! You are a very impressive young person.\"",
+      "source_hint": "LinkedIn"
+    }
+  ],
+  "flags": {
+    "weak_evidence": [],
+    "conflicts": []
+  }
+}
