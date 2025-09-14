@@ -28,13 +28,13 @@ But Spark doesn’t just surface context, it remembers people you’ve met, logs
 ## Code Structure 
 
 ```
+views/                       # EJS templates (now at the base level)
 src/
-├── agents/extraordinary/     # AI analysis system
+├── agents/extraordinary/    # AI analysis system
 ├── api/                     # API endpoints
 ├── face_recognition/        # Face recognition service
 ├── gmail/                   # Email integration
-├── voice/                   # Voice processing
-└── views/                   # EJS templates
+└── voice/                   # Voice processing
 ```
 
 #### Usage 
@@ -55,7 +55,7 @@ src/
   #### Face Recognition
   ```
   requests>=2.28.0          #HTTP requests 
-  opencv-python>=4.8.0     #Computer vision 
+  opencv-python>=4.8.0      #Computer vision 
   fastapi>=0.104.0          #API framework 
   uvicorn>=0.24.0           #ASGI server 
   ```
