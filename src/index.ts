@@ -23,7 +23,7 @@ interface StoredPhoto {
 const PACKAGE_NAME = process.env.PACKAGE_NAME ?? (() => { throw new Error('PACKAGE_NAME is not set in .env file'); })();
 const MENTRAOS_API_KEY = process.env.MENTRAOS_API_KEY ?? (() => { throw new Error('MENTRAOS_API_KEY is not set in .env file'); })();
 const PORT = parseInt(process.env.PORT || '3000');
-const FACE_RECOGNITION_API_URL = process.env.FACE_RECOGNITION_API_URL || 'http://localhost:8000';
+const FACE_RECOGNITION_API_URL = process.env.FACE_RECOGNITION_API_URL || 'http://localhost:8001';
 
 // Storage configuration
 const STORAGE_DIR = path.join(process.cwd(), 'storage', 'photos');
@@ -980,6 +980,51 @@ class ExampleMentraOSApp extends AppServer {
   }
 
   /**
+   * Extract social media links from analysis and search data
+   */
+  private extractSocialLinks(analysisJson: any, searchResult?: any): { github?: string; linkedin?: string } {
+    const socialLinks: { github?: string; linkedin?: string } = {};
+    
+    this.logger.info(`Extracting social links from analysis: ${JSON.stringify(analysisJson, null, 2)}`);
+    this.logger.info(`Extracting social links from search result: ${JSON.stringify(searchResult, null, 2)}`);
+    
+    // First try to extract from analysis data
+    const analysisText = JSON.stringify(analysisJson).toLowerCase();
+    
+    // Look for GitHub URLs in analysis
+    const githubMatch = analysisText.match(/github\.com\/[a-zA-Z0-9_-]+/);
+    if (githubMatch) {
+      socialLinks.github = 'https://' + githubMatch[0];
+      this.logger.info(`Found GitHub URL in analysis: ${socialLinks.github}`);
+    }
+    
+    // Look for LinkedIn URLs in analysis
+    const linkedinMatch = analysisText.match(/linkedin\.com\/in\/[a-zA-Z0-9_-]+/);
+    if (linkedinMatch) {
+      socialLinks.linkedin = 'https://' + linkedinMatch[0];
+      this.logger.info(`Found LinkedIn URL in analysis: ${socialLinks.linkedin}`);
+    }
+    
+    // Fall back to search results if not found in analysis
+    if (!socialLinks.github && searchResult?.github?.html_url) {
+      socialLinks.github = searchResult.github.html_url;
+      this.logger.info(`Found GitHub URL in search result (html_url): ${socialLinks.github}`);
+    }
+    if (!socialLinks.github && searchResult?.github?.url) {
+      socialLinks.github = searchResult.github.url;
+      this.logger.info(`Found GitHub URL in search result (url): ${socialLinks.github}`);
+    }
+    
+    if (!socialLinks.linkedin && searchResult?.linkedin?.url) {
+      socialLinks.linkedin = searchResult.linkedin.url;
+      this.logger.info(`Found LinkedIn URL in search result: ${socialLinks.linkedin}`);
+    }
+    
+    this.logger.info(`Final social links extracted: ${JSON.stringify(socialLinks, null, 2)}`);
+    return socialLinks;
+  }
+
+  /**
    * Extract sources from search result data
    */
   private extractSourcesFromSearch(searchResult: any): any[] {
@@ -1088,7 +1133,8 @@ class ExampleMentraOSApp extends AppServer {
         recognition: [],
         built_or_achieved: [],
         criteria_hits: {},
-        sources: this.extractSourcesFromSearch(userPhoto.search_result)
+        sources: this.extractSourcesFromSearch(userPhoto.search_result),
+        social_links: this.extractSocialLinks(userPhoto.analysis_result || {}, userPhoto.search_result)
       };
 
       // Extract Name using regex
@@ -1189,7 +1235,8 @@ class ExampleMentraOSApp extends AppServer {
         recognition: [],
         built_or_achieved: [],
         criteria_hits: {},
-        sources: this.extractSourcesFromSearch(userPhoto.search_result)
+        sources: this.extractSourcesFromSearch(userPhoto.search_result),
+        social_links: this.extractSocialLinks(userPhoto.analysis_result || {}, userPhoto.search_result)
       };
     }
   }
@@ -1204,7 +1251,7 @@ class ExampleMentraOSApp extends AppServer {
       const response = await axios.post(`${FACE_RECOGNITION_API_URL}/recognize`, {
         filename: filePath
       }, {
-        timeout: 30000, // 30 second timeout
+        timeout: 50000, // 30 second timeout
         headers: {
           'Content-Type': 'application/json'
         }
@@ -1363,7 +1410,7 @@ class ExampleMentraOSApp extends AppServer {
       if (this.isStreamingPhotos.get(userId) && Date.now() > (this.nextPhotoTime.get(userId) ?? 0)) {
         try {
           // set the next photos for 30 seconds from now, as a fallback if this fails
-          this.nextPhotoTime.set(userId, Date.now() + 30000);
+          this.nextPhotoTime.set(userId, Date.now() + 50000);
 
           // actually take the photo
           const photo = await session.camera.requestPhoto();
@@ -1755,7 +1802,8 @@ class ExampleMentraOSApp extends AppServer {
                 recognition: this.extractRecognitionFromAnalysis(analysisJson),
                 built_or_achieved: this.extractBuiltFromAnalysis(analysisJson),
                 criteria_hits: this.transformCriteriaHits(analysisJson),
-                sources: this.extractSourcesFromSearch(userPhoto.search_result)
+                sources: this.extractSourcesFromSearch(userPhoto.search_result),
+                social_links: this.extractSocialLinks(analysisJson, userPhoto.search_result)
               };
               
               this.logger.info(`Transformed analysis data for user ${userId}: ${JSON.stringify(analysisData, null, 2)}`);
@@ -1907,6 +1955,108 @@ class ExampleMentraOSApp extends AppServer {
       } catch (error) {
         this.logger.error(`Error serving person image: ${error}`);
         res.status(500).json({ error: 'Failed to serve person image' });
+      }
+    });
+
+    // Serve icons as static files
+    app.use('/icons', require('express').static(path.join(process.cwd(), 'icons')));
+    
+    // Icons endpoint (fallback)
+    app.get('/icons/:iconName', (req: any, res: any) => {
+      try {
+        const iconName = req.params.iconName;
+        const iconPath = path.join(process.cwd(), 'icons', iconName);
+        
+        this.logger.info(`Icons endpoint called for: ${iconName}, path: ${iconPath}`);
+        
+        if (!fs.existsSync(iconPath)) {
+          this.logger.error(`Icon not found: ${iconPath}`);
+          return res.status(404).json({ error: 'Icon not found' });
+        }
+        
+        // Determine content type based on file extension
+        const ext = path.extname(iconName).toLowerCase();
+        let contentType = 'image/png';
+        if (ext === '.jpg' || ext === '.jpeg') {
+          contentType = 'image/jpeg';
+        } else if (ext === '.gif') {
+          contentType = 'image/gif';
+        } else if (ext === '.svg') {
+          contentType = 'image/svg+xml';
+        }
+        
+        this.logger.info(`Serving icon: ${iconName} with content type: ${contentType}`);
+        
+        res.set({
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=86400' // Cache for 24 hours
+        });
+        res.sendFile(iconPath);
+      } catch (error) {
+        this.logger.error(`Error serving icon: ${error}`);
+        res.status(500).json({ error: 'Failed to serve icon' });
+      }
+    });
+
+    // Test endpoint for social links
+    app.get('/api/test-social-links', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        // Read metadata to get latest analysis
+        if (!fs.existsSync(METADATA_FILE)) {
+          res.json({ social_links: null });
+          return;
+        }
+
+        const metadataContent = fs.readFileSync(METADATA_FILE, 'utf8');
+        const metadata = JSON.parse(metadataContent);
+        
+        const userPhoto = metadata[userId];
+        if (userPhoto && userPhoto.analysis_result) {
+          let analysisJson;
+          if (typeof userPhoto.analysis_result.data === 'string') {
+            analysisJson = JSON.parse(userPhoto.analysis_result.data);
+          } else {
+            analysisJson = userPhoto.analysis_result.data;
+          }
+          
+          const socialLinks = this.extractSocialLinks(analysisJson, userPhoto.search_result);
+          
+          res.json({ 
+            social_links: socialLinks,
+            analysis_data: analysisJson,
+            search_result: userPhoto.search_result
+          });
+        } else {
+          res.json({ social_links: null });
+        }
+      } catch (error) {
+        this.logger.error(`Error testing social links: ${error}`);
+        res.status(500).json({ error: 'Failed to test social links' });
+      }
+    });
+
+    // Test endpoint for icons
+    app.get('/api/test-icons', (req: any, res: any) => {
+      try {
+        const iconsDir = path.join(process.cwd(), 'icons');
+        const files = fs.readdirSync(iconsDir);
+        
+        res.json({
+          icons_directory: iconsDir,
+          available_icons: files,
+          github_exists: fs.existsSync(path.join(iconsDir, 'github.png')),
+          linkedin_exists: fs.existsSync(path.join(iconsDir, 'linkedin.png'))
+        });
+      } catch (error) {
+        this.logger.error(`Error testing icons: ${error}`);
+        res.status(500).json({ error: 'Failed to test icons' });
       }
     });
 

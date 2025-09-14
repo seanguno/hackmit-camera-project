@@ -47,10 +47,22 @@ Your specific task:
    - Technical Excellence/Frontier (cutting-edge research, patents)
    - Builder/Startup Cred (founding teams, venture backing)
 
-3. Highlight achievements for each criterion based on evidence found in the SCRAPED_DETAILS
-4. Celebrate their potential and what makes them extraordinary
-5. Identify specific evidence for each criterion from the SCRAPED_DETAILS
-6. Celebrate their achievements and unique qualities
+3. Be sure to also include the following:
+  "name": "<full name>",
+  "photo": "<url or empty>",
+  "country": "<country>",
+  "title_role": "<current, most important and most prestigious and impressive role>",
+  "company_affiliation": "<company/lab/institution>",
+  "claim_to_fame": "<one compelling sentence on what makes them extraordinary>",
+  "extraordinary_punchline": "<10 word MAX punch line, summary of claim_to_fame>",
+  "recognition": ["<award/media/fellowship>", "..."],
+  "built_or_achieved": ["<notable project/product/metric>", "..."],
+  "quote": "<short direct quote, if present>",
+
+4. Highlight achievements for each criterion based on evidence found in the SCRAPED_DETAILS
+5. Celebrate their potential and what makes them extraordinary
+6. Identify specific evidence for each criterion from the SCRAPED_DETAILS
+7. Celebrate their achievements and unique qualities
 
 CRITICAL: Only analyze the person described in the SCRAPED_DETAILS input. Capture ALL available information from GitHub, LinkedIn, web search results, and any other sources provided.''',
             agent=agent,

@@ -61,6 +61,7 @@ class ExtraordinaryAnalyzer:
         
         # Run analysis
         analysis_result = self._run_analysis(scraped_data)
+        # analysis_result = scraped_data
         
         # Save and display results
         self._save_profile(analysis_result, search_result.get('exa_results', {}))

@@ -77,6 +77,39 @@
             margin-top: 5px;
         }
         
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-link {
+            display: inline-block;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-2px) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover .social-icon {
+            transform: scale(1.1);
+        }
+        
         .extraordinary-punchline {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -357,6 +390,47 @@
                     <% if (data.country) { %>
                         <div class="person-location">📍 <%= data.country %></div>
                     <% } %>
+                    
+                    <!-- Social Media Links -->
+                    <% if (data.social_links && data.social_links.github) { %>
+                        <div class="social-links">
+                            <% if (data.social_links.github) { %>
+                                <a href="<%= data.social_links.github %>" target="_blank" class="social-link github-link" title="GitHub Profile">
+                                    <img src="/icons/github.png" alt="GitHub" class="social-icon" onerror="console.error('GitHub icon failed to load'); this.style.display='none';">
+                                </a>
+                            <% } %>
+                            <% if (data.social_links.linkedin) { %>
+                                <a href="<%= data.social_links.linkedin %>" target="_blank" class="social-link linkedin-link" title="LinkedIn Profile">
+                                    <img src="/icons/linkedin.png" alt="LinkedIn" class="social-icon" onerror="console.error('LinkedIn icon failed to load'); this.style.display='none';">
+                                </a>
+                            <% } %>
+                        </div>
+                    <% } %>
+                   
+                    
+                    <!-- Test icons section -->
+                    <div style="margin-top: 15px; text-align: center;">
+                        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Test Icons (Clickable):</div>
+                        <div style="display: flex; justify-content: center; gap: 10px;">
+                            <a href="https://github.com/seanguno" target="_blank" style="display: inline-block; transition: all 0.3s ease; border-radius: 50%; padding: 8px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px);" onmouseover="this.style.transform='translateY(-2px) scale(1.1)'; this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.background='rgba(255, 255, 255, 0.2)'">
+                                <img src="/icons/github.png" alt="GitHub Test" style="width: 20px; height: 20px; filter: brightness(0) invert(1);" onerror="this.style.border='2px solid red'; this.alt='GitHub icon failed'; console.error('GitHub icon failed to load from /icons/github.png');">
+                            </a>
+                            <a href="https://linkedin.com/in/seanguno" target="_blank" style="display: inline-block; transition: all 0.3s ease; border-radius: 50%; padding: 8px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px);" onmouseover="this.style.transform='translateY(-2px) scale(1.1)'; this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.background='rgba(255, 255, 255, 0.2)'">
+                                <img src="/icons/linkedin.png" alt="LinkedIn Test" style="width: 20px; height: 20px; filter: brightness(0) invert(1);" onerror="this.style.border='2px solid red'; this.alt='LinkedIn icon failed'; console.error('LinkedIn icon failed to load from /icons/linkedin.png');">
+                            </a>
+                        </div>
+                        <div style="font-size: 10px; color: #999; margin-top: 5px;">
+                            <button onclick="testIconsEndpoint()" style="background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px;">Test Icons Endpoint</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Debug: Why social links section not showing -->
+                    <div style="font-size: 12px; color: #666; margin-top: 10px;">
+                        Debug: data.social_links exists: <%= typeof data.social_links !== 'undefined' %><br>
+                        Debug: data.social_links.github: <%= data.social_links?.github %><br>
+                        Debug: data.social_links.linkedin: <%= data.social_links?.linkedin %><br>
+                        Debug: Condition result: <%= (data.social_links && (data.social_links.github || data.social_links.linkedin)) %>
+                    </div>
                 </div>
                 
                 <!-- Extraordinary Punchline -->
@@ -619,6 +693,19 @@
             const button = document.getElementById('start-recording-btn');
             button.disabled = false;
             button.textContent = '🎤 Start Recording';
+        }
+        
+        // Test icons endpoint
+        async function testIconsEndpoint() {
+            try {
+                const response = await fetch('/api/test-icons');
+                const result = await response.json();
+                console.log('Icons test result:', result);
+                alert(`Icons test:\nDirectory: ${result.icons_directory}\nFiles: ${result.available_icons.join(', ')}\nGitHub exists: ${result.github_exists}\nLinkedIn exists: ${result.linkedin_exists}`);
+            } catch (error) {
+                console.error('Error testing icons:', error);
+                alert('Error testing icons: ' + error.message);
+            }
         }
     </script>
 </body>

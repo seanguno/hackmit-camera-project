@@ -429,68 +429,68 @@ async def list_faces():
     }
 
 def main():
-    """Main function"""
-    logger.info("=== Simple Face Recognition ===")
+    # """Main function"""
+    # logger.info("=== Simple Face Recognition ===")
     
-    # Initialize the face recognition system
-    face_system = EdenAIFaceRecognition()
+    # # Initialize the face recognition system
+    # face_system = EdenAIFaceRecognition()
     
-    # Upload and register database images
-    db_images_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "images", "db_images")
-    db_images = os.listdir(db_images_path)
-    print(db_images)
-    db_images = [os.path.join(db_images_path, image) for image in db_images]
+    # # Upload and register database images
+    # db_images_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "images", "db_images")
+    # db_images = os.listdir(db_images_path)
+    # print(db_images)
+    # db_images = [os.path.join(db_images_path, image) for image in db_images]
 
-    logger.info("\n1. Adding Images to DB")
-    for image in db_images:
-        image_name = image.split("/")[-1]
-        # Check if image name already exists in database
-        if not any(data["name"] == image_name for data in face_system.face_database.values()):
-            url = face_system.upload_to_imgur(image)
-            if url:
-                face_system.add_face(image_name, url)
-        else:
-            logger.info(f"Image {image_name} already exists, skipping...")
+    # logger.info("\n1. Adding Images to DB")
+    # # for image in db_images:
+    # #     image_name = image.split("/")[-1]
+    # #     # Check if image name already exists in database
+    # #     if not any(data["name"] == image_name for data in face_system.face_database.values()):
+    # #         url = face_system.upload_to_imgur(image)
+    # #         if url:
+    # #             face_system.add_face(image_name, url)
+    # #     else:
+    # #         logger.info(f"Image {image_name} already exists, skipping...")
             
-    face_system.list_faces()
-    logger.info(f"\nDatabase saved to: {face_system.db_file}")
+    # face_system.list_faces()
+    # logger.info(f"\nDatabase saved to: {face_system.db_file}")
 
-    logger.info("\n3. Testing recognition")
-    # filename = capture_photo()
-    db_images_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "images", "db_images")
-    filename = os.path.join(db_images_path, "Terry_Huhtala_Headshot.jpeg")
-    test_url = face_system.upload_to_imgur(filename)
+    # logger.info("\n3. Testing recognition")
+    # # filename = capture_photo()
+    # db_images_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "images", "db_images")
+    # filename = os.path.join(db_images_path, "Terry_Huhtala_Headshot.jpeg")
+    # test_url = face_system.upload_to_imgur(filename)
     
-    if test_url:
-        result = face_system.recognize_face(test_url)
-        best_match = face_system.choose_best_match(result["amazon"]["items"])
-        logger.info(f"Best match: {best_match}")
-        matching_id = best_match.get("face_id")
-        for id, data in face_system.face_database.items():
-            if matching_id == id:
-                print("--------------------------------")
-                name = data['name'].split(".")[0]
-                logger.info(f"This person in this image is: {name}")
-                print("--------------------------------")
-    else:
-        logger.warning("Could not upload test image to Imgur (API error). Using existing image from database instead.")
-        # Use an existing image URL from the database for testing
-        for face_id, data in face_system.face_database.items():
-            if "Thomas_Tee" in data['name']:
-                test_url = data['image_url']
-                logger.info(f"Using existing Thomas_Tee image: {test_url}")
-                result = face_system.recognize_face(test_url)
-                best_match = face_system.choose_best_match(result["amazon"]["items"])
-                logger.info(f"Best match: {best_match}")
-                matching_id = best_match.get("face_id")
-                for id, data in face_system.face_database.items():
-                    if matching_id == id:
-                        print("--------------------------------")
-                        name = data['name'].split(".")[0]
-                        logger.info(f"This person in this image is: {name}")
-                        print("--------------------------------")
-                break
-        
+    # if test_url:
+    #     result = face_system.recognize_face(test_url)
+    #     best_match = face_system.choose_best_match(result["amazon"]["items"])
+    #     logger.info(f"Best match: {best_match}")
+    #     matching_id = best_match.get("face_id")
+    #     for id, data in face_system.face_database.items():
+    #         if matching_id == id:
+    #             print("--------------------------------")
+    #             name = data['name'].split(".")[0]
+    #             logger.info(f"This person in this image is: {name}")
+    #             print("--------------------------------")
+    # else:
+    #     logger.warning("Could not upload test image to Imgur (API error). Using existing image from database instead.")
+    #     # Use an existing image URL from the database for testing
+    #     for face_id, data in face_system.face_database.items():
+    #         if "Thomas_Tee" in data['name']:
+    #             test_url = data['image_url']
+    #             logger.info(f"Using existing Thomas_Tee image: {test_url}")
+    #             result = face_system.recognize_face(test_url)
+    #             best_match = face_system.choose_best_match(result["amazon"]["items"])
+    #             logger.info(f"Best match: {best_match}")
+    #             matching_id = best_match.get("face_id")
+    #             for id, data in face_system.face_database.items():
+    #                 if matching_id == id:
+    #                     print("--------------------------------")
+    #                     name = data['name'].split(".")[0]
+    #                     logger.info(f"This person in this image is: {name}")
+    #                     print("--------------------------------")
+    #             break
+    pass 
 if __name__ == "__main__":
     import sys
     
@@ -498,7 +498,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--server":
         # Run FastAPI server
         logger.info("=== Starting Face Recognition API Server ===")
-        uvicorn.run(app, host="0.0.0.0", port=8000)
+        uvicorn.run(app, host="0.0.0.0", port=8001)
     else:
         # Run test main function
         main()
