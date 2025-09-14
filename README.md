@@ -45,25 +45,25 @@ src/
 4. Install dependencies
   #### AI/ML Stack
   ```
-  crewai                    #Multi-agent framework <br>
-  langchain-anthropic       #Claude integration <br> 
-  httpx                     #Async HTTP client <br> 
-  exa-py                    #Exa API client <br>
-  python-dotenv             #Environment management <br>
+  crewai                    #Multi-agent framework 
+  langchain-anthropic       #Claude integration  
+  httpx                     #Async HTTP client  
+  exa-py                    #Exa API client
+  python-dotenv             #Environment management 
   ```
   
   #### Face Recognition
   ```
-  requests>=2.28.0          #HTTP requests <br>
-  opencv-python>=4.8.0     #Computer vision <br>
-  fastapi>=0.104.0          #API framework <br>
-  uvicorn>=0.24.0           #ASGI server <br>
+  requests>=2.28.0          #HTTP requests 
+  opencv-python>=4.8.0     #Computer vision 
+  fastapi>=0.104.0          #API framework 
+  uvicorn>=0.24.0           #ASGI server 
   ```
   
   #### Voice Processing
   ```
-  pyaudio==0.2.11           #Audio capture <br>
-  numpy==1.24.3             #Audio processing <br>
+  pyaudio==0.2.11           #Audio capture 
+  numpy==1.24.3             #Audio processing 
   ```
 
 
