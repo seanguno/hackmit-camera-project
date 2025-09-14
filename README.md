@@ -16,7 +16,6 @@ By surfacing the factors and accomplishments that make a person remarkable, beyo
 
 ## Code Structure 
 
-## Code Structure 
 ```
 src/
 ├── agents/extraordinary/     # AI analysis system
@@ -26,7 +25,6 @@ src/
 ├── voice/                   # Voice processing
 └── views/                   # EJS templates
 ```
-
 
 #### Usage 
 
@@ -56,9 +54,6 @@ uvicorn>=0.24.0           #ASGI server <br>
 pyaudio==0.2.11           #Audio capture <br>
 numpy==1.24.3             #Audio processing <br>
 ```
-
-5. Run
-
 
 ## Inspiration and Impact 
 In today’s hyperconnected world, we constantly walk past extraordinary people without ever realizing it–founders, scientists, activists, creators–simply because their stories can be invisible in real life. We were inspired by this invisible “context gap” and wanted to make meaningful connections effortless and serendipitous, especially in environments like hackathons or conferences, where collaboration potential is high but often missed.
