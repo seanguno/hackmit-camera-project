@@ -1,58 +1,44 @@
-# MentraOS-Camera-Example-App
+# Spark: *See the extraordinary in everyone instantly* 
 
-This is a simple example app which demonstrates how to use the MentraOS Camera API to take photos and display them in a webview.
+Spark is an AI-powered tool built on the MentraOS glasses that lets people instantly discover the extraordinary individuals around them. 
 
-You could also send the photo to an AI api, store it in a database or cloud storage, send it to Roboflow, or do other processing.
+By surfacing the factors and accomplishments that make a person remarkable, beyond just their job title or LinkedIn headline, Spark breaks the cold-start barrier in human connection. It provides baseline knowledge to help cultivate introductions, conversations, and relationships. Through this, Spark accelerates authentic connection and collaboration in real-world environments like conferences, hackathons, research labs, and entrepreneurial communities.
 
-### Install MentraOS on your phone
+## Stack 
 
-MentraOS install links: [mentra.glass/install](https://mentra.glass/install)
+| Stack         | Name                                                                 |
+|---------------|----------------------------------------------------------------------|
+| Hardware            | [Mentra] (https://mentra.glass/) - GitHub: (https://github.com/Mentra-Community/MentraOS)                          |
+| Deployment     |  |
+| Front-end      |  |
+| Back-end       | |
 
-### (Easiest way to get started) Set up ngrok
+## Project Structure 
 
-1. `brew install ngrok`
+## Usage 
 
-2. Make an ngrok account
+1. Clone the repository:
+`https://github.com/seanguno/hackmit-camera-project.git`
 
-3. [Use ngrok to make a static address/URL](https://dashboard.ngrok.com/)
+4. Install dependencies:
 
-### Register your App with MentraOS
+5. Run :
 
-1. Navigate to [console.mentra.glass](https://console.mentra.glass/)
+Available at:  
 
-2. Click "Sign In", and log in with the same account you're using for MentraOS
+## Inspiration and Impact 
+In today’s hyperconnected world, we constantly walk past extraordinary people without ever realizing it–founders, scientists, activists, creators–simply because their stories can be invisible in real life. We were inspired by this invisible “context gap” and wanted to make meaningful connections effortless and serendipitous, especially in environments like hackathons or conferences, where collaboration potential is high but often missed.
 
-3. Click "Create App"
+But Spark doesn’t just surface context, it remembers people you’ve met, logs interactions, and builds an evolving map of your personal network. It helps you reconnect later and pick up past conversations. This transforms fleeting moments, which could have been foregone conversations, into lasting connections. 
+ 
+## Team 
+Sohum Gautam, UPenn M&T '29 <br>
+Sean Guno, UIUC CS + Chemistry & Bioengineering '26 <br>
+Pari Latawa, MIT CS + Bio '26 <br>
+Mudit Marwaha, CS '26 
 
-4. Set a unique package name like `com.yourName.yourAppName`
-
-5. For "Public URL", enter your Ngrok's static URL
-
-6. In the edit app screen, add the microphone permission
-
-### Get your App running!
-
-1. [Install bun](https://bun.sh/docs/installation)
-
-2. Clone this repo locally: `git clone https://github.com/Mentra-Community/MentraOS-Camera-Example-App`
-
-3. cd into your repo, then type `bun install`
-
-5. Set up your environment variables:
-   * Create a `.env` file in the root directory by copying the example: `cp .env.example .env`
-   * Edit the `.env` file with your app details:
-     ```
-     PORT=3000
-     PACKAGE_NAME=com.yourName.yourAppName
-     MENTRAOS_API_KEY=your_api_key_from_console
-     ```
-   * Make sure the `PACKAGE_NAME` matches what you registered in the MentraOS Console
-   * Get your `API_KEY` from the MentraOS Developer Console
-
-6. Run your app with `bun run dev`
-
-7. To expose your app to the internet (and thus MentraOS) with ngrok, run: `ngrok http --url=<YOUR_NGROK_URL_HERE> 3000`
-    * `3000` is the port. It must match what is in the app config. For example, if you entered `port: 8080`, use `8080` for ngrok instead.
+## Acknowledgements
+Thank you to the MIT 2025 HackMIT organizing team. Thank you to all sponsors for guidance and API credits, especially Mentra OS, Extraordinary, Anthropic, and Y Combinator.
 
 
 ### Next Steps
