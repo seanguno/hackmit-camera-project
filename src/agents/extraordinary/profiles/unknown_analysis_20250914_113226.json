@@ -1,0 +1,5 @@
+{
+  "Name": "Unknown",
+  "Error": "JSON parsing failed: Invalid control character at: line 26 column 579 (char 3057)",
+  "RawContent": "{\n  \"Name\": \"Cayden Pierce\",\n  \"Extraordinary Analysis\": {\n    \"Impact\": {\n      \"Evidence\": \"Cayden is the CEO and CTO of Mentra, a startup building the operating system for smart glasses - the next major computing platform. He has raised $8 million in funding from high-profile investors like the founders of Android and YouTube, indicating the significant impact potential of his work.\"\n    },\n    \"Prestige/Validation\": {\n      \"Evidence\": \"Cayden has been accepted to the prestigious MIT Media Lab as a Master's student, where he will be a Research Assistant in the Fluid Interfaces Group, researching cutting-edge systems for human-computer interaction. This prestigious academic affiliation speaks to the recognition of his abilities by leading experts in the field.\"\n    },\n    \"Pioneering Work\": {\n      \"Evidence\": \"Cayden is working on building the operating system for smart glasses, which represents a pioneering new computing platform that could transform personal computing. His work o..."
+}

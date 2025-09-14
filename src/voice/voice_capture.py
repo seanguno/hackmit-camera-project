@@ -30,7 +30,7 @@ class VoiceCapture:
         # Recording settings
         self.max_recording_time = 30  # seconds
         self.silence_threshold = 500
-        self.silence_duration = 1  # seconds of silence before stopping
+        self.silence_duration = 2  # seconds of silence before stopping
         
         # Setup logging
         self.setup_logging()

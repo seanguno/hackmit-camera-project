@@ -228,7 +228,42 @@ class ExampleMentraOSApp extends AppServer {
    * Extract title/role from analysis data
    */
   private extractTitleFromAnalysis(analysisJson: any): string {
-    // Look for role information in the analysis
+    // First, search through all analysis sections for title information
+    const analysisText = JSON.stringify(analysisJson).toLowerCase();
+    
+    // Look for specific title patterns in the analysis
+    if (analysisText.includes('professor') || analysisText.includes('dr.') || analysisText.includes('doctor')) {
+      return "Professor";
+    }
+    if (analysisText.includes('ceo') || analysisText.includes('chief executive')) {
+      return "CEO";
+    }
+    if (analysisText.includes('founder') || analysisText.includes('co-founder')) {
+      return "Founder";
+    }
+    if (analysisText.includes('engineer') || analysisText.includes('software engineer')) {
+      return "Engineer";
+    }
+    if (analysisText.includes('researcher') || analysisText.includes('research scientist')) {
+      return "Researcher";
+    }
+    if (analysisText.includes('director')) {
+      return "Director";
+    }
+    if (analysisText.includes('manager')) {
+      return "Manager";
+    }
+    if (analysisText.includes('phd') || analysisText.includes('ph.d')) {
+      return "PhD Student/Researcher";
+    }
+    if (analysisText.includes('graduate student') || analysisText.includes('grad student')) {
+      return "Graduate Student";
+    }
+    if (analysisText.includes('undergraduate') || analysisText.includes('undergrad')) {
+      return "Undergraduate Student";
+    }
+    
+    // Look for specific role information in the analysis structure
     if (analysisJson["Extraordinary Qualities and Achievements"]) {
       const qualities = analysisJson["Extraordinary Qualities and Achievements"];
       if (qualities["Technical Excellence/Frontier"]?.Description) {
@@ -238,7 +273,632 @@ class ExampleMentraOSApp extends AppServer {
         }
       }
     }
+    
+    // Try to extract title from name field as fallback
+    if (analysisJson.Name) {
+      const name = analysisJson.Name.toLowerCase();
+      if (name.includes('professor') || name.includes('dr.') || name.includes('doctor')) {
+        return "Professor";
+      }
+      if (name.includes('ceo') || name.includes('founder')) {
+        return "CEO/Founder";
+      }
+      if (name.includes('engineer')) {
+        return "Engineer";
+      }
+    }
+    
     return "Student";
+  }
+
+  /**
+   * Extract company affiliation from analysis data
+   */
+  private extractCompanyFromAnalysis(analysisJson: any, searchResult?: any): string {
+    // First try to extract from analysis data - this is the primary source
+    if (analysisJson["Extraordinary Qualities and Achievements"]) {
+      const qualities = analysisJson["Extraordinary Qualities and Achievements"];
+      if (qualities["Technical Excellence/Frontier"]?.Description) {
+        const desc = qualities["Technical Excellence/Frontier"].Description;
+        if (desc.includes("University of Illinois")) {
+          return "University of Illinois Urbana-Champaign";
+        }
+        if (desc.includes("MIT")) {
+          return "Massachusetts Institute of Technology";
+        }
+        if (desc.includes("Stanford")) {
+          return "Stanford University";
+        }
+        if (desc.includes("Google")) {
+          return "Google";
+        }
+        if (desc.includes("Microsoft")) {
+          return "Microsoft";
+        }
+        if (desc.includes("Apple")) {
+          return "Apple";
+        }
+        if (desc.includes("Meta") || desc.includes("Facebook")) {
+          return "Meta";
+        }
+      }
+    }
+    
+    // Look for company mentions in other analysis sections
+    const analysisText = JSON.stringify(analysisJson).toLowerCase();
+    
+    // Universities and Educational Institutions
+    if (analysisText.includes("university of illinois") || analysisText.includes("uiuc")) {
+      return "University of Illinois Urbana-Champaign";
+    }
+    if (analysisText.includes("mit") || analysisText.includes("massachusetts institute")) {
+      return "Massachusetts Institute of Technology";
+    }
+    if (analysisText.includes("stanford")) {
+      return "Stanford University";
+    }
+    if (analysisText.includes("harvard")) {
+      return "Harvard University";
+    }
+    if (analysisText.includes("berkeley") || analysisText.includes("uc berkeley")) {
+      return "UC Berkeley";
+    }
+    if (analysisText.includes("carnegie mellon") || analysisText.includes("cmu")) {
+      return "Carnegie Mellon University";
+    }
+    if (analysisText.includes("caltech")) {
+      return "California Institute of Technology";
+    }
+    if (analysisText.includes("princeton")) {
+      return "Princeton University";
+    }
+    if (analysisText.includes("yale")) {
+      return "Yale University";
+    }
+    if (analysisText.includes("columbia")) {
+      return "Columbia University";
+    }
+    
+    // Tech Companies
+    if (analysisText.includes("google") || analysisText.includes("alphabet")) {
+      return "Google";
+    }
+    if (analysisText.includes("microsoft")) {
+      return "Microsoft";
+    }
+    if (analysisText.includes("apple")) {
+      return "Apple";
+    }
+    if (analysisText.includes("meta") || analysisText.includes("facebook")) {
+      return "Meta";
+    }
+    if (analysisText.includes("amazon")) {
+      return "Amazon";
+    }
+    if (analysisText.includes("netflix")) {
+      return "Netflix";
+    }
+    if (analysisText.includes("tesla")) {
+      return "Tesla";
+    }
+    if (analysisText.includes("openai")) {
+      return "OpenAI";
+    }
+    if (analysisText.includes("anthropic")) {
+      return "Anthropic";
+    }
+    if (analysisText.includes("nvidia")) {
+      return "NVIDIA";
+    }
+    if (analysisText.includes("intel")) {
+      return "Intel";
+    }
+    if (analysisText.includes("amd")) {
+      return "AMD";
+    }
+    if (analysisText.includes("oracle")) {
+      return "Oracle";
+    }
+    if (analysisText.includes("salesforce")) {
+      return "Salesforce";
+    }
+    if (analysisText.includes("uber")) {
+      return "Uber";
+    }
+    if (analysisText.includes("airbnb")) {
+      return "Airbnb";
+    }
+    if (analysisText.includes("twitter") || analysisText.includes("x.com")) {
+      return "X (Twitter)";
+    }
+    if (analysisText.includes("linkedin")) {
+      return "LinkedIn";
+    }
+    if (analysisText.includes("github")) {
+      return "GitHub";
+    }
+    if (analysisText.includes("docker")) {
+      return "Docker";
+    }
+    if (analysisText.includes("kubernetes")) {
+      return "Kubernetes";
+    }
+    if (analysisText.includes("mongodb")) {
+      return "MongoDB";
+    }
+    if (analysisText.includes("redis")) {
+      return "Redis";
+    }
+    if (analysisText.includes("elastic")) {
+      return "Elastic";
+    }
+    if (analysisText.includes("databricks")) {
+      return "Databricks";
+    }
+    if (analysisText.includes("snowflake")) {
+      return "Snowflake";
+    }
+    if (analysisText.includes("palantir")) {
+      return "Palantir";
+    }
+    if (analysisText.includes("stripe")) {
+      return "Stripe";
+    }
+    if (analysisText.includes("square")) {
+      return "Square";
+    }
+    if (analysisText.includes("paypal")) {
+      return "PayPal";
+    }
+    if (analysisText.includes("coinbase")) {
+      return "Coinbase";
+    }
+    if (analysisText.includes("binance")) {
+      return "Binance";
+    }
+    if (analysisText.includes("ethereum")) {
+      return "Ethereum Foundation";
+    }
+    if (analysisText.includes("bitcoin")) {
+      return "Bitcoin";
+    }
+    
+    // Research Institutions
+    if (analysisText.includes("national science foundation") || analysisText.includes("nsf")) {
+      return "National Science Foundation";
+    }
+    if (analysisText.includes("national institutes of health") || analysisText.includes("nih")) {
+      return "National Institutes of Health";
+    }
+    if (analysisText.includes("department of energy") || analysisText.includes("doe")) {
+      return "Department of Energy";
+    }
+    if (analysisText.includes("darpa")) {
+      return "DARPA";
+    }
+    if (analysisText.includes("nasa")) {
+      return "NASA";
+    }
+    if (analysisText.includes("cern")) {
+      return "CERN";
+    }
+    if (analysisText.includes("max planck")) {
+      return "Max Planck Institute";
+    }
+    
+    // Only fall back to search results if analysis doesn't contain company info
+    if (searchResult?.github?.company) {
+      return searchResult.github.company;
+    }
+    
+    if (searchResult?.linkedin?.company) {
+      return searchResult.linkedin.company;
+    }
+    
+    return "University of Illinois Urbana-Champaign"; // Default fallback
+  }
+
+  /**
+   * Extract location/country from analysis data
+   */
+  private extractLocationFromAnalysis(analysisJson: any, searchResult?: any): string {
+    // First try to extract from analysis data - this is the primary source
+    const analysisText = JSON.stringify(analysisJson).toLowerCase();
+    
+    // Look for country/region mentions in the analysis
+    if (analysisText.includes("united states") || analysisText.includes("usa") || analysisText.includes("us")) {
+      return "United States";
+    }
+    if (analysisText.includes("canada")) {
+      return "Canada";
+    }
+    if (analysisText.includes("united kingdom") || analysisText.includes("uk") || analysisText.includes("britain")) {
+      return "United Kingdom";
+    }
+    if (analysisText.includes("germany")) {
+      return "Germany";
+    }
+    if (analysisText.includes("france")) {
+      return "France";
+    }
+    if (analysisText.includes("italy")) {
+      return "Italy";
+    }
+    if (analysisText.includes("spain")) {
+      return "Spain";
+    }
+    if (analysisText.includes("netherlands") || analysisText.includes("holland")) {
+      return "Netherlands";
+    }
+    if (analysisText.includes("sweden")) {
+      return "Sweden";
+    }
+    if (analysisText.includes("norway")) {
+      return "Norway";
+    }
+    if (analysisText.includes("denmark")) {
+      return "Denmark";
+    }
+    if (analysisText.includes("finland")) {
+      return "Finland";
+    }
+    if (analysisText.includes("switzerland")) {
+      return "Switzerland";
+    }
+    if (analysisText.includes("austria")) {
+      return "Austria";
+    }
+    if (analysisText.includes("belgium")) {
+      return "Belgium";
+    }
+    if (analysisText.includes("ireland")) {
+      return "Ireland";
+    }
+    if (analysisText.includes("portugal")) {
+      return "Portugal";
+    }
+    if (analysisText.includes("poland")) {
+      return "Poland";
+    }
+    if (analysisText.includes("czech republic") || analysisText.includes("czechia")) {
+      return "Czech Republic";
+    }
+    if (analysisText.includes("hungary")) {
+      return "Hungary";
+    }
+    if (analysisText.includes("romania")) {
+      return "Romania";
+    }
+    if (analysisText.includes("bulgaria")) {
+      return "Bulgaria";
+    }
+    if (analysisText.includes("croatia")) {
+      return "Croatia";
+    }
+    if (analysisText.includes("slovenia")) {
+      return "Slovenia";
+    }
+    if (analysisText.includes("slovakia")) {
+      return "Slovakia";
+    }
+    if (analysisText.includes("estonia")) {
+      return "Estonia";
+    }
+    if (analysisText.includes("latvia")) {
+      return "Latvia";
+    }
+    if (analysisText.includes("lithuania")) {
+      return "Lithuania";
+    }
+    
+    // Asia-Pacific
+    if (analysisText.includes("china")) {
+      return "China";
+    }
+    if (analysisText.includes("japan")) {
+      return "Japan";
+    }
+    if (analysisText.includes("south korea") || analysisText.includes("korea")) {
+      return "South Korea";
+    }
+    if (analysisText.includes("india")) {
+      return "India";
+    }
+    if (analysisText.includes("singapore")) {
+      return "Singapore";
+    }
+    if (analysisText.includes("hong kong")) {
+      return "Hong Kong";
+    }
+    if (analysisText.includes("taiwan")) {
+      return "Taiwan";
+    }
+    if (analysisText.includes("thailand")) {
+      return "Thailand";
+    }
+    if (analysisText.includes("malaysia")) {
+      return "Malaysia";
+    }
+    if (analysisText.includes("indonesia")) {
+      return "Indonesia";
+    }
+    if (analysisText.includes("philippines")) {
+      return "Philippines";
+    }
+    if (analysisText.includes("vietnam")) {
+      return "Vietnam";
+    }
+    if (analysisText.includes("australia")) {
+      return "Australia";
+    }
+    if (analysisText.includes("new zealand")) {
+      return "New Zealand";
+    }
+    
+    // Middle East & Africa
+    if (analysisText.includes("israel")) {
+      return "Israel";
+    }
+    if (analysisText.includes("uae") || analysisText.includes("united arab emirates")) {
+      return "United Arab Emirates";
+    }
+    if (analysisText.includes("saudi arabia")) {
+      return "Saudi Arabia";
+    }
+    if (analysisText.includes("turkey")) {
+      return "Turkey";
+    }
+    if (analysisText.includes("iran")) {
+      return "Iran";
+    }
+    if (analysisText.includes("egypt")) {
+      return "Egypt";
+    }
+    if (analysisText.includes("south africa")) {
+      return "South Africa";
+    }
+    if (analysisText.includes("nigeria")) {
+      return "Nigeria";
+    }
+    if (analysisText.includes("kenya")) {
+      return "Kenya";
+    }
+    if (analysisText.includes("morocco")) {
+      return "Morocco";
+    }
+    if (analysisText.includes("tunisia")) {
+      return "Tunisia";
+    }
+    if (analysisText.includes("algeria")) {
+      return "Algeria";
+    }
+    if (analysisText.includes("ethiopia")) {
+      return "Ethiopia";
+    }
+    if (analysisText.includes("ghana")) {
+      return "Ghana";
+    }
+    
+    // Latin America
+    if (analysisText.includes("brazil")) {
+      return "Brazil";
+    }
+    if (analysisText.includes("mexico")) {
+      return "Mexico";
+    }
+    if (analysisText.includes("argentina")) {
+      return "Argentina";
+    }
+    if (analysisText.includes("chile")) {
+      return "Chile";
+    }
+    if (analysisText.includes("colombia")) {
+      return "Colombia";
+    }
+    if (analysisText.includes("peru")) {
+      return "Peru";
+    }
+    if (analysisText.includes("venezuela")) {
+      return "Venezuela";
+    }
+    if (analysisText.includes("ecuador")) {
+      return "Ecuador";
+    }
+    if (analysisText.includes("bolivia")) {
+      return "Bolivia";
+    }
+    if (analysisText.includes("paraguay")) {
+      return "Paraguay";
+    }
+    if (analysisText.includes("uruguay")) {
+      return "Uruguay";
+    }
+    if (analysisText.includes("cuba")) {
+      return "Cuba";
+    }
+    if (analysisText.includes("jamaica")) {
+      return "Jamaica";
+    }
+    if (analysisText.includes("costa rica")) {
+      return "Costa Rica";
+    }
+    if (analysisText.includes("panama")) {
+      return "Panama";
+    }
+    if (analysisText.includes("guatemala")) {
+      return "Guatemala";
+    }
+    if (analysisText.includes("honduras")) {
+      return "Honduras";
+    }
+    if (analysisText.includes("nicaragua")) {
+      return "Nicaragua";
+    }
+    if (analysisText.includes("el salvador")) {
+      return "El Salvador";
+    }
+    if (analysisText.includes("belize")) {
+      return "Belize";
+    }
+    
+    // Look for specific city/state mentions that can help identify country
+    if (analysisText.includes("california") || analysisText.includes("san francisco") || analysisText.includes("los angeles") || analysisText.includes("san diego") || analysisText.includes("silicon valley")) {
+      return "United States";
+    }
+    if (analysisText.includes("new york") || analysisText.includes("manhattan") || analysisText.includes("brooklyn")) {
+      return "United States";
+    }
+    if (analysisText.includes("texas") || analysisText.includes("houston") || analysisText.includes("dallas") || analysisText.includes("austin")) {
+      return "United States";
+    }
+    if (analysisText.includes("illinois") || analysisText.includes("chicago")) {
+      return "United States";
+    }
+    if (analysisText.includes("massachusetts") || analysisText.includes("boston") || analysisText.includes("cambridge")) {
+      return "United States";
+    }
+    if (analysisText.includes("washington") || analysisText.includes("seattle")) {
+      return "United States";
+    }
+    if (analysisText.includes("florida") || analysisText.includes("miami") || analysisText.includes("orlando")) {
+      return "United States";
+    }
+    if (analysisText.includes("toronto") || analysisText.includes("vancouver") || analysisText.includes("montreal")) {
+      return "Canada";
+    }
+    if (analysisText.includes("london") || analysisText.includes("manchester") || analysisText.includes("birmingham")) {
+      return "United Kingdom";
+    }
+    if (analysisText.includes("berlin") || analysisText.includes("munich") || analysisText.includes("hamburg")) {
+      return "Germany";
+    }
+    if (analysisText.includes("paris") || analysisText.includes("lyon") || analysisText.includes("marseille")) {
+      return "France";
+    }
+    if (analysisText.includes("rome") || analysisText.includes("milan") || analysisText.includes("naples")) {
+      return "Italy";
+    }
+    if (analysisText.includes("madrid") || analysisText.includes("barcelona") || analysisText.includes("valencia")) {
+      return "Spain";
+    }
+    if (analysisText.includes("amsterdam") || analysisText.includes("rotterdam") || analysisText.includes("the hague")) {
+      return "Netherlands";
+    }
+    if (analysisText.includes("stockholm") || analysisText.includes("gothenburg")) {
+      return "Sweden";
+    }
+    if (analysisText.includes("oslo") || analysisText.includes("bergen")) {
+      return "Norway";
+    }
+    if (analysisText.includes("copenhagen") || analysisText.includes("aarhus")) {
+      return "Denmark";
+    }
+    if (analysisText.includes("helsinki") || analysisText.includes("tampere")) {
+      return "Finland";
+    }
+    if (analysisText.includes("zurich") || analysisText.includes("geneva") || analysisText.includes("basel")) {
+      return "Switzerland";
+    }
+    if (analysisText.includes("vienna") || analysisText.includes("salzburg")) {
+      return "Austria";
+    }
+    if (analysisText.includes("brussels") || analysisText.includes("antwerp")) {
+      return "Belgium";
+    }
+    if (analysisText.includes("dublin") || analysisText.includes("cork")) {
+      return "Ireland";
+    }
+    if (analysisText.includes("lisbon") || analysisText.includes("porto")) {
+      return "Portugal";
+    }
+    if (analysisText.includes("warsaw") || analysisText.includes("krakow")) {
+      return "Poland";
+    }
+    if (analysisText.includes("prague") || analysisText.includes("brno")) {
+      return "Czech Republic";
+    }
+    if (analysisText.includes("budapest") || analysisText.includes("debrecen")) {
+      return "Hungary";
+    }
+    if (analysisText.includes("bucharest") || analysisText.includes("cluj")) {
+      return "Romania";
+    }
+    if (analysisText.includes("sofia") || analysisText.includes("plovdiv")) {
+      return "Bulgaria";
+    }
+    if (analysisText.includes("zagreb") || analysisText.includes("split")) {
+      return "Croatia";
+    }
+    if (analysisText.includes("ljubljana") || analysisText.includes("maribor")) {
+      return "Slovenia";
+    }
+    if (analysisText.includes("bratislava") || analysisText.includes("kosice")) {
+      return "Slovakia";
+    }
+    if (analysisText.includes("tallinn") || analysisText.includes("tartu")) {
+      return "Estonia";
+    }
+    if (analysisText.includes("riga") || analysisText.includes("daugavpils")) {
+      return "Latvia";
+    }
+    if (analysisText.includes("vilnius") || analysisText.includes("kaunas")) {
+      return "Lithuania";
+    }
+    
+    // Asia-Pacific cities
+    if (analysisText.includes("beijing") || analysisText.includes("shanghai") || analysisText.includes("shenzhen") || analysisText.includes("guangzhou")) {
+      return "China";
+    }
+    if (analysisText.includes("tokyo") || analysisText.includes("osaka") || analysisText.includes("kyoto") || analysisText.includes("yokohama")) {
+      return "Japan";
+    }
+    if (analysisText.includes("seoul") || analysisText.includes("busan") || analysisText.includes("incheon")) {
+      return "South Korea";
+    }
+    if (analysisText.includes("mumbai") || analysisText.includes("delhi") || analysisText.includes("bangalore") || analysisText.includes("chennai")) {
+      return "India";
+    }
+    if (analysisText.includes("singapore")) {
+      return "Singapore";
+    }
+    if (analysisText.includes("hong kong")) {
+      return "Hong Kong";
+    }
+    if (analysisText.includes("taipei") || analysisText.includes("kaohsiung")) {
+      return "Taiwan";
+    }
+    if (analysisText.includes("bangkok") || analysisText.includes("chiang mai")) {
+      return "Thailand";
+    }
+    if (analysisText.includes("kuala lumpur") || analysisText.includes("penang")) {
+      return "Malaysia";
+    }
+    if (analysisText.includes("jakarta") || analysisText.includes("surabaya")) {
+      return "Indonesia";
+    }
+    if (analysisText.includes("manila") || analysisText.includes("cebu")) {
+      return "Philippines";
+    }
+    if (analysisText.includes("ho chi minh city") || analysisText.includes("hanoi")) {
+      return "Vietnam";
+    }
+    if (analysisText.includes("sydney") || analysisText.includes("melbourne") || analysisText.includes("brisbane")) {
+      return "Australia";
+    }
+    if (analysisText.includes("auckland") || analysisText.includes("wellington")) {
+      return "New Zealand";
+    }
+    
+    // Only fall back to search results if analysis doesn't contain location info
+    if (searchResult?.github?.location) {
+      return searchResult.github.location;
+    }
+    
+    if (searchResult?.linkedin?.location) {
+      return searchResult.linkedin.location;
+    }
+    
+    return "Unknown"; // Default fallback
   }
 
   /**
@@ -325,11 +985,37 @@ class ExampleMentraOSApp extends AppServer {
   private extractSourcesFromSearch(searchResult: any): any[] {
     const sources: any[] = [];
     
+    this.logger.info(`Full search result structure: ${JSON.stringify(searchResult, null, 2)}`);
+    
     if (searchResult?.github) {
+      // Handle different GitHub data structures
+      const github = searchResult.github;
+      this.logger.info(`GitHub data structure: ${JSON.stringify(github, null, 2)}`);
+      let evidence = '';
+      let sourceHint = '';
+      
+      // Try different possible structures
+      if (github.name && github.bio) {
+        evidence = `${github.name} - ${github.bio}`;
+      } else if (github.username && github.bio) {
+        evidence = `${github.username} - ${github.bio}`;
+      } else if (github.name) {
+        evidence = github.name;
+      } else if (github.username) {
+        evidence = github.username;
+      } else if (github.bio) {
+        evidence = github.bio;
+      } else {
+        evidence = 'GitHub Profile Found';
+      }
+      
+      // Try different URL properties
+      sourceHint = github.url || github.html_url || github.profile_url || 'GitHub Profile';
+      
       sources.push({
         fact: "GitHub Profile",
-        evidence: `${searchResult.github.name} - ${searchResult.github.bio}`,
-        source_hint: searchResult.github.url
+        evidence: evidence,
+        source_hint: sourceHint
       });
     }
     
@@ -394,9 +1080,9 @@ class ExampleMentraOSApp extends AppServer {
     try {
       const analysisData: any = {
         name: userPhoto.recognition?.name || 'Unknown Person',
-        country: userPhoto.search_result?.github?.location || 'Unknown',
-        title_role: 'Student',
-        company_affiliation: 'University of Illinois Urbana-Champaign',
+        country: this.extractLocationFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
+        title_role: this.extractTitleFromAnalysis(userPhoto.analysis_result || {}),
+        company_affiliation: this.extractCompanyFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
         claim_to_fame: 'Analysis data parsing failed, but person was recognized',
         recognition: [],
         built_or_achieved: [],
@@ -488,9 +1174,9 @@ class ExampleMentraOSApp extends AppServer {
       // Return basic fallback data
       return {
         name: userPhoto.recognition?.name || 'Unknown Person',
-        country: userPhoto.search_result?.github?.location || 'Unknown',
-        title_role: 'Student',
-        company_affiliation: 'University of Illinois Urbana-Champaign',
+        country: this.extractLocationFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
+        title_role: this.extractTitleFromAnalysis(userPhoto.analysis_result || {}),
+        company_affiliation: this.extractCompanyFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
         claim_to_fame: 'Analysis data parsing failed, but person was recognized',
         recognition: [],
         built_or_achieved: [],
@@ -1053,9 +1739,9 @@ class ExampleMentraOSApp extends AppServer {
               // Transform the data to match the flexible format
               analysisData = {
                 name: analysisJson.Name || userPhoto.recognition?.name || 'Unknown Person',
-                country: userPhoto.search_result?.github?.location || 'Unknown',
+                country: this.extractLocationFromAnalysis(userPhoto.analysis_result || {}, userPhoto.search_result),
                 title_role: this.extractTitleFromAnalysis(analysisJson),
-                company_affiliation: 'University of Illinois Urbana-Champaign',
+                company_affiliation: this.extractCompanyFromAnalysis(analysisJson, userPhoto.search_result),
                 claim_to_fame: analysisJson.Celebration || 'No claim to fame available',
                 recognition: this.extractRecognitionFromAnalysis(analysisJson),
                 built_or_achieved: this.extractBuiltFromAnalysis(analysisJson),

@@ -1,0 +1,49 @@
+[
+  {
+    "timestamp": "2025-09-14T11:03:17.256024",
+    "audio_file": "storage/voice/voice_capture_20250914_110305.wav",
+    "processing_time_seconds": 22.221842765808105,
+    "transcription": {
+      "public_id": "aff9b958-ed4c-4bb4-86d2-e0e1bd80e060",
+      "status": "finished",
+      "error": null,
+      "results": {
+        "amazon": {
+          "id": "cf614e0c-aca7-42bf-bf10-ca3924d60252",
+          "model": null,
+          "error": null,
+          "final_status": "succeeded",
+          "cost": 0.006000000000000001,
+          "text": "OK.",
+          "diarization": {
+            "entries": [
+              {
+                "segment": "OK.",
+                "speaker": 1,
+                "end_time": "4.159",
+                "confidence": 0.003,
+                "start_time": "4.15"
+              }
+            ],
+            "error_message": null,
+            "total_speakers": 1
+          }
+        },
+        "google": {
+          "id": "8a3e2e1d-aef3-4831-8968-6440fbeaf15b",
+          "model": null,
+          "error": null,
+          "final_status": "succeeded",
+          "cost": 0.0023034196000000003,
+          "text": "",
+          "diarization": {
+            "entries": [],
+            "error_message": null,
+            "total_speakers": 0
+          }
+        }
+      }
+    },
+    "extracted_text": ""
+  }
+]

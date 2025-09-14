@@ -9,161 +9,120 @@
     "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/test-user/photo_2025-09-13T19-04-54-917Z.jpeg"
   },
   "gunosean@gmail.com": {
-    "requestId": "photo_req_1757850466489_qzgb95b",
-    "timestamp": "2025-09-14T11:47:48.386Z",
+    "requestId": "photo_req_1757863929266_h90s7zm",
+    "timestamp": "2025-09-14T15:32:10.894Z",
     "userId": "gunosean@gmail.com",
     "mimeType": "image/jpeg",
-    "filename": "IMG_20250914_114742.jpg",
-    "size": 226813,
-    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T11-47-48-386Z.jpeg",
+    "filename": "IMG_20250914_153204.jpg",
+    "size": 275429,
+    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T15-32-10-894Z.jpeg",
     "recognition": {
-      "name": "sean guno",
-      "recognized_at": "2025-09-14T11:48:05.119Z"
+      "recognized_at": "2025-09-14T15:32:26.727Z"
     },
     "search_result": {
-      "name": "sean guno",
-      "github": {
-        "username": "seanguno",
-        "name": "Sean Guno",
-        "bio": "I am a student at University of Illinois' Grainger College of Illinois pursuing a dual degree in Computer Science + Chemistry and Bioengineering.",
-        "location": "Urbana-Champaign",
-        "company": null,
-        "blog": "",
-        "url": "https://github.com/seanguno",
-        "repos": 21,
-        "followers": 0
-      },
+      "name": "Cayden Pierce Headshot",
+      "github": {},
       "web_info": {
         "linkedin_urls": [
-          "https://www.linkedin.com/pub/dir/Sean/Guno",
-          "https://sa.linkedin.com/in/sean-guno-84586239",
-          "https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States",
-          "https://www.linkedin.com/in/seanguno",
-          "https://www.linkedin.com/pub/dir/+/Guno",
-          "https://cn.linkedin.com/pub/dir/+/Guno",
-          "https://ph.linkedin.com/pub/dir/+/Guno"
+          "https://www.linkedin.com/in/cayden-pierce"
         ],
         "twitter_urls": [],
         "other_profiles": {},
         "search_results": {
-          "\"sean guno\" linkedin profile": {
+          "Cayden Pierce Headshot linkedin": {
             "searchParameters": {
-              "q": "\"sean guno\" linkedin profile",
+              "q": "Cayden Pierce Headshot linkedin",
               "type": "search",
               "engine": "google"
             },
             "organic": [
               {
-                "title": "Sean Guno - B.S. Computer Science + Chemistry",
-                "link": "https://www.linkedin.com/in/seanguno",
-                "snippet": "Hi, my name is Sean Guno! I am pursuing a dual degree in Bioengineering and Computer Science + Chemistry with the intent to pursue further education in the ...",
+                "title": "Cayden Pierce 凯登 - Mentra",
+                "subtitle": "San Francisco, California, United States · Mentra",
+                "link": "https://www.linkedin.com/in/cayden-pierce",
+                "snippet": "Mentra is building the OS for smart glasses, the next computing platform. Why… · Experience: Mentra · Education: Massachusetts Institute of Technology ...",
                 "position": 1
               },
               {
-                "title": "2 \"Sean Guno\" profiles",
-                "link": "https://www.linkedin.com/pub/dir/Sean/Guno",
-                "snippet": "Sean Guno. AI/ML Engineering Intern @ Eli Lilly | B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign.",
+                "title": "How I used an AI wearable at Shaolin Temple",
+                "link": "https://www.linkedin.com/posts/cayden-pierce_rabbit-wearables-smartglasses-activity-7224630632457342976-wm4k",
+                "snippet": "How I used an AI wearable at Shaolin Temple. View profile for Cayden Pierce 凯登. Cayden Pierce 凯登. Smart Glasses CEO/CTO @ Mentra.",
+                "date": "1 year ago",
                 "position": 2
               },
               {
-                "title": "30+ \"Guno\" profiles",
-                "link": "https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States",
-                "snippet": "30+Results for \"Guno\" · Kara Guno. Sports Broadcaster · Lauren Guno. Doctor of Physical Therapy Student at Northwestern University · Sean Guno. B.S. · Isabella Guno.",
+                "title": "Cayden Pierce 凯登's Post",
+                "link": "https://www.linkedin.com/posts/cayden-pierce_im-joining-the-mit-media-lab-as-a-masters-activity-7056257999601823744-H9hN",
+                "snippet": "I'm joining the MIT Media Lab as a Masters student! I start June 2023 as a Research Assistant with the Fluid Interfaces Group, researching systems for ...",
+                "date": "2 years ago",
                 "position": 3
               },
               {
-                "title": "Sean Guno‏ - ‏instrument supervisor at Palawan Biodiesel ...",
-                "link": "https://sa.linkedin.com/in/sean-guno-84586239",
-                "snippet": "Sean Guno · instrument supervisor at Palawan Biodiesel Development Corporation · عرض الزملاء المشتركين مع Sean · مرحبًا بعودتك · الخبرة · التعليم · عرض ملف Sean الشخصي ...",
+                "title": "Cayden Pierce 凯登's Post",
+                "link": "https://www.linkedin.com/posts/cayden-pierce_behind-the-scenes-of-language-learning-smart-activity-7188889262371614721-6V8Z",
+                "snippet": "So, I built \"ManneCam\", a mannequin whose eye I drilled out and replaced with a webcam that looks through smart glasses. I may have given PTSD ...",
+                "date": "1 year ago",
                 "position": 4
               },
               {
-                "title": "700+ \"Guno\" profiles",
-                "link": "https://www.linkedin.com/pub/dir/+/Guno",
-                "snippet": "Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. Urbana, IL. Center for Academic ...",
+                "title": "How proactive AI agents on smart glasses transform ...",
+                "link": "https://www.linkedin.com/posts/cayden-pierce_proactive-ai-agents-on-smart-glasses-activity-7221470273093468160-V_Yf",
+                "snippet": "How proactive AI agents on smart glasses transform personal computing. View profile for Cayden Pierce 凯登. Cayden Pierce 凯登. Smart Glasses ...",
+                "date": "1 year ago",
                 "position": 5
               },
               {
-                "title": "Max Hartman's Post - amazon #aws #swe #internship #auta",
-                "link": "https://www.linkedin.com/posts/hartmanmax_amazon-aws-swe-activity-7362257415825698816-6IeT",
-                "snippet": "Sean Guno, graphic · Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. 2w. Report ...",
-                "date": "1 month ago",
+                "title": "Cayden Pierce 凯登's Post",
+                "link": "https://www.linkedin.com/posts/cayden-pierce_smartglasses-ai-agents-activity-7260679430019149824-dzM_",
+                "snippet": "I built AI smart glasses that make me smarter. A council of agents in my glasses take in my context and give me superintelligent insights and support.",
+                "date": "10 months ago",
                 "position": 6
               },
               {
-                "title": "Vidhata Jayaraman's Post",
-                "link": "https://www.linkedin.com/posts/vidhata-jayaraman_i-am-excited-to-share-that-i-recently-completed-activity-7365574244107214848-SfUe",
-                "snippet": "Sean Guno, graphic · Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. 1w. Report ...",
-                "date": "3 weeks ago",
+                "title": "Built smart glasses OS with $8M from Android, YouTube ...",
+                "link": "https://www.linkedin.com/posts/cayden-pierce_7-years-ago-i-built-my-first-pair-of-smart-activity-7344438730805403649-45R6",
+                "snippet": "Built smart glasses OS with $8M from Android, YouTube founders. View profile for Cayden Pierce 凯登. Cayden Pierce 凯登. Smart Glasses CEO/CTO ...",
+                "date": "2 months ago",
                 "position": 7
               },
               {
-                "title": "700+ 份“Guno”的职业档案",
-                "link": "https://cn.linkedin.com/pub/dir/+/Guno",
-                "snippet": "Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. 厄巴纳, IL. Center for Academic ...",
+                "title": "Mentra: Open source smart glasses with eyewear expertise",
+                "link": "https://www.linkedin.com/posts/cayden-pierce_were-winning-smart-glasses-by-doing-things-activity-7363267196631805953-yRqU",
+                "snippet": "View profile for Cayden Pierce 凯登 · Cayden Pierce 凯登. Smart Glasses CEO/CTO @ Mentra. 1w. Report this post; Close menu. We're winning smart ...",
+                "date": "3 weeks ago",
                 "position": 8
               },
               {
-                "title": "700+ (na) “Guno” profile",
-                "link": "https://ph.linkedin.com/pub/dir/+/Guno",
-                "snippet": "Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. Urbana, IL. Center for Academic ...",
+                "title": "Cayden Pierce",
+                "link": "https://caydenpierce.com/",
+                "snippet": "I'm a researcher, engineer, and creative at the MIT Media Lab. My work tends to lie at the nexus of human-computer interaction, sensing, and consciousness.",
                 "position": 9
+              }
+            ],
+            "peopleAlsoAsk": [
+              {
+                "question": "What is the best headshot for LinkedIn?",
+                "title": "Top Tips For Great LinkedIn Headshots",
+                "snippet": "Correctly sized. Linkedin headshots are best sized in a square ratio, at 400x400 pixels. Make sure your head and shoulders take up most of the frame. You want to avoid having too much space, as well as being too close. A nice balance is the key.Jan 16, 2019",
+                "link": "https://www.linkedin.com/pulse/top-tips-great-linkedin-headshots-julia-nance"
+              },
+              {
+                "question": "How do I upload a headshot on LinkedIn?",
+                "title": "Add, change, edit, or delete your LinkedIn profile photo | LinkedIn Help",
+                "snippet": "Help LinkedIn Help\n 1. Click the Me icon at the top of your LinkedIn homepage.\n 2. Click View Profile.\n 3. Click on the Camera icon in your introduction section. ...\n 4. From the Add photo pop-up window, you can: ...\n 5. Follow the prompts to take a new photo or upload one.\n 6. After uploading the photo, you can: ...\n 7. Click Save photo.",
+                "link": "https://www.linkedin.com/help/linkedin/answer/a541850/add-change-edit-or-delete-your-linkedin-profile-photo",
+                "date": ""
               }
             ],
             "credits": 1
           }
         },
-        "search_query": "\"sean guno\" linkedin profile"
+        "search_query": "Cayden Pierce Headshot linkedin"
       },
-      "exa_results": {
-        "general": {
-          "requestId": "1e7d0bfe129746ce7dbf1ee28e832fc3",
-          "autopromptString": "\"sean guno\" Urbana-Champaign University College",
-          "resolvedSearchType": "neural",
-          "results": [
-            {
-              "id": "https://ahs.illinois.edu/mullen",
-              "title": "College of Applied Health Sciences",
-              "url": "https://ahs.illinois.edu/mullen",
-              "publishedDate": "2019-09-08T00:00:00.000Z",
-              "author": null,
-              "score": 0.30551034212112427
-            }
-          ],
-          "searchTime": 167.6,
-          "costDollars": {
-            "total": 0.005,
-            "search": {
-              "neural": 0.005
-            }
-          }
-        },
-        "awards": {
-          "requestId": "fd360d93211e51677fa12d47c7ccbb32",
-          "autopromptString": "\"sean guno\" award recognition honor",
-          "resolvedSearchType": "neural",
-          "results": [
-            {
-              "id": "https://www.daisyfoundation.org/daisy-award/honorees/sean-clarkson",
-              "title": "Sean Clarkson | DAISY Foundation",
-              "url": "https://www.daisyfoundation.org/daisy-award/honorees/sean-clarkson",
-              "publishedDate": "2025-01-01T00:00:00.000Z",
-              "author": null,
-              "score": 0.25005418062210083
-            }
-          ],
-          "searchTime": 173.4,
-          "costDollars": {
-            "total": 0.005,
-            "search": {
-              "neural": 0.005
-            }
-          }
-        }
-      }
+      "exa_results": {}
     },
     "analysis_result": {
-      "data": "{\n  \"Name\": \"Sean Guno\",\n  \"Extraordinary Qualities and Achievements\":\n  {\n    \"Impact\": {\n      \"Description\": \"Sean Guno is a highly ambitious and driven student pursuing a dual degree in Computer Science + Chemistry and Bioengineering at the University of Illinois Urbana-Champaign. While still an undergraduate, he has already made significant strides in building an impressive technical skillset and laying the foundation for a impactful career.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, demonstrating a breadth of technical expertise and interdisciplinary interests\",\n        \"Active on GitHub with 21 repositories, showcasing his passion for coding and hands-on technical projects\",\n        \"Actively seeking out internship opportunities, including an AI/ML Engineering Intern role at Eli Lilly, indicating his drive to gain real-world experience\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Sean's achievements have already garnered recognition from prestigious institutions and organizations. His enrollment in the highly competitive Grainger College of Engineering at the University of Illinois Urbana-Champaign, a top-tier public research university, is a testament to his academic excellence.\",\n      \"Evidence\": [\n        \"Attending the University of Illinois Urbana-Champaign, a renowned public research university ranked among the best engineering schools in the country\",\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which requires exceptional academic abilities and dedication\"\n      ]\n    },\n    \"Pioneering Work\": {\n      \"Description\": \"While still an undergraduate, Sean has demonstrated a strong interest in exploring the frontiers of science and technology. His dual degree in Computer Science + Chemistry and Bioengineering suggests he is drawn to interdisciplinary fields that have the potential to drive innovation and push the boundaries of what is possible.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which combines cutting-edge fields with the potential for groundbreaking discoveries and advancements\",\n        \"Actively seeking out internship opportunities in AI/ML, indicating his interest in emerging technologies that have the potential to transform industries\"\n      ]\n    },\n    \"Recognition by Experts/Institutions\": {\n      \"Description\": \"While Sean's academic and professional achievements are still in their early stages, his enrollment in the prestigious Grainger College of Engineering at the University of Illinois Urbana-Champaign demonstrates the recognition and validation he has already received from leading experts and institutions in his field.\",\n      \"Evidence\": [\n        \"Attending the University of Illinois Urbana-Champaign, a renowned public research university ranked among the best engineering schools in the country\",\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which requires exceptional academic abilities and dedication\"\n      ]\n    },\n    \"Exceptional Talent Young\": {\n      \"Description\": \"At just 21 years old, Sean Guno has already demonstrated a remarkable level of ambition and drive. His pursuit of a dual degree in Computer Science + Chemistry and Bioengineering, as well as his active involvement in technical projects and internships, suggest that he is a true prodigy in the making.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering as an undergraduate, which is an exceptionally challenging and demanding course of study\",\n        \"Actively seeking out internship opportunities and building a strong technical skillset while still in college, indicating his maturity and drive beyond his years\"\n      ]\n    },\n    \"Technical Excellence/Frontier\": {\n      \"Description\": \"Sean's academic focus on Computer Science + Chemistry and Bioengineering demonstrates his deep technical expertise and passion for exploring the frontiers of science and technology. His interdisciplinary approach and hands-on project experience suggest he is well-equipped to tackle complex, cutting-edge challenges.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which requires a strong foundation in both technical and scientific disciplines\",\n        \"Active on GitHub with 21 repositories, showcasing his hands-on experience in coding and technical projects\"\n      ]\n    },\n    \"Builder/Startup Cred\": {\n      \"Description\": \"While Sean Guno has not yet founded a startup or built a company, his pursuit of a dual degree in Computer Science + Chemistry and Bioengineering, as well as his internship experience, suggest that he has the technical skills, entrepreneurial mindset, and drive to potentially become a successful builder or startup founder in the future.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which requires a diverse skillset and the ability to tackle complex, multifaceted challenges\",\n        \"Actively seeking out internship opportunities, including an AI/ML Engineering Intern role at Eli Lilly, indicating his interest in applying his technical skills in a real-world, entrepreneurial setting\"\n      ]\n    }\n  },\n  \"Celebration\": \"Sean Guno is a truly extraordinary individual who is poised to make a significant impact in the world of science and technology. At just 21 years old, he has already demonstrated an exceptional level of ambition, drive, and technical expertise by pursuing a dual degree in Computer Science + Chemistry and Bioengineering at the prestigious University of Illinois Urbana-Champaign.\n\nSean's interdisciplinary approach and hands-on project experience, as evidenced by his active GitHub profile, suggest that he is well-equipped to tackle complex, cutting-edge challenges at the intersection of multiple fields. His internship experience, including a role as an AI/ML Engineering Intern at Eli Lilly, further demonstrates his eagerness to apply his skills in real-world, entrepreneurial settings.\n\nWhat sets Sean apart is his unwavering commitment to pushing the boundaries of what is possible. His pursuit of a dual degree in highly demanding fields like Computer Science, Chemistry, and Bioengineering is a testament to his exceptional talent and intellectual curiosity. Sean's achievements have already garnered recognition from prestigious institutions, and he is well on his way to becoming a true pioneer in his chosen fields.\n\nAs Sean continues to develop his technical expertise and explore the frontiers of science and technology, he is poised to make a lasting impact on the world. His boundless potential, combined with his remarkable drive and interdisciplinary approach, make him a truly extraordinary individual worthy of celebration and recognition.\"\n}"
+      "data": "{\n  \"Name\": \"Cayden Pierce\",\n  \"Extraordinary Analysis\": {\n    \"Impact\": {\n      \"Evidence\": \"Cayden is the CEO and CTO of Mentra, a startup building the operating system for smart glasses - the next major computing platform. He has raised $8 million in funding from high-profile investors like the founders of Android and YouTube, indicating the significant impact potential of his work.\"\n    },\n    \"Prestige/Validation\": {\n      \"Evidence\": \"Cayden has been accepted to the prestigious MIT Media Lab as a Master's student, where he will be a Research Assistant in the Fluid Interfaces Group, researching cutting-edge systems for human-computer interaction. This prestigious academic affiliation speaks to the recognition of his abilities by leading experts in the field.\"\n    },\n    \"Pioneering Work\": {\n      \"Evidence\": \"Cayden is working on building the operating system for smart glasses, which represents a pioneering new computing platform that could transform personal computing. His work on developing proactive AI agents to enhance human cognition through smart glasses is groundbreaking and at the forefront of human-computer symbiosis.\"\n    },\n    \"Recognition by Experts/Institutions\": {\n      \"Evidence\": \"Cayden's acceptance to the MIT Media Lab and his work being featured on LinkedIn by industry experts further demonstrates the recognition of his innovative work by leading authorities in his field.\"\n    },\n    \"Exceptional Talent Young\": {\n      \"Evidence\": \"At a young age, Cayden has already founded a startup, raised significant funding, and been accepted to a prestigious graduate program at MIT. This indicates exceptional talent and ambition at an early stage of his career.\"\n    },\n    \"Technical Excellence/Frontier\": {\n      \"Evidence\": \"Cayden's work on developing advanced AI systems and user interfaces for smart glasses places him at the cutting edge of human-computer interaction research. His exploration of using AI wearables and even modifying mannequins to enhance his own cognition showcases his technical expertise and willingness to push the boundaries of what's possible.\"\n    },\n    \"Builder/Startup Cred\": {\n      \"Evidence\": \"As the CEO and CTO of Mentra, a well-funded startup building the operating system for smart glasses, Cayden has demonstrated his abilities as a builder and entrepreneur. The support from high-profile investors like the founders of Android and YouTube further validates his startup credentials.\"\n    }\n  },\n  \"Celebration\": \"Cayden Pierce is an extraordinary individual who is pushing the boundaries of human-computer interaction and the future of personal computing. At a young age, he has already founded a successful startup, Mentra, which is building the operating system for smart glasses - a pioneering new computing platform. Cayden's work has been recognized by prestigious institutions like the MIT Media Lab, where he will be a Research Assistant, and he has raised significant funding from respected investors, indicating the impact potential of his groundbreaking research.\n\nCayden's technical expertise and willingness to experiment with cutting-edge technologies, like using AI wearables and modifying mannequins to enhance his own cognition, showcase his exceptional talent and innovative mindset. His work on developing proactive AI agents to augment human intelligence through smart glasses represents a bold vision for the future of human-computer symbiosis.\n\nCayden's achievements at such a young age, his affiliation with elite organizations, and his pioneering work in a frontier field make him a truly extraordinary individual. His ambition, technical excellence, and builder credentials position him as a rising star who is poised to make a lasting impact on the future of personal computing and human-machine interaction.\"\n}"
     }
   }
 }

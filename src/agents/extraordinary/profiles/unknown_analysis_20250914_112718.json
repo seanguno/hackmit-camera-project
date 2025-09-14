@@ -1,0 +1,5 @@
+{
+  "Name": "Unknown",
+  "Error": "JSON parsing failed: Expecting ',' delimiter: line 40 column 198 (char 3154)",
+  "RawContent": "{\n  \"Name\": \"Cayden Pierce\",\n  \"Extraordinary Qualities and Achievements\":\n  {\n    \"Impact\": {\n      \"Description\": \"Cayden is the CEO and CTO of Mentra, a startup building the operating system for smart glasses - the next major computing platform. He has secured $8 million in funding from prominent investors like the founders of Android and YouTube, demonstrating the significant impact and potential of his work.\",\n      \"Evidence\": [\n        \"Built smart glasses OS with $8M from Android, YouTube founders\",\n        \"Mentra: Open source smart glasses with eyewear expertise\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Cayden's work has been recognized by prestigious institutions and media outlets. He is joining the MIT Media Lab as a master's student and research assistant, showcasing his technical expertise and the esteem in which he is held by top academic institutions.\",\n      \"Evidence\": [\n        \"I'm joining the MIT Media Lab as a Masters student! I start June..."
+}

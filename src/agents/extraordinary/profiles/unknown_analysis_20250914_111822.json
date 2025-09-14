@@ -1,0 +1,5 @@
+{
+  "Name": "Unknown",
+  "Error": "JSON parsing failed: Expecting ',' delimiter: line 18 column 167 (char 1312)",
+  "RawContent": "{\n  \"Name\": \"Cayden Pierce\",\n  \"Extraordinary Profile\": {\n    \"Impact\": {\n      \"Description\": \"Cayden Pierce is the CEO and CTO of Mentra, a startup building the operating system for the next computing platform - smart glasses. He has secured $8 million in funding from prominent investors like the founders of Android and YouTube, showcasing the significant impact and potential of his work.\",\n      \"Evidence\": [\n        \"Built smart glasses OS with $8M from Android, YouTube founders\",\n        \"Mentra: Open source smart glasses with eyewear expertise\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Cayden's work has gained recognition from prestigious institutions and organizations. He is joining the MIT Media Lab as a master's student and research assistant, where he will be working with the Fluid Interfaces Group to research cutting-edge systems for smart glasses and wearable computing.\",\n      \"Evidence\": [\n        \"I'm joining the MIT Media Lab as a Masters student..."
+}
