@@ -203,45 +203,11 @@ class ExaSearch:
         return domains
     
     def _filter_relevant_results(self, results: List[Dict], name: str, github_info: Dict) -> List[Dict]:
-        """Filter Exa results to ensure they match the correct person"""
+        """Filter Exa results based only on name matching - include all results if name matches, otherwise include all"""
         filtered = []
-        bio = github_info.get('bio', '') or ''
-        location = github_info.get('location', '') or ''
-        company = github_info.get('company', '') or ''
         
-        # Safely convert to lowercase
-        bio = bio.lower() if bio else ''
-        location = location.lower() if location else ''
-        company = company.lower() if company else ''
-        
-        # Extract general relevant keywords from bio and profile
-        relevant_keywords = []
-        
-        # Add location keywords
-        if location:
-            relevant_keywords.append(location)
-        
-        # Add company keywords
-        if company:
-            relevant_keywords.append(company)
-        
-        # Add general professional keywords from bio
-        bio_words = bio.split()
-        for word in bio_words:
-            if any(term in word.lower() for term in ['university', 'college', 'institute', 'tech', 'ai', 'research', 'ceo', 'founder', 'director', 'professor']):
-                relevant_keywords.append(word.lower())
-        
-        # Add common professional terms
-        if any(word in bio for word in ['ai', 'artificial intelligence']):
-            relevant_keywords.extend(['ai', 'artificial intelligence'])
-        if any(word in bio for word in ['research', 'researcher']):
-            relevant_keywords.append('research')
-        if any(word in bio for word in ['founder', 'ceo', 'startup']):
-            relevant_keywords.extend(['founder', 'ceo', 'startup'])
-        
-        # Remove duplicates and limit to reasonable number
-        relevant_keywords = list(set(relevant_keywords))[:5]
-        
+        # Check if we have any results that mention the name
+        name_mentioned = False
         for result in results:
             title = result.get('title', '') or ''
             text = result.get('text', '') or ''
@@ -252,26 +218,42 @@ class ExaSearch:
             text = text.lower() if text else ''
             url = url.lower() if url else ''
             
-            # Check if result contains relevant keywords
+            # Check if the name appears in the result
             result_text = f"{title} {text} {url}"
+            if name.lower() in result_text:
+                name_mentioned = True
+                break
+        
+        # STRICT FILTERING: Only include results that mention the exact name
+        for result in results:
+            title = result.get('title', '') or ''
+            text = result.get('text', '') or ''
+            url = result.get('url', '') or ''
             
-            # Check if the name appears in the result (basic relevance check)
+            # Safely convert to lowercase
+            title = title.lower() if title else ''
+            text = text.lower() if text else ''
+            url = url.lower() if url else ''
+            
+            # Check if the name appears in the result
+            result_text = f"{title} {text} {url}"
             name_in_result = name.lower() in result_text
             
-            # If we have specific keywords, check if at least one is present OR if name appears
-            if relevant_keywords:
-                if any(keyword in result_text for keyword in relevant_keywords) or name_in_result:
-                    filtered.append(result)
-                    self.logger.info(f"✅ Relevant result: {result.get('title', 'No title')}")
-                else:
-                    self.logger.info(f"❌ Irrelevant result (no keywords): {result.get('title', 'No title')}")
+            # ONLY include if the exact name appears in the result
+            should_include = name_in_result
+            reason = "exact name match" if name_in_result else "no exact name match"
+            
+            if should_include:
+                filtered.append(result)
+                self.logger.info(f"✅ Included result ({reason}): {result.get('title', 'No title')}")
             else:
-                # If no specific keywords, include results that mention the name
-                if name_in_result:
-                    filtered.append(result)
-                    self.logger.info(f"✅ Relevant result (name match): {result.get('title', 'No title')}")
-                else:
-                    self.logger.info(f"❌ Irrelevant result (no name): {result.get('title', 'No title')}")
+                self.logger.info(f"❌ Excluded result ({reason}): {result.get('title', 'No title')}")
+        
+        self.logger.info(f"📊 Filtering complete: {len(results)} total results, {len(filtered)} included results")
+        if filtered:
+            self.logger.info(f"🎯 Found {len(filtered)} results with exact name match for '{name}'")
+        else:
+            self.logger.info(f"❌ No results found with exact name match for '{name}'")
         
         return filtered
     
