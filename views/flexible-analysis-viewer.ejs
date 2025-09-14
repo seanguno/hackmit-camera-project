@@ -234,6 +234,62 @@
             color: #6c757d;
             font-style: italic;
         }
+        
+        /* Voice Recording Styles */
+        .voice-recording-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .voice-recording-section h3 {
+            margin-top: 0;
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .voice-recording-section p {
+            margin-bottom: 15px;
+            color: #6c757d;
+        }
+        
+        .voice-recording-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .voice-recording-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        .voice-recording-btn:disabled {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #recording-status {
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        #recording-results {
+            margin-top: 15px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -364,6 +420,17 @@
                         <% }); %>
                     </div>
                 <% } %>
+                
+                <!-- Voice Recording Section -->
+                <div class="voice-recording-section">
+                    <h3>🎤 Voice Recording</h3>
+                    <p>Ready to record a conversation? Click the button below to start recording. The recording will automatically stop after 5 seconds of silence.</p>
+                    <button id="start-recording-btn" onclick="startVoiceRecording()" class="voice-recording-btn">
+                        🎤 Start Recording
+                    </button>
+                    <div id="recording-status"></div>
+                    <div id="recording-results"></div>
+                </div>
             <% } else { %>
                 <!-- No data available -->
                 <div class="person-card">
@@ -375,8 +442,152 @@
                     <h3>📸 How to Get Started</h3>
                     <p>Take a photo using the MentraOS app to generate an extraordinary analysis of the person in the image.</p>
                 </div>
+                
+                <!-- Voice Recording Section -->
+                <div class="voice-recording-section">
+                    <h3>🎤 Voice Recording</h3>
+                    <p>Ready to record a conversation? Click the button below to start recording. The recording will automatically stop after 5 seconds of silence.</p>
+                    <button id="start-recording-btn" onclick="startVoiceRecording()" class="voice-recording-btn">
+                        🎤 Start Recording
+                    </button>
+                    <div id="recording-status"></div>
+                    <div id="recording-results"></div>
+                </div>
             <% } %>
         </div>
     </div>
+
+    <script>
+        // Voice recording functions
+        async function startVoiceRecording() {
+            const button = document.getElementById('start-recording-btn');
+            const statusDiv = document.getElementById('recording-status');
+            const resultsDiv = document.getElementById('recording-results');
+            
+            try {
+                // Disable button and show status
+                button.disabled = true;
+                button.textContent = '🎤 Recording...';
+                statusDiv.style.display = 'block';
+                statusDiv.textContent = '🎤 Recording started! Speak now...';
+                statusDiv.style.color = '#dc3545';
+                
+                // Start recording
+                const response = await fetch('/api/start-voice-recording', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusDiv.textContent = '✅ ' + result.message;
+                    statusDiv.style.color = '#28a745';
+                    
+                    // Poll for results
+                    pollForResults();
+                } else {
+                    statusDiv.textContent = '❌ ' + result.error;
+                    statusDiv.style.color = '#dc3545';
+                    resetButton();
+                }
+                
+            } catch (error) {
+                statusDiv.textContent = '❌ Error: ' + error.message;
+                statusDiv.style.color = '#dc3545';
+                resetButton();
+            }
+        }
+        
+        async function pollForResults() {
+            const statusDiv = document.getElementById('recording-status');
+            const resultsDiv = document.getElementById('recording-results');
+            
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/voice-status');
+                    const status = await response.json();
+                    
+                    if (!status.isRecording && status.result) {
+                        // Recording finished, show results
+                        clearInterval(pollInterval);
+                        displayVoiceResults(status.result);
+                        resetButton();
+                    }
+                } catch (error) {
+                    console.error('Error polling voice status:', error);
+                }
+            }, 1000);
+            
+            // Stop polling after 60 seconds
+            setTimeout(() => {
+                clearInterval(pollInterval);
+                if (statusDiv.textContent.includes('Recording started')) {
+                    statusDiv.textContent = '⏰ Recording timeout - please try again';
+                    statusDiv.style.color = '#ffc107';
+                    resetButton();
+                }
+            }, 60000);
+        }
+        
+        function displayVoiceResults(result) {
+            const statusDiv = document.getElementById('recording-status');
+            const resultsDiv = document.getElementById('recording-results');
+            
+            if (result.success) {
+                statusDiv.textContent = '✅ Voice recording completed successfully!';
+                statusDiv.style.color = '#28a745';
+                
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 15px;">
+                        <h4 style="margin-top: 0; color: #155724;">📝 Transcription:</h4>
+                        <p style="margin-bottom: 15px; color: #155724;">${result.transcription || 'No transcription available'}</p>
+                        
+                        ${result.claudeResult ? `
+                            <h4 style="color: #155724;">🤖 Extracted Information:</h4>
+                            <div style="background: white; border-radius: 6px; padding: 10px; margin-bottom: 10px;">
+                                <strong>Name:</strong> ${result.claudeResult.name || 'Not found'}<br>
+                                <strong>Email:</strong> ${result.claudeResult.email || 'Not found'}<br>
+                                <strong>Field:</strong> ${result.claudeResult.field || 'Not found'}<br>
+                                <strong>Summary:</strong> ${result.claudeResult.summary || 'Not found'}
+                            </div>
+                        ` : ''}
+                        
+                        <p style="margin-bottom: 10px; color: #155724; font-size: 14px;">
+                            ✅ Data has been saved to the database
+                        </p>
+                        
+                        ${result.emailResult ? `
+                            <div style="background: ${result.emailResult.success ? '#d4edda' : '#f8d7da'}; border: 1px solid ${result.emailResult.success ? '#c3e6cb' : '#f5c6cb'}; border-radius: 6px; padding: 10px; margin-top: 10px;">
+                                <h4 style="margin-top: 0; color: ${result.emailResult.success ? '#155724' : '#721c24'};">📧 Email Status:</h4>
+                                ${result.emailResult.success ? `
+                                    <p style="margin-bottom: 0; color: #155724;">
+                                        ✅ Follow-up email sent successfully!<br>
+                                        <small>Message ID: ${result.emailResult.messageId || 'N/A'}</small>
+                                    </p>
+                                ` : `
+                                    <p style="margin-bottom: 0; color: #721c24;">
+                                        ❌ Email failed: ${result.emailResult.error || 'Unknown error'}
+                                    </p>
+                                `}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            } else {
+                statusDiv.textContent = '❌ Voice recording failed: ' + (result.error || 'Unknown error');
+                statusDiv.style.color = '#dc3545';
+            }
+        }
+        
+        function resetButton() {
+            const button = document.getElementById('start-recording-btn');
+            button.disabled = false;
+            button.textContent = '🎤 Start Recording';
+        }
+    </script>
 </body>
 </html>
