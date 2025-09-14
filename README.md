@@ -4,6 +4,19 @@ Spark is an AI-powered tool built on the MentraOS glasses that lets people insta
 
 By surfacing the factors and accomplishments that make a person remarkable, beyond just their job title or LinkedIn headline, Spark breaks the cold-start barrier in human connection. It provides baseline knowledge to help cultivate introductions, conversations, and relationships. Through this, Spark accelerates authentic connection and collaboration in real-world environments like conferences, hackathons, research labs, and entrepreneurial communities.
 
+
+## Main Features 
+Real-time photo capture using MentraOS + face recognition
+
+AI-driven extraordinary profile data analysis & extraction (CrewAI, Claude, and Exa)
+
+Voice-to-text, Summarization, + Next Steps
+
+Multi-source scraping
+
+Glasses-oriented UI (EJS + MentraOS SDK + debug tools)
+
+
 ## Stack 
 
 | Level         | Description                                                                 |
@@ -49,7 +62,7 @@ fastapi>=0.104.0          #API framework <br>
 uvicorn>=0.24.0           #ASGI server <br>
 ```
 
-# Voice Processing
+#### Voice Processing
 ```
 pyaudio==0.2.11           #Audio capture <br>
 numpy==1.24.3             #Audio processing <br>
