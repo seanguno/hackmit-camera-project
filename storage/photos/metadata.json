@@ -9,15 +9,160 @@
     "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/test-user/photo_2025-09-13T19-04-54-917Z.jpeg"
   },
   "gunosean@gmail.com": {
-    "requestId": "photo_req_1757825084388_3y9lya6",
-    "timestamp": "2025-09-14T04:44:46.143Z",
+    "requestId": "photo_req_1757828687983_f8yg53h",
+    "timestamp": "2025-09-14T05:44:49.454Z",
     "userId": "gunosean@gmail.com",
     "mimeType": "image/jpeg",
-    "filename": "IMG_20250914_044442.jpg",
-    "size": 242340,
-    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T04-44-46-143Z.jpeg",
+    "filename": "IMG_20250914_054445.jpg",
+    "size": 232814,
+    "filePath": "/Users/seanguno/Documents/senior year/hackmit-camera-project/storage/photos/gunosean@gmail.com/photo_2025-09-14T05-44-49-454Z.jpeg",
     "recognition": {
-      "recognized_at": "2025-09-14T04:44:59.451Z"
+      "recognized_at": "2025-09-14T05:45:02.272Z"
+    },
+    "search_result": {
+      "name": "sean guno",
+      "github": {
+        "username": "seanguno",
+        "name": "Sean Guno",
+        "bio": "I am a student at University of Illinois' Grainger College of Illinois pursuing a dual degree in Computer Science + Chemistry and Bioengineering.",
+        "location": "Urbana-Champaign",
+        "company": null,
+        "blog": "",
+        "url": "https://github.com/seanguno",
+        "repos": 21,
+        "followers": 0
+      },
+      "web_info": {
+        "linkedin_urls": [
+          "https://www.linkedin.com/pub/dir/Sean/Guno",
+          "https://cn.linkedin.com/pub/dir/+/Guno",
+          "https://www.linkedin.com/pub/dir/+/Guno",
+          "https://www.linkedin.com/in/seanguno",
+          "https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States",
+          "https://ph.linkedin.com/pub/dir/+/Guno",
+          "https://sa.linkedin.com/in/sean-guno-84586239"
+        ],
+        "twitter_urls": [],
+        "other_profiles": {},
+        "search_results": {
+          "\"sean guno\" linkedin profile": {
+            "searchParameters": {
+              "q": "\"sean guno\" linkedin profile",
+              "type": "search",
+              "engine": "google"
+            },
+            "organic": [
+              {
+                "title": "Sean Guno - B.S. Computer Science + Chemistry",
+                "link": "https://www.linkedin.com/in/seanguno",
+                "snippet": "Hi, my name is Sean Guno! I am pursuing a dual degree in Bioengineering and Computer Science + Chemistry with the intent to pursue further education in the ...",
+                "position": 1
+              },
+              {
+                "title": "2 \"Sean Guno\" profiles",
+                "link": "https://www.linkedin.com/pub/dir/Sean/Guno",
+                "snippet": "Sean Guno. AI/ML Engineering Intern @ Eli Lilly | B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign.",
+                "position": 2
+              },
+              {
+                "title": "30+ \"Guno\" profiles",
+                "link": "https://www.linkedin.com/pub/dir/+/Guno/us-0-United-States",
+                "snippet": "30+Results for \"Guno\" · Kara Guno. Sports Broadcaster · Lauren Guno. Doctor of Physical Therapy Student at Northwestern University · Sean Guno. B.S. · Isabella Guno.",
+                "position": 3
+              },
+              {
+                "title": "Sean Guno‏ - ‏instrument supervisor at Palawan Biodiesel ...",
+                "link": "https://sa.linkedin.com/in/sean-guno-84586239",
+                "snippet": "Sean Guno · instrument supervisor at Palawan Biodiesel Development Corporation · عرض الزملاء المشتركين مع Sean · مرحبًا بعودتك · الخبرة · التعليم · عرض ملف Sean الشخصي ...",
+                "position": 4
+              },
+              {
+                "title": "700+ \"Guno\" profiles",
+                "link": "https://www.linkedin.com/pub/dir/+/Guno",
+                "snippet": "Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. Urbana, IL. Center for Academic ...",
+                "position": 5
+              },
+              {
+                "title": "Vidhata Jayaraman's Post",
+                "link": "https://www.linkedin.com/posts/vidhata-jayaraman_i-am-excited-to-share-that-i-recently-completed-activity-7365574244107214848-SfUe",
+                "snippet": "Sean Guno, graphic · Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. 1w. Report ...",
+                "date": "2 weeks ago",
+                "position": 6
+              },
+              {
+                "title": "Max Hartman's Post - amazon #aws #swe #internship #auta",
+                "link": "https://www.linkedin.com/posts/hartmanmax_amazon-aws-swe-activity-7362257415825698816-6IeT",
+                "snippet": "Sean Guno, graphic · Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. 2w. Report ...",
+                "date": "4 weeks ago",
+                "position": 7
+              },
+              {
+                "title": "700+ (na) “Guno” profile",
+                "link": "https://ph.linkedin.com/pub/dir/+/Guno",
+                "snippet": "Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. Urbana, IL. Center for Academic ...",
+                "position": 8
+              },
+              {
+                "title": "700+ 份“Guno”的职业档案",
+                "link": "https://cn.linkedin.com/pub/dir/+/Guno",
+                "snippet": "Sean Guno. B.S. Computer Science + Chemistry | B.S. Bioengineering @ University of Illinois Urbana-Champaign. 厄巴纳, IL. Center for Academic ...",
+                "position": 9
+              }
+            ],
+            "credits": 1
+          }
+        },
+        "search_query": "\"sean guno\" linkedin profile"
+      },
+      "exa_results": {
+        "general": {
+          "requestId": "081a74475c19184dbba03bdf0e1ca7d3",
+          "autopromptString": "\"sean guno\" Urbana-Champaign University College",
+          "resolvedSearchType": "neural",
+          "results": [
+            {
+              "id": "https://ahs.illinois.edu/mullen",
+              "title": "College of Applied Health Sciences",
+              "url": "https://ahs.illinois.edu/mullen",
+              "publishedDate": "2019-09-08T00:00:00.000Z",
+              "author": null,
+              "score": 0.30588868260383606
+            }
+          ],
+          "searchTime": 168.1,
+          "costDollars": {
+            "total": 0.005,
+            "search": {
+              "neural": 0.005
+            }
+          }
+        },
+        "awards": {
+          "requestId": "0794a363a57e21d6ed60969fdbc32327",
+          "autopromptString": "\"sean guno\" award recognition honor",
+          "resolvedSearchType": "neural",
+          "results": [
+            {
+              "id": "https://www.daisyfoundation.org/daisy-award/honorees/sean-clarkson",
+              "title": "Sean Clarkson | DAISY Foundation",
+              "url": "https://www.daisyfoundation.org/daisy-award/honorees/sean-clarkson",
+              "publishedDate": "2025-01-01T00:00:00.000Z",
+              "author": null,
+              "score": 0.2498777061700821
+            }
+          ],
+          "searchTime": 158.1,
+          "costDollars": {
+            "total": 0.005,
+            "search": {
+              "neural": 0.005
+            }
+          }
+        }
+      }
+    },
+    "analysis_result": {
+      "data": "{\n  \"Name\": \"Sean Guno\",\n  \"Extraordinary Analysis\": {\n    \"Impact\": {\n      \"Description\": \"Sean Guno is a highly accomplished student pursuing a dual degree in Computer Science + Chemistry and Bioengineering at the University of Illinois Urbana-Champaign. His diverse academic interests and achievements demonstrate exceptional intellectual breadth and depth.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, showcasing his ability to excel across multiple challenging STEM disciplines\",\n        \"Actively involved in the University of Illinois community, as evidenced by his LinkedIn profile and mentions\"\n      ]\n    },\n    \"Prestige/Validation\": {\n      \"Description\": \"Sean's enrollment at the prestigious University of Illinois Urbana-Champaign, one of the top public research universities in the United States, is a testament to his academic abilities and potential.\",\n      \"Evidence\": [\n        \"Attending the University of Illinois Urbana-Champaign, a highly ranked public research university\",\n        \"Pursuing dual degrees in Computer Science + Chemistry and Bioengineering, which are highly competitive and prestigious programs\"\n      ]\n    },\n    \"Pioneering Work\": {\n      \"Description\": \"While Sean's current academic work does not indicate any pioneering research or inventions, his dual degree in Computer Science and Bioengineering suggests he is well-positioned to contribute to advancements at the intersection of these cutting-edge fields in the future.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which combines two rapidly evolving and innovative disciplines\"\n      ]\n    },\n    \"Recognition by Experts/Institutions\": {\n      \"Description\": \"Sean's academic achievements and enrollment at the University of Illinois Urbana-Champaign indicate recognition by prestigious institutions, though specific awards or honors are not evident from the provided information.\",\n      \"Evidence\": [\n        \"Accepted into the highly competitive dual degree program at the University of Illinois Urbana-Champaign\"\n      ]\n    },\n    \"Exceptional Talent Young\": {\n      \"Description\": \"At just 21-22 years old, Sean Guno is already pursuing a dual degree in highly demanding STEM fields, demonstrating exceptional academic talent and potential at a young age.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering as an undergraduate student, typically a challenging course load\"\n      ]\n    },\n    \"Technical Excellence/Frontier\": {\n      \"Description\": \"Sean's dual degree in Computer Science + Chemistry and Bioengineering places him at the forefront of technical excellence, as these fields are at the cutting edge of scientific and technological innovation. His ability to excel in these challenging disciplines is a testament to his intellectual capabilities.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which are highly technical and frontier-pushing fields\"\n      ]\n    },\n    \"Builder/Startup Cred\": {\n      \"Description\": \"While Sean's current profile does not indicate any direct involvement in startups or entrepreneurial ventures, his diverse academic interests and technical skills suggest he has the potential to contribute to innovative projects or even start his own ventures in the future.\",\n      \"Evidence\": [\n        \"Pursuing a dual degree in Computer Science + Chemistry and Bioengineering, which provides a strong foundation for future entrepreneurial or innovative endeavors\"\n      ]\n    }\n  },\n  \"Conclusion\": \"Sean Guno is an extraordinary individual who has demonstrated exceptional academic talent and potential. His pursuit of a dual degree in Computer Science + Chemistry and Bioengineering at the prestigious University of Illinois Urbana-Champaign is a testament to his intellectual breadth and depth. While he may not have achieved widespread recognition or pioneering work yet, his current academic accomplishments and the frontier-pushing nature of his fields of study suggest he is well-positioned to make significant contributions in the future. Sean's story is one of a promising young scholar with the drive and abilities to push the boundaries of scientific and technological innovation.\"\n}"
     }
   }
 }

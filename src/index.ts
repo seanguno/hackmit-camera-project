@@ -139,8 +139,17 @@ class ExampleMentraOSApp extends AppServer {
       // Update metadata for user
       metadata[userId] = photoInfo;
       
+      this.logger.info(`About to store metadata for ${userId}:`, JSON.stringify(photoInfo, null, 2));
+      this.logger.info(`Metadata file path: ${METADATA_FILE}`);
+      
       // Write updated metadata
       fs.writeFileSync(METADATA_FILE, JSON.stringify(metadata, null, 2));
+      
+      // Verify the data was written correctly
+      const writtenData = JSON.parse(fs.readFileSync(METADATA_FILE, 'utf8'));
+      const userData = writtenData[userId];
+      this.logger.info(`Verification - search_result exists: ${!!userData?.search_result}`);
+      this.logger.info(`Verification - analysis_result exists: ${!!userData?.analysis_result}`);
       
       this.logger.info(`Metadata updated for user ${userId}`);
     } catch (error) {
@@ -166,8 +175,10 @@ class ExampleMentraOSApp extends AppServer {
       });
       
 
+      this.logger.info(`Full face recognition response: ${JSON.stringify(response.data, null, 2)}`);
+      
       if (response.data.success) {
-        // this.logger.info(`Face recognition successful: ${response.data.name} (confidence: ${response.data.confidence})`);
+        this.logger.info(`Face recognition successful`);
         this.logger.info(`Search result: ${JSON.stringify(response.data.search_result, null, 2)}`);
         this.logger.info(`Analysis result: ${JSON.stringify(response.data.analysis_result, null, 2)}`);
         return response.data;
@@ -380,10 +391,22 @@ class ExampleMentraOSApp extends AppServer {
     if (savedFilePath) {
       try {
         const recognitionResult = await this.recognizeFace(savedFilePath);
+
+        this.logger.info(`Analysis result in cachePhoto: ${JSON.stringify(recognitionResult.analysis_result, null, 2)}`);
+        this.logger.info(`Type of analysis_result: ${typeof recognitionResult.analysis_result}`);
+        this.logger.info(`Constructor name: ${recognitionResult.analysis_result?.constructor?.name}`);
+        this.logger.info(`Analysis result keys: ${Object.keys(recognitionResult.analysis_result || {})}`);
+        this.logger.info(`Search result: ${JSON.stringify(recognitionResult.search_result, null, 2)}`);
         
         // Update metadata with recognition results
         if (recognitionResult.success) {
-          await this.updateMetadata(userId, {
+          // Validate that we have the required data before storing
+          if (!recognitionResult.search_result || !recognitionResult.analysis_result) {
+            this.logger.error(`Missing required data - search_result: ${!!recognitionResult.search_result}, analysis_result: ${!!recognitionResult.analysis_result}`);
+            return;
+          }
+          
+          const metadataToStore = {
             requestId: photo.requestId,
             timestamp: photo.timestamp.toISOString(),
             userId: userId,
@@ -396,8 +419,19 @@ class ExampleMentraOSApp extends AppServer {
               confidence: recognitionResult.confidence,
               face_id: recognitionResult.face_id,
               recognized_at: new Date().toISOString()
-            }
-          });
+            },
+            // Store the analysis data directly
+            search_result: recognitionResult.search_result,
+            analysis_result: recognitionResult.analysis_result
+          };
+          
+          this.logger.info(`About to store metadata with analysis_result: ${JSON.stringify(metadataToStore.analysis_result, null, 2)}`);
+          this.logger.info(`About to store metadata with search_result: ${JSON.stringify(metadataToStore.search_result, null, 2)}`);
+          
+          // Add a small delay to ensure everything is ready
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          await this.updateMetadata(userId, metadataToStore);
           
           this.logger.info(`Face recognition completed for user ${userId}: ${recognitionResult.name}`);
         } else {
@@ -561,14 +595,35 @@ class ExampleMentraOSApp extends AppServer {
     //   res.send(html);
     // });
 
-    // Face recognition results webview route
+    // // Face recognition results webview route
+    // app.get('/webview', async (req: any, res: any) => {
+    //   const userId = (req as AuthenticatedRequest).authUserId;
+
+    //   if (!userId) {
+    //     res.status(401).send(`
+    //       <html>
+    //         <head><title>Face Recognition - Not Authenticated</title></head>
+    //         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+    //           <h1>Please open this page from the MentraOS app</h1>
+    //         </body>
+    //       </html>
+    //     `);
+    //     return;
+    //   }
+
+    //   const templatePath = path.join(process.cwd(), 'views', 'face-recognition-viewer.ejs');
+    //   const html = await ejs.renderFile(templatePath, {});
+    //   res.send(html);
+    // });
+
+    // Analysis viewer webview route
     app.get('/webview', async (req: any, res: any) => {
       const userId = (req as AuthenticatedRequest).authUserId;
 
       if (!userId) {
         res.status(401).send(`
           <html>
-            <head><title>Face Recognition - Not Authenticated</title></head>
+            <head><title>Analysis Viewer - Not Authenticated</title></head>
             <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
               <h1>Please open this page from the MentraOS app</h1>
             </body>
@@ -577,9 +632,52 @@ class ExampleMentraOSApp extends AppServer {
         return;
       }
 
-      const templatePath = path.join(process.cwd(), 'views', 'face-recognition-viewer.ejs');
+      const templatePath = path.join(process.cwd(), 'views', 'analysis-viewer.ejs');
       const html = await ejs.renderFile(templatePath, {});
       res.send(html);
+    });
+
+    // API endpoint to get latest analysis data for a user
+    app.get('/api/latest-analysis', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        // Read metadata to get latest analysis
+        if (!fs.existsSync(METADATA_FILE)) {
+          res.json({ analysis: null });
+          return;
+        }
+
+        const metadataContent = fs.readFileSync(METADATA_FILE, 'utf8');
+        const metadata = JSON.parse(metadataContent);
+        
+        const userPhoto = metadata[userId];
+        if (userPhoto && userPhoto.analysis_result) {
+          this.logger.info(`Found analysis data for user ${userId}:`, JSON.stringify(userPhoto.analysis_result, null, 2));
+          this.logger.info(`Found search data for user ${userId}:`, JSON.stringify(userPhoto.search_result, null, 2));
+          
+          res.json({ 
+            analysis: userPhoto.analysis_result,
+            search_result: userPhoto.search_result,
+            photo: {
+              requestId: userPhoto.requestId,
+              timestamp: userPhoto.timestamp,
+              filename: userPhoto.filename
+            }
+          });
+        } else {
+          this.logger.info(`No analysis data found for user ${userId}. Available keys:`, Object.keys(userPhoto || {}));
+          res.json({ analysis: null });
+        }
+      } catch (error) {
+        this.logger.error(`Error reading analysis results: ${error}`);
+        res.status(500).json({ error: 'Failed to read analysis results' });
+      }
     });
   }
 }
