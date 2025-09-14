@@ -1,0 +1,29 @@
+[
+  {
+    "timestamp": "2025-09-14T04:09:54.184721",
+    "audio_file": "storage/voice/voice_capture_20250914_040929.wav",
+    "processing_time_seconds": 37.77919006347656,
+    "transcription": {
+      "public_id": "4d2f6a84-20f5-41d3-885c-26939d77eaf8",
+      "status": "processing",
+      "error": null,
+      "results": {
+        "google": {
+          "id": "b123b9e9-9ffa-4de4-b392-2856463f6514",
+          "model": null,
+          "error": null,
+          "final_status": "processing",
+          "cost": 0.0036037368
+        },
+        "amazon": {
+          "id": "599d21b7-cfb8-415c-8ebc-424c74a5fcdb",
+          "model": null,
+          "error": null,
+          "final_status": "processing",
+          "cost": 0.006
+        }
+      }
+    },
+    "extracted_text": null
+  }
+]

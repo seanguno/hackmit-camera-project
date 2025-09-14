@@ -1,34 +1,42 @@
 const { spawn } = require('child_process')
 const fs = require('fs')
 const path = require('path')
+require('dotenv').config()
 
 async function testClaudeAndSupabase() {
     try {
-        const transcript = "Hey Sean! It was so nice meeting you today. Let's grab lunch sometime next week. I'm working in computer science and my email is gunosean@gmail.com."
+        console.log('🚀 Testing full pipeline: Voice Record → Transcribe → Claude → Supabase')
         
-        console.log('🚀 Testing full pipeline: Claude → Supabase')
-        console.log('📝 Transcript:', transcript)
+        // Step 1: Record and transcribe voice
+        console.log('\n🎤 Step 1: Recording and transcribing voice...')
+        const voiceResult = await runVoiceCapture()
         
-        // First, run Claude to get the structured data
-        console.log('\n🤖 Processing with Claude...')
-        const claudeResult = await runClaude(transcript)
+        if (!voiceResult || !voiceResult.transcription) {
+            console.log('❌ Voice capture failed or no transcription found')
+            return
+        }
+        
+        console.log('✅ Voice capture completed!')
+        console.log('📝 Transcription:', voiceResult.transcription)
+        console.log(`📊 Processing time: ${voiceResult.processing_time?.toFixed(2)}s`)
+        
+        // Step 2: Process with Claude
+        console.log('\n🤖 Step 2: Processing with Claude...')
+        const claudeResult = await runClaude(voiceResult.transcription)
         console.log('✅ Claude result:', JSON.stringify(claudeResult, null, 2))
         
-        // Test Supabase insert
-        console.log('\n🗄️  Testing Supabase insert...')
-        const response = await fetch('http://localhost:7676/api/voice', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(claudeResult),
-        })
+        // Step 3: Save directly to Supabase
+        console.log('\n🗄️  Step 3: Saving directly to Supabase...')
+        console.log('📤 Data being saved to Supabase:')
+        console.log(JSON.stringify(claudeResult, null, 2))
         
-        if (response.ok) {
-            const data = await response.json()
-            console.log('✅ Supabase response:', data)
+        const supabaseResult = await saveToSupabase(claudeResult)
+        
+        if (supabaseResult.success) {
+            console.log('✅ Supabase response:', supabaseResult.data)
+            console.log('🎉 Successfully saved to database!')
         } else {
-            console.log('❌ Supabase error:', response.status, response.statusText)
+            console.log('❌ Supabase error:', supabaseResult.error)
         }
         
     } catch (error) {
@@ -178,6 +186,125 @@ processTranscript('${transcript.replace(/'/g, "\\'")}')
             }
         })
     })
+}
+
+async function runVoiceCapture() {
+    return new Promise((resolve, reject) => {
+        console.log('🎤 Starting voice capture...')
+        
+        // Run the Python voice capture script
+        const pythonScript = spawn('/Users/sohumgautam/Documents/miniconda3/miniconda3/envs/hackmit/bin/python', ['src/voice/voice_capture.py'], {
+            cwd: process.cwd(),
+            stdio: ['pipe', 'pipe', 'pipe']
+        })
+
+        let output = ''
+        let errorOutput = ''
+
+        pythonScript.stdout.on('data', (data) => {
+            output += data.toString()
+            console.log('Python output:', data.toString().trim())
+        })
+
+        pythonScript.stderr.on('data', (data) => {
+            errorOutput += data.toString()
+            console.log('Python error:', data.toString().trim())
+        })
+
+        pythonScript.on('close', (code) => {
+            if (code === 0) {
+                try {
+                    // Parse the result from Python output
+                    const lines = output.split('\n')
+                    let audioFile = ''
+                    let transcription = null
+                    let processingTime = null
+
+                    for (const line of lines) {
+                        if (line.includes('Audio file:')) {
+                            audioFile = line.split('Audio file: ')[1]?.trim()
+                        }
+                        if (line.includes('📝 Final extracted text:')) {
+                            const transcriptionStr = line.split('📝 Final extracted text: ')[1]?.trim()
+                            if (transcriptionStr) {
+                                transcription = transcriptionStr
+                            }
+                        }
+                        if (line.includes('Total processing time:')) {
+                            const timeStr = line.split('Total processing time: ')[1]?.split(' seconds')[0]?.trim()
+                            if (timeStr) {
+                                processingTime = parseFloat(timeStr)
+                            }
+                        }
+                    }
+
+                    if (transcription) {
+                        resolve({
+                            audioFile,
+                            transcription,
+                            processingTime
+                        })
+                    } else {
+                        reject(new Error('Failed to extract transcription from voice capture result'))
+                    }
+                } catch (e) {
+                    reject(new Error('Failed to parse voice capture result: ' + e.message))
+                }
+            } else {
+                reject(new Error(`Voice capture failed with code ${code}: ${errorOutput}`))
+            }
+        })
+    })
+}
+
+async function saveToSupabase(data) {
+    try {
+        // Import Supabase client dynamically
+        const { createClient } = await import('@supabase/supabase-js')
+        
+        // Get environment variables
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
+        
+        if (!supabaseUrl || !supabaseKey) {
+            return {
+                success: false,
+                error: 'Missing Supabase environment variables (NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY)'
+            }
+        }
+        
+        const supabase = createClient(supabaseUrl, supabaseKey)
+        
+        const { data: result, error } = await supabase
+            .from('convo')
+            .insert({
+                field: data.field,
+                email: data.email,
+                name: data.name,
+                history: data.history,
+                summary: data.summary
+            })
+            .select()
+            .single()
+        
+        if (error) {
+            return {
+                success: false,
+                error: error.message
+            }
+        }
+        
+        return {
+            success: true,
+            data: result
+        }
+        
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        }
+    }
 }
 
 testClaudeAndSupabase()
