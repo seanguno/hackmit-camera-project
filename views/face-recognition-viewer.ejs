@@ -233,6 +233,22 @@
                 <div><strong>Photo:</strong> <span id="photo-filename">-</span></div>
                 <div><strong>Recognized:</strong> <span id="recognized-time">-</span></div>
             </div>
+
+            <div class="conversation-section" id="conversation-section" style="display: none;">
+                <h3>💬 Conversation History</h3>
+                <div class="conversation-status" id="conversation-status">
+                    <div class="status-indicator" id="status-indicator"></div>
+                    <span id="status-text">Checking conversation status...</span>
+                </div>
+                <div class="conversation-history" id="conversation-history">
+                    <div class="conversation-list" id="conversation-list">
+                        <!-- Conversation history will be loaded here -->
+                    </div>
+                </div>
+                <button class="refresh-btn" onclick="loadConversationHistory()" style="margin-top: 10px;">
+                    📚 Load Conversation History
+                </button>
+            </div>
         </div>
 
         <div id="no-recognition" class="no-recognition" style="display: none;">

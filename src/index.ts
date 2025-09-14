@@ -5,6 +5,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
 import axios from 'axios';
+import { ConversationManager } from './utils/ConversationManager';
+import { ConversationSession } from './utils/ConversationTranscriptProcessor';
 
 /**
  * Interface representing a stored photo with metadata
@@ -27,6 +29,7 @@ const FACE_RECOGNITION_API_URL = process.env.FACE_RECOGNITION_API_URL || 'http:/
 // Storage configuration
 const STORAGE_DIR = path.join(process.cwd(), 'storage', 'photos');
 const METADATA_FILE = path.join(STORAGE_DIR, 'metadata.json');
+const CONVERSATION_STORAGE_DIR = path.join(process.cwd(), 'storage', 'conversations');
 
 /**
  * Photo Taker App with webview functionality for displaying photos
@@ -38,6 +41,7 @@ class ExampleMentraOSApp extends AppServer {
   private isStreamingPhotos: Map<string, boolean> = new Map(); // Track if we are streaming photos for a user
   private nextPhotoTime: Map<string, number> = new Map(); // Track next photo time for a user
   private photoRequestToUser: Map<string, string> = new Map(); // Track which user made each photo request
+  private conversationManagers: Map<string, ConversationManager> = new Map(); // Track conversation managers per user
 
   constructor() {
     super({
@@ -45,9 +49,16 @@ class ExampleMentraOSApp extends AppServer {
       apiKey: MENTRAOS_API_KEY,
       port: PORT,
     });
+    this.logger.info(`🚀🚀🚀 ExampleMentraOSApp constructor called 🚀🚀🚀`);
+    console.log(`🚀🚀🚀 ExampleMentraOSApp constructor called 🚀🚀🚀`);
+    
+    // Test if onSession method exists
+    console.log(`onSession method exists:`, typeof this.onSession);
+    
     this.setupWebviewRoutes();
     this.ensureStorageDirectories();
     this.setupPhotoUploadHandler();
+    this.setupConversationStorage();
   }
 
   /**
@@ -67,6 +78,20 @@ class ExampleMentraOSApp extends AppServer {
       }
     } catch (error) {
       this.logger.error(`Error setting up storage directories: ${error}`);
+    }
+  }
+
+  /**
+   * Set up conversation storage
+   */
+  private setupConversationStorage(): void {
+    try {
+      if (!fs.existsSync(CONVERSATION_STORAGE_DIR)) {
+        fs.mkdirSync(CONVERSATION_STORAGE_DIR, { recursive: true });
+        this.logger.info(`Created conversation storage directory: ${CONVERSATION_STORAGE_DIR}`);
+      }
+    } catch (error) {
+      this.logger.error(`Error setting up conversation storage: ${error}`);
     }
   }
 
@@ -147,6 +172,61 @@ class ExampleMentraOSApp extends AppServer {
       this.logger.error(`Error updating metadata: ${error}`);
       throw error;
     }
+  }
+
+  /**
+   * Start conversation recording for a recognized person
+   */
+  private startConversationRecording(userId: string, sessionId: string, recognitionResult: any): void {
+    try {
+      // Get or create conversation manager for this user
+      let conversationManager = this.conversationManagers.get(userId);
+      if (!conversationManager) {
+        conversationManager = new ConversationManager(CONVERSATION_STORAGE_DIR, this.logger);
+        this.conversationManagers.set(userId, conversationManager);
+      }
+
+      // Stop any existing conversation
+      if (conversationManager.isCurrentlyRecording()) {
+        conversationManager.stopConversation();
+      }
+
+      // Start new conversation with recognized person
+      conversationManager.startConversation(sessionId, userId, {
+        name: recognitionResult.name,
+        confidence: recognitionResult.confidence,
+        face_id: recognitionResult.face_id
+      });
+
+      this.logger.info(`Started conversation recording for ${recognitionResult.name} (${userId})`);
+    } catch (error) {
+      this.logger.error(`Error starting conversation recording: ${error}`);
+    }
+  }
+
+  /**
+   * Stop conversation recording for a user
+   */
+  private stopConversationRecording(userId: string): ConversationSession | null {
+    try {
+      const conversationManager = this.conversationManagers.get(userId);
+      if (conversationManager && conversationManager.isCurrentlyRecording()) {
+        const session = conversationManager.stopConversation();
+        this.logger.info(`Stopped conversation recording for user ${userId}`);
+        return session;
+      }
+      return null;
+    } catch (error) {
+      this.logger.error(`Error stopping conversation recording: ${error}`);
+      return null;
+    }
+  }
+
+  /**
+   * Get conversation manager for a user
+   */
+  private getConversationManager(userId: string): ConversationManager | null {
+    return this.conversationManagers.get(userId) || null;
   }
 
   /**
@@ -276,11 +356,39 @@ class ExampleMentraOSApp extends AppServer {
    */
   protected async onSession(session: AppSession, sessionId: string, userId: string): Promise<void> {
     // this gets called whenever a user launches the app
-    this.logger.info(`Session started for user ${userId}`);
+    this.logger.info(`🚀🚀🚀 Session started for user ${userId} 🚀🚀🚀`);
+    console.log(`🚀🚀🚀 Session started for user ${userId} 🚀🚀🚀`);
 
     // set the initial state of the user
     this.isStreamingPhotos.set(userId, false);
     this.nextPhotoTime.set(userId, Date.now());
+
+    // Subscribe to transcription events immediately
+    this.logger.info(`🎤 Subscribing to transcription events for user ${userId}`);
+    console.log(`🎤 Subscribing to transcription events for user ${userId}`);
+    
+    // Test basic transcription subscription
+    const transcriptionHandler = session.events.onTranscription((transcriptionData) => {
+      this.logger.info(`🎤 Transcription received: "${transcriptionData.text}" (final: ${transcriptionData.isFinal})`);
+      console.log(`🎤 Transcription received: "${transcriptionData.text}" (final: ${transcriptionData.isFinal})`);
+      const conversationManager = this.getConversationManager(userId);
+      if (conversationManager) {
+        conversationManager.handleTranscription(transcriptionData);
+      } else {
+        this.logger.warn(`No conversation manager found for user ${userId}`);
+        console.log(`No conversation manager found for user ${userId}`);
+      }
+    });
+    
+    // Log that subscription was successful
+    this.logger.info(`🎤 Transcription subscription successful for user ${userId}`);
+    console.log(`🎤 Transcription subscription successful for user ${userId}`);
+    
+    // Debug: Check session properties
+    this.logger.info(`🔍 Session debug - userId: ${userId}, sessionId: ${sessionId}`);
+    console.log(`🔍 Session debug - userId: ${userId}, sessionId: ${sessionId}`);
+    console.log(`🔍 Session events:`, Object.keys(session.events));
+    console.log(`🔍 Session logger:`, typeof session.logger);
 
     // this gets called whenever a user presses a button
     session.events.onButtonPress(async (button) => {
@@ -345,6 +453,9 @@ class ExampleMentraOSApp extends AppServer {
       }
     }
     
+    // Stop any active conversation recording
+    this.stopConversationRecording(userId);
+    
     this.logger.info(`Session stopped for user ${userId}, reason: ${reason}`);
   }
 
@@ -397,6 +508,9 @@ class ExampleMentraOSApp extends AppServer {
           });
           
           this.logger.info(`Face recognition completed for user ${userId}: ${recognitionResult.name}`);
+          
+          // Start conversation recording for recognized person
+          this.startConversationRecording(userId, photo.requestId, recognitionResult);
         } else {
           this.logger.warn(`Face recognition failed for user ${userId}: ${recognitionResult.error}`);
         }
@@ -534,6 +648,171 @@ class ExampleMentraOSApp extends AppServer {
       } catch (error) {
         this.logger.error(`Error reading recognition results: ${error}`);
         res.status(500).json({ error: 'Failed to read recognition results' });
+      }
+    });
+
+    // API endpoint to get conversation history for a recognized person
+    app.get('/api/conversations/:faceId', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+      const faceId = req.params.faceId;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const conversationManager = this.getConversationManager(userId);
+        if (!conversationManager) {
+          res.json({ conversations: [] });
+          return;
+        }
+
+        const conversations = conversationManager.getConversationHistory(faceId, limit);
+        res.json({ 
+          conversations,
+          count: conversations.length,
+          faceId 
+        });
+      } catch (error) {
+        this.logger.error(`Error reading conversation history: ${error}`);
+        res.status(500).json({ error: 'Failed to read conversation history' });
+      }
+    });
+
+    // API endpoint to get user's conversation history
+    app.get('/api/conversations', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+      const limit = parseInt(req.query.limit as string) || 20;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const conversationManager = this.getConversationManager(userId);
+        if (!conversationManager) {
+          res.json({ conversations: [] });
+          return;
+        }
+
+        const conversations = conversationManager.getUserConversationHistory(userId, limit);
+        res.json({ 
+          conversations,
+          count: conversations.length,
+          userId 
+        });
+      } catch (error) {
+        this.logger.error(`Error reading user conversation history: ${error}`);
+        res.status(500).json({ error: 'Failed to read user conversation history' });
+      }
+    });
+
+    // API endpoint to get current conversation status
+    app.get('/api/conversation/status', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const conversationManager = this.getConversationManager(userId);
+        if (!conversationManager) {
+          res.json({ 
+            isRecording: false,
+            currentSession: null 
+          });
+          return;
+        }
+
+        const currentSession = conversationManager.getCurrentSession();
+        res.json({ 
+          isRecording: conversationManager.isCurrentlyRecording(),
+          currentSession: currentSession ? {
+            sessionId: currentSession.sessionId,
+            recognizedPerson: currentSession.recognizedPerson,
+            startTime: currentSession.startTime,
+            segmentCount: currentSession.segments.length
+          } : null
+        });
+      } catch (error) {
+        this.logger.error(`Error reading conversation status: ${error}`);
+        res.status(500).json({ error: 'Failed to read conversation status' });
+      }
+    });
+
+    // API endpoint to manually stop conversation recording
+    app.post('/api/conversation/stop', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const session = this.stopConversationRecording(userId);
+        if (session) {
+          res.json({ 
+            success: true,
+            session: {
+              sessionId: session.sessionId,
+              recognizedPerson: session.recognizedPerson,
+              startTime: session.startTime,
+              endTime: session.endTime,
+              segmentCount: session.segments.length,
+              summary: this.getConversationManager(userId)?.generateConversationSummary(session)
+            }
+          });
+        } else {
+          res.json({ 
+            success: false,
+            message: 'No active conversation to stop' 
+          });
+        }
+      } catch (error) {
+        this.logger.error(`Error stopping conversation: ${error}`);
+        res.status(500).json({ error: 'Failed to stop conversation' });
+      }
+    });
+
+    // Test endpoint to manually save a conversation
+    app.post('/api/conversation/test-save', (req: any, res: any) => {
+      const userId = (req as AuthenticatedRequest).authUserId;
+
+      if (!userId) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+      }
+
+      try {
+        const conversationManager = this.getConversationManager(userId);
+        if (!conversationManager) {
+          res.status(404).json({ error: 'No conversation manager found' });
+          return;
+        }
+
+        // Force save current session if recording
+        if (conversationManager.isCurrentlyRecording()) {
+          const session = conversationManager.stopConversation();
+          res.json({ 
+            success: true,
+            message: 'Test conversation saved',
+            session: session
+          });
+        } else {
+          res.json({ 
+            success: false,
+            message: 'No active conversation to save' 
+          });
+        }
+      } catch (error) {
+        this.logger.error(`Error in test save: ${error}`);
+        res.status(500).json({ error: 'Failed to test save conversation' });
       }
     });
 
