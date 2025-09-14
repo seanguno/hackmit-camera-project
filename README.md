@@ -15,13 +15,7 @@ By surfacing the factors and accomplishments that make a person remarkable, beyo
 
 ## Code Structure 
 
-src/
-├── agents/extraordinary/     # AI analysis system
-├── api/                     # API endpoints
-├── face_recognition/        # Face recognition service
-├── gmail/                   # Email integration
-├── voice/                   # Voice processing
-└── views/                   # EJS templates
+<pre> ## Code Structure ```plaintext src/ ├── agents/extraordinary/ # AI analysis system ├── api/ # API endpoints ├── face_recognition/ # Face recognition service ├── gmail/ # Email integration ├── voice/ # Voice processing └── views/ # EJS templates ``` </pre>
 
 
 ## Dependencies
