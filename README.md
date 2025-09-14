@@ -1,21 +1,13 @@
 # Spark: *See the extraordinary in everyone instantly* 
 
-Spark is an AI-powered tool built on the MentraOS glasses that lets people instantly discover the extraordinary individuals around them. 
-
-By surfacing the factors and accomplishments that make a person remarkable, beyond just their job title or LinkedIn headline, Spark breaks the cold-start barrier in human connection. It provides baseline knowledge to help cultivate introductions, conversations, and relationships. Through this, Spark accelerates authentic connection and collaboration in real-world environments like conferences, hackathons, research labs, and entrepreneurial communities.
-
+Spark is an AI-powered tool built on the MentraOS glasses that lets people instantly discover the extraordinary individuals around them.By surfacing the factors and accomplishments that make a person remarkable, beyond just their job title or LinkedIn headline, Spark breaks the cold-start barrier in human connection. It provides baseline knowledge to help cultivate introductions, conversations, and relationships. Through this, Spark accelerates authentic connection and collaboration in real-world environments like conferences, hackathons, research labs, and entrepreneurial communities.
 
 ## Main Features 
-Real-time photo capture using MentraOS + face recognition
-
-AI-driven extraordinary profile data analysis & extraction (CrewAI, Claude, and Exa)
-
-Voice-to-text, Summarization, + Next Steps
-
-Multi-source scraping
-
-Glasses-oriented UI (EJS + MentraOS SDK + debug tools)
-
+1. Real-time photo capture using MentraOS + face recognition
+2. AI-driven extraordinary profile data analysis & extraction (CrewAI, Claude, and Exa)
+3. Voice-to-text, Summarization, + Next Steps
+4. Multi-source scraping
+5. Glasses-oriented UI (EJS + MentraOS SDK + debug tools)
 
 ## Stack 
 
