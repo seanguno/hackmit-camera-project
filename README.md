@@ -13,7 +13,35 @@ By surfacing the factors and accomplishments that make a person remarkable, beyo
 | Front-end      |  |
 | Back-end       | |
 
-## Project Structure 
+## Code Structure 
+
+src/
+├── agents/extraordinary/     # AI analysis system
+├── api/                     # API endpoints
+├── face_recognition/        # Face recognition service
+├── gmail/                   # Email integration
+├── voice/                   # Voice processing
+└── views/                   # EJS templates
+
+
+## Dependencies
+
+# AI/ML Stack
+crewai                    # Multi-agent framework
+langchain-anthropic       # Claude integration
+httpx                     # Async HTTP client
+exa-py                    # Exa API client
+python-dotenv             # Environment management
+
+# Face Recognition
+requests>=2.28.0          # HTTP requests
+opencv-python>=4.8.0     # Computer vision
+fastapi>=0.104.0          # API framework
+uvicorn>=0.24.0           # ASGI server
+
+# Voice Processing
+pyaudio==0.2.11           # Audio capture
+numpy==1.24.3             # Audio processing
 
 ## Usage 
 
